@@ -1,0 +1,253 @@
+/* ============================================
+   INVESTMENT MODULE STYLES
+   ============================================ */
+
+/* ── Plan selection cards ────────────────────── */
+
+.invest-plans {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 8px;
+}
+
+@media (max-width: 640px) {
+    .invest-plans { grid-template-columns: 1fr; }
+}
+
+.invest-plan-card {
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 14px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color .2s, transform .15s, background .2s;
+    position: relative;
+    background: var(--bg-secondary);
+}
+
+.invest-plan-card:hover:not(.locked) {
+    transform: translateY(-3px);
+    background: var(--bg-primary);
+}
+
+.invest-plan-card.selected {
+    border-color: var(--accent-primary);
+    background: rgba(37,99,235,.06);
+}
+
+.invest-plan-card.locked {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+/* Plan accent colours */
+.invest-plan-card.starter  { --plan-color: #16a34a; }
+.invest-plan-card.premium  { --plan-color: #7c3aed; }
+.invest-plan-card.elite    { --plan-color: #dc2626; }
+
+.invest-plan-card:hover:not(.locked) { border-color: var(--plan-color); }
+.invest-plan-card.selected           { border-color: var(--plan-color); background: color-mix(in srgb, var(--plan-color) 6%, transparent); }
+
+.invest-plan-badge {
+    font-size: .7rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-bottom: 10px;
+    background: color-mix(in srgb, var(--plan-color) 15%, transparent);
+    color: var(--plan-color);
+}
+
+.invest-plan-multiplier {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--plan-color);
+    line-height: 1;
+    margin: 6px 0 4px;
+}
+
+.invest-plan-amount {
+    font-size: .95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.invest-plan-meta {
+    font-size: .75rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+/* ── Investment card ─────────────────────────── */
+
+.invest-card {
+    background: var(--card-bg, #fff);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 16px;
+}
+
+.invest-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+.invest-card-name {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0 0 2px;
+}
+
+.invest-card-plan {
+    font-size: .75rem;
+    color: var(--text-secondary);
+}
+
+/* Growth display */
+.invest-growth-box {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    background: var(--bg-secondary);
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 14px;
+}
+
+.invest-growth-item {
+    text-align: center;
+}
+
+.invest-growth-label {
+    font-size: .68rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin-bottom: 4px;
+}
+
+.invest-growth-value {
+    font-size: .95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.invest-growth-value.positive { color: var(--success, #16a34a); }
+.invest-growth-value.neutral  { color: var(--text-secondary); }
+
+/* Progress bar */
+.invest-progress-wrap {
+    background: var(--bg-tertiary, #f3f4f6);
+    border-radius: 20px;
+    height: 6px;
+    overflow: hidden;
+    margin: 8px 0 4px;
+}
+
+.invest-progress-bar {
+    height: 100%;
+    border-radius: 20px;
+    background: linear-gradient(90deg, #16a34a, #4ade80);
+    transition: width .4s ease;
+}
+
+.invest-progress-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: .72rem;
+    color: var(--text-secondary);
+    margin-top: 4px;
+}
+
+/* Top-up button */
+.invest-topup-btn {
+    width: 100%;
+    margin-top: 12px;
+}
+
+/* ── Gas wallet stat card ───────────────────── */
+
+.stat-card.gas-card {
+    position: relative;
+}
+
+.gas-fund-btn {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    font-size: .7rem;
+    padding: 4px 10px;
+}
+
+/* ── Gas wallet modal ───────────────────────── */
+
+.gas-wallet-box {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border-radius: 14px;
+    padding: 24px;
+    text-align: center;
+    color: #fff;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.gas-wallet-box::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.05);
+}
+
+.gas-wallet-network-badge {
+    display: inline-block;
+    background: rgba(255,255,255,.15);
+    border: 1px solid rgba(255,255,255,.25);
+    border-radius: 20px;
+    padding: 3px 12px;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+}
+
+.gas-wallet-address {
+    font-family: 'Courier New', monospace;
+    font-size: .8rem;
+    background: rgba(255,255,255,.1);
+    border-radius: 8px;
+    padding: 10px 14px;
+    word-break: break-all;
+    margin: 12px 0;
+    text-align: left;
+}
+
+.gas-balance-display {
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin: 8px 0 4px;
+}
+
+.gas-not-setup {
+    text-align: center;
+    padding: 24px 0;
+    color: var(--text-secondary);
+}
+
+.gas-not-setup i {
+    font-size: 2.5rem;
+    margin-bottom: 12px;
+    opacity: .4;
+    display: block;
+}
