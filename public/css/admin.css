@@ -14,20 +14,20 @@ body {
 }
 
 :root {
-    --bg-primary:     #111111;
-    --bg-secondary:   #1C1C1C;
-    --bg-tertiary:    #242424;
-    --text-primary:   #F5F0E8;
-    --text-secondary: #B0A89E;
-    --text-tertiary:  #736C65;
-    --accent-primary: #D95F0E;
-    --accent-secondary:#173d85;
-    --success:        #3DAA6A;
-    --warning:        #3970d6;
-    --error:          #E04535;
-    --border:         #2E2E2E;
-    --card-bg:        #1C1C1C;
-    --shadow:         rgba(0,0,0,.35) 0px 6px 24px 0px;
+        --bg-primary: #F9F6F1;
+    --bg-secondary: #F2EDE6;
+    --bg-tertiary: #EBE4DA;
+    --text-primary: #111111;
+    --text-secondary: #2b2b2b;
+    --text-tertiary: #8C8580;
+    --accent-primary: #1f5cce;
+    --accent-secondary: #173d85;
+    --success: #2D7A4F;
+    --warning: #3970d6;
+    --error: #C0392B;
+    --border: #E8E2D9;
+    --card-bg: #FFFFFF;
+    --shadow: rgba(17, 17, 17, 0.06) 0px 6px 24px 0px;
 }
 
 /* ── LOGIN ────────────────────────────────────── */
