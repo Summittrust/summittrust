@@ -1,0 +1,224 @@
+/* ============================================
+   CARDS MODULE STYLES
+   ============================================ */
+
+/* ── Card Widget ─────────────────────────────
+   Visual credit-card representation.
+   .card-widget           — outer container
+   .card-widget.disabled  — pending / not activated
+   .card-widget.active    — fully activated
+   ─────────────────────────────────────────── */
+
+.card-widget {
+    position: relative;
+    width: 100%;
+    max-width: 380px;
+    aspect-ratio: 1.586;        /* standard card ratio */
+    border-radius: 16px;
+    padding: 24px;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,.18);
+    transition: transform .2s, box-shadow .2s;
+    overflow: hidden;
+    cursor: default;
+    user-select: none;
+}
+
+.card-widget:not(.disabled):hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0,0,0,.25);
+}
+
+/* Disabled (pending admin activation) */
+.card-widget.disabled {
+    filter: grayscale(60%);
+    opacity: .75;
+    cursor: not-allowed;
+}
+
+.card-widget.disabled::after {
+    content: 'PENDING ACTIVATION';
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .7rem;
+    font-weight: 700;
+    letter-spacing: .18em;
+    color: rgba(255,255,255,.9);
+    background: rgba(0,0,0,.35);
+    border-radius: 16px;
+}
+
+/* Network-based gradients */
+.card-widget.visa        { background: linear-gradient(135deg, #1a1f71 0%, #2a4adf 100%); }
+.card-widget.mastercard  { background: linear-gradient(135deg, #1a1a1a 0%, #eb001b 100%); }
+.card-widget.amex        { background: linear-gradient(135deg, #007bc1 0%, #00c6ff 100%); }
+.card-widget.crypto-btc  { background: linear-gradient(135deg, #f7931a 0%, #f5c842 100%); }
+.card-widget.crypto-ltc  { background: linear-gradient(135deg, #345d9d 0%, #6fa3ef 100%); }
+.card-widget.default     { background: linear-gradient(135deg, #374151 0%, #6b7280 100%); }
+
+/* Decorative circles */
+.card-widget::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 180px; height: 180px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.08);
+    pointer-events: none;
+}
+
+/* Top row: chip + network icon */
+.card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.card-chip {
+    width: 40px;
+    height: 30px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #d4b483, #c9a84c);
+    border: 1px solid rgba(255,255,255,.3);
+}
+
+.card-network-icon {
+    font-size: 2rem;
+    opacity: .9;
+}
+
+/* Card number */
+.card-number {
+    font-size: 1.05rem;
+    letter-spacing: .18em;
+    font-family: 'Courier New', monospace;
+    text-shadow: 0 1px 3px rgba(0,0,0,.4);
+}
+
+/* Bottom row: holder + expiry */
+.card-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.card-label {
+    font-size: .6rem;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    opacity: .7;
+    margin-bottom: 2px;
+}
+
+.card-holder-name {
+    font-size: .8rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    max-width: 180px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.card-expiry {
+    font-size: .85rem;
+    font-weight: 600;
+    font-family: 'Courier New', monospace;
+    letter-spacing: .06em;
+}
+
+/* ── Card list item wrapper ────────────────── */
+
+.card-list-item {
+    background: var(--card-bg, #fff);
+    border: 1px solid var(--border, #e5e7eb);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 16px;
+}
+
+.card-list-item .card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+}
+
+.card-list-item .card-meta-info {
+    font-size: .875rem;
+    color: var(--text-secondary, #6b7280);
+}
+
+.card-list-item .card-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.card-list-item .card-actions button {
+    flex: 1;
+}
+
+/* ── Pending badge ───────────────────────────── */
+
+.card-pending-notice {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: rgba(245,158,11,.1);
+    border: 1px solid rgba(245,158,11,.3);
+    border-radius: 8px;
+    font-size: .8rem;
+    color: #92400e;
+    margin-top: 10px;
+}
+
+[data-theme="dark"] .card-pending-notice {
+    color: #fcd34d;
+    background: rgba(245,158,11,.15);
+    border-color: rgba(245,158,11,.4);
+}
+
+/* ── Joint waiting notice ───────────────────── */
+
+.card-joint-notice {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: rgba(37,99,235,.08);
+    border: 1px solid rgba(37,99,235,.2);
+    border-radius: 8px;
+    font-size: .8rem;
+    color: #1e40af;
+    margin-top: 10px;
+}
+
+[data-theme="dark"] .card-joint-notice {
+    color: #93c5fd;
+    background: rgba(37,99,235,.15);
+    border-color: rgba(37,99,235,.35);
+}
+
+/* ── Empty state ─────────────────────────────── */
+
+.cards-empty {
+    text-align: center;
+    padding: 48px 24px;
+    color: var(--text-secondary, #6b7280);
+}
+
+.cards-empty i {
+    font-size: 3rem;
+    margin-bottom: 12px;
+    opacity: .4;
+}
