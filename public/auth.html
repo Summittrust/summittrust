@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summit Trust Bank - Authentication</title>
+    
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:title" content="Summit Trust Bank">
+    <meta property="og:description" content="Banking that works for everyone.">
+    <meta property="og:image" content="https://res.cloudinary.com/ddvwy00eg/image/upload/v1775748770/OG_j29ilj.png">
+    <meta property="og:url" content="https://summit-trustbank.com">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Summit Trust Bank">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Summit Trust Bank">
+    <meta name="twitter:description" content="Banking that works for everyone.">
+    <meta name="twitter:image" content="https://res.cloudinary.com/ddvwy00eg/image/upload/v1775748770/OG_j29ilj.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://res.cloudinary.com/ddvwy00eg/image/upload/v1775748769/favicon_klg56g.png">
+    <link rel="apple-touch-icon" href="https://res.cloudinary.com/ddvwy00eg/image/upload/v1775748769/favicon_klg56g.png">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/utilities.css">
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="stylesheet" href="/css/pages/auth.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<style>
+/* Phrase grid */
+.phrase-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+}
+.phrase-grid .phrase-cell { position: relative; }
+.phrase-grid .phrase-num {
+    position: absolute;
+    top: 3px; left: 5px;
+    font-size: .58rem;
+    color: #9ca3af;
+    pointer-events: none;
+    line-height: 1;
+}
+.phrase-grid input {
+    width: 100%;
+    padding: 16px 4px 4px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: .78rem;
+    text-align: center;
+    background: #f9fafb;
+    color: #111827;
+    box-sizing: border-box;
+    outline: none;
+}
+.phrase-grid input:focus { border-color: #2563eb; background: #fff; }
+</style>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="nav-left">
+            <a href="/index.html" class="logo">
+                <img src="https://res.cloudinary.com/ddvwy00eg/image/upload/v1775748770/logo_klknwz.svg"
+                     alt="Summit Trust" class="logo-img" style="height:36px;width:36px;margin-right:10px;">
+                <span>Summit Trust</span>
+            </a>
+        </div>
+        <div class="nav-right">
+            <div class="nav-links">
+                <a href="/index.html">Home</a>
+                <a href="/about.html">About</a>
+            </div>
+            <div class="nav-actions">
+                <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
+                <div class="language-selector">
+                    <button class="lang-btn"><i class="fas fa-globe"></i><span>EN</span></button>
+                    <div class="lang-dropdown">
+                        <a href="#" data-lang="en">English</a>
+                        <a href="#" data-lang="es">Español</a>
+                        <a href="#" data-lang="fr">Français</a>
+                        <a href="#" data-lang="de">Deutsch</a>
+                        <a href="#" data-lang="pt">Português</a>
+                        <a href="#" data-lang="ar">العربية</a>
+                        <a href="#" data-lang="zh">中文</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- LOGIN CARD -->
+<div class="auth-container" id="authContainer">
+    <div class="auth-card">
+        <div class="auth-header">
+            <img src="https://res.cloudinary.com/ddvwy00eg/image/upload/v1775748770/logo_klknwz.svg"
+                 alt="Summit Trust" class="auth-logo">
+            <h1>Welcome Back</h1>
+            <p>Sign in to your Summit Trust account</p>
+        </div>
+
+        <form id="loginForm" class="auth-form active">
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" id="loginEmail" class="form-input" placeholder="you@example.com" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">
+                Sign In <i class="fas fa-arrow-right"></i>
+            </button>
+            <div class="auth-links">
+                <a href="#" onclick="openModal('forgotModal')">Forgot password?</a>
+                <a href="#" onclick="openModal('accountTypeModal')">Create account</a>
+            </div>
+            <div style="margin-top:20px;padding:14px 16px;background:var(--bg-secondary);
+                        border:1px solid var(--border);border-radius:10px;text-align:center;">
+                <p style="font-size:.85rem;color:var(--text-secondary);margin:0 0 8px 0;">
+                    Received a joint account invitation?
+                </p>
+                <a href="#" onclick="openModal('otpVerifyModal')"
+                   style="font-size:.875rem;font-weight:600;color:var(--accent-primary);text-decoration:none;">
+                    <i class="fas fa-link"></i> Complete Joint Account Setup
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<!-- =====================================================
+     MODALS — all 6 are direct children of <body>
+     so they are NEVER hidden by a parent's display:none
+     ===================================================== -->
+
+
+<!-- MODAL 1: Account Type -->
+<div id="accountTypeModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Choose Account Type</h2>
+            <button class="modal-close" onclick="closeModal('accountTypeModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="account-types">
+                <div class="account-type-card" onclick="openIndividualForm()">
+                    <i class="fas fa-user"></i>
+                    <h3>Personal Account</h3>
+                    <p>For individual banking with full personal control</p>
+                    <button class="btn btn-outline">Select</button>
+                </div>
+                <div class="account-type-card" onclick="openJointForm()">
+                    <i class="fas fa-users"></i>
+                    <h3>Joint Account</h3>
+                    <p>For partners — every action requires both approvals</p>
+                    <button class="btn btn-primary">Select</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- MODAL 2: Individual Registration -->
+<div id="individualModal" class="modal">
+    <div class="modal-content modal-lg">
+        <div class="modal-header">
+            <h2>Open Personal Account</h2>
+            <button class="modal-close" onclick="closeModal('individualModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="step-indicator">
+                <div class="step active" id="indStep1Dot">
+                    <div class="step-number">1</div>
+                    <div class="step-label">Personal</div>
+                </div>
+                <div class="step" id="indStep2Dot">
+                    <div class="step-number">2</div>
+                    <div class="step-label">Documents</div>
+                </div>
+                <div class="step" id="indStep3Dot">
+                    <div class="step-number">3</div>
+                    <div class="step-label">Security</div>
+                </div>
+            </div>
+
+            <!-- Step 1: Personal Info -->
+            <div id="individualStep1" class="form-step active">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">First Name</label>
+                        <input type="text" id="indFirstName" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" id="indLastName" class="form-input" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" id="indEmail" class="form-input" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" id="indPassword" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Confirm Password</label>
+                        <input type="password" id="indConfirm" class="form-input" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Date of Birth</label>
+                        <input type="date" id="indBirthDate" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Gender</label>
+                        <select id="indGender" class="form-select" required>
+                            <option value="">Select</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                            <option value="prefer-not-to-say">Prefer not to say</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Country</label>
+                    <select id="indCountry" class="form-select" required>
+                        <option value="">Loading countries…</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" onclick="closeModal('individualModal')">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="nextIndividualStep(1)">Continue</button>
+                </div>
+            </div>
+
+            <!-- Step 2: Documents -->
+            <div id="individualStep2" class="form-step">
+                <div class="form-group">
+                    <label class="form-label">Government ID</label>
+                    <div class="file-upload-area" onclick="triggerFileUpload('govId')">
+                        <div class="file-upload-content">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p id="govIdText">Click to upload ID (JPG, PNG, PDF)</p>
+                            <small>Max 5MB</small>
+                        </div>
+                    </div>
+                    <input type="file" id="govIdFile" accept=".jpg,.jpeg,.png,.pdf" style="display:none">
+                    <input type="hidden" id="govIdUrl">
+                    <div id="govIdPreview"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Profile Picture</label>
+                    <div class="file-upload-area" onclick="triggerFileUpload('profilePic')">
+                        <div class="file-upload-content">
+                            <i class="fas fa-camera"></i>
+                            <p id="profilePicText">Click to upload photo</p>
+                            <small>JPG or PNG, max 2MB</small>
+                        </div>
+                    </div>
+                    <input type="file" id="profilePicFile" accept=".jpg,.jpeg,.png" style="display:none">
+                    <input type="hidden" id="profilePicUrl">
+                    <div id="profilePicPreview"></div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-outline" onclick="prevIndividualStep()">Back</button>
+                    <button type="button" class="btn btn-primary" id="indCompleteBtn" onclick="processIndividualSignup()">
+                        Complete
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 3: Recovery Phrase -->
+            <div id="individualStep3" style="display:none;">
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Save this now.</strong> Your recovery phrase cannot be shown again.
+                </div>
+                <h3 style="margin:20px 0 8px;">Recovery Phrase</h3>
+                <div id="indRecoveryPhrase" class="recovery-phrase"></div>
+                <div class="form-group" style="margin-top:20px;">
+                    <label class="form-checkbox">
+                        <input type="checkbox" id="indConfirmSave">
+                        <span>I have saved my recovery phrase</span>
+                    </label>
+                </div>
+                <button class="btn btn-primary btn-block" id="indGoDashBtn" onclick="completeIndividualSignup()">
+                    Go to Dashboard
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- MODAL 3: Joint Registration (User A) -->
+<div id="jointModal" class="modal">
+    <div class="modal-content modal-lg">
+        <div class="modal-header">
+            <h2>Open Joint Account</h2>
+            <button class="modal-close" onclick="closeModal('jointModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+
+            <!-- The form (hidden after submit) -->
+            <div id="jointFormWrapper">
+                <h3 style="margin-bottom:16px;">Your Details</h3>
+                <form id="jointPrimaryForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">First Name</label>
+                            <input type="text" id="jointFirst1" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Last Name</label>
+                            <input type="text" id="jointLast1" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" id="jointEmail1" class="form-input" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Password</label>
+                            <input type="password" id="jointPass1" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Confirm Password</label>
+                            <input type="password" id="jointConfirm1" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Date of Birth</label>
+                            <input type="date" id="jointBirth1" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Gender</label>
+                            <select id="jointGender1" class="form-select" required>
+                                <option value="">Select</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                                <option value="prefer-not-to-say">Prefer not to say</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Country</label>
+                        <select id="jointCountry1" class="form-select" required>
+                            <option value="">Loading countries…</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Your Government ID</label>
+                        <div class="file-upload-area" onclick="triggerFileUpload('jointId1')">
+                            <div class="file-upload-content">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p id="jointId1Text">Upload your ID (JPG, PNG, PDF)</p>
+                                <small>Max 5MB</small>
+                            </div>
+                        </div>
+                        <input type="file" id="jointId1File" accept=".jpg,.jpeg,.png,.pdf" style="display:none">
+                        <input type="hidden" id="jointId1Url">
+                        <div id="jointId1Preview"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Your Profile Picture</label>
+                        <div class="file-upload-area" onclick="triggerFileUpload('jointPic1')">
+                            <div class="file-upload-content">
+                                <i class="fas fa-camera"></i>
+                                <p id="jointPic1Text">Upload your photo</p>
+                                <small>JPG or PNG, max 2MB</small>
+                            </div>
+                        </div>
+                        <input type="file" id="jointPic1File" accept=".jpg,.jpeg,.png" style="display:none">
+                        <input type="hidden" id="jointPic1Url">
+                        <div id="jointPic1Preview"></div>
+                    </div>
+
+                    <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border);">
+                        <h3 style="margin-bottom:8px;">Invite Second Account Holder</h3>
+                        <p style="font-size:.875rem;color:var(--text-secondary);margin-bottom:16px;">
+                            Enter their email. They'll use an OTP to complete their own registration separately.
+                        </p>
+                        <div class="form-group">
+                            <label class="form-label">Second Holder's Email</label>
+                            <input type="email" id="jointEmail2" class="form-input" placeholder="their@email.com" required>
+                        </div>
+                    </div>
+
+                    <div class="form-actions" style="margin-top:24px;">
+                        <button type="button" class="btn btn-outline" onclick="closeModal('jointModal')">Cancel</button>
+                        <button type="submit" id="jointSubmitBtn" class="btn btn-primary">
+                            Create Account &amp; Get OTP
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- OTP + recovery (shown after successful submit) -->
+            <div id="otpDisplay" style="display:none;">
+                <div class="alert alert-success" style="margin-bottom:20px;">
+                    <i class="fas fa-check-circle"></i>
+                    <strong>Account created!</strong> Share this OTP with the second holder:
+                </div>
+                <div id="jointOtp" class="otp-code"></div>
+                <h3 style="margin:24px 0 8px;">Your Recovery Phrase</h3>
+                <div id="primaryPhrase" class="recovery-phrase"></div>
+                <div class="form-group" style="margin-top:16px;">
+                    <label class="form-checkbox">
+                        <input type="checkbox" id="primaryConfirmSave">
+                        <span>I have saved my recovery phrase and shared the OTP</span>
+                    </label>
+                </div>
+                <button class="btn btn-primary btn-block" id="primaryGoDashBtn" onclick="goToDashboard()">
+                    Go to Dashboard &amp; Set PIN
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- MODAL 4: OTP Verify (User B entry point) -->
+<div id="otpVerifyModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Complete Joint Account Setup</h2>
+            <button class="modal-close" onclick="closeModal('otpVerifyModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="alert alert-info" style="margin-bottom:20px;">
+                <i class="fas fa-info-circle"></i>
+                <span>Enter the 6-digit OTP shared with you by the primary account holder.</span>
+            </div>
+            <div class="form-group">
+                <label class="form-label">6-Digit OTP</label>
+                <input type="text" id="otpInput" class="form-input" maxlength="6" inputmode="numeric"
+                       placeholder="483921"
+                       style="font-size:1.5rem;letter-spacing:.5rem;text-align:center;">
+            </div>
+            <button class="btn btn-primary btn-block" id="otpVerifyBtn" onclick="verifyOTP()">
+                Verify &amp; Continue <i class="fas fa-arrow-right"></i>
+            </button>
+            <div class="auth-links" style="margin-top:16px;">
+                <a href="#" onclick="closeModal('otpVerifyModal');setTimeout(()=>openModal('accountTypeModal'),200)">
+                    No OTP? Create a new account instead
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- MODAL 5: Second User Registration (User B) -->
+<div id="secondUserModal" class="modal">
+    <div class="modal-content modal-lg">
+        <div class="modal-header">
+            <h2>Complete Your Joint Account</h2>
+            <button class="modal-close" onclick="closeModal('secondUserModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <form id="secondUserForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">First Name</label>
+                        <input type="text" id="secondFirstName" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Last Name</label>
+                        <input type="text" id="secondLastName" class="form-input" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" id="secondEmail" class="form-input" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" id="secondPass" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Confirm Password</label>
+                        <input type="password" id="secondConfirm" class="form-input" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Date of Birth</label>
+                        <input type="date" id="secondBirth" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Gender</label>
+                        <select id="secondGender" class="form-select" required>
+                            <option value="">Select</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                            <option value="prefer-not-to-say">Prefer not to say</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Country</label>
+                    <select id="secondCountry" class="form-select" required>
+                        <option value="">Loading countries…</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Government ID</label>
+                    <div class="file-upload-area" onclick="triggerFileUpload('secondGovId')">
+                        <div class="file-upload-content">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p id="secondGovIdText">Click to upload ID (JPG, PNG, PDF)</p>
+                            <small>Max 5MB</small>
+                        </div>
+                    </div>
+                    <input type="file" id="secondGovIdFile" accept=".jpg,.jpeg,.png,.pdf" style="display:none">
+                    <input type="hidden" id="secondGovIdUrl">
+                    <div id="secondGovIdPreview"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Profile Picture</label>
+                    <div class="file-upload-area" onclick="triggerFileUpload('secondProfilePic')">
+                        <div class="file-upload-content">
+                            <i class="fas fa-camera"></i>
+                            <p id="secondProfilePicText">Click to upload photo</p>
+                            <small>JPG or PNG, max 2MB</small>
+                        </div>
+                    </div>
+                    <input type="file" id="secondProfilePicFile" accept=".jpg,.jpeg,.png" style="display:none">
+                    <input type="hidden" id="secondProfilePicUrl">
+                    <div id="secondProfilePicPreview"></div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">
+                    Complete Registration
+                </button>
+            </form>
+
+            <!-- Recovery phrase (shown after success) -->
+            <div id="secondUserSecurity" style="display:none;">
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Save this now.</strong> Your recovery phrase cannot be shown again.
+                </div>
+                <h3 style="margin:20px 0 8px;">Your Recovery Phrase</h3>
+                <div id="secondRecovery" class="recovery-phrase"></div>
+                <div class="form-group" style="margin-top:16px;">
+                    <label class="form-checkbox">
+                        <input type="checkbox" id="secondConfirmSave">
+                        <span>I have saved my recovery phrase</span>
+                    </label>
+                </div>
+                <button class="btn btn-primary btn-block" id="secondGoDashBtn" onclick="goToDashboard()">
+                    Go to Dashboard &amp; Set PIN
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- MODAL 6: Forgot Password -->
+<div id="forgotModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Reset Password</h2>
+            <button class="modal-close" onclick="closeModal('forgotModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div id="forgotStep1">
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" id="resetEmail" class="form-input" placeholder="you@example.com">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Recovery Phrase (12 words — one per box)</label>
+                    <div id="forgotPhraseGrid" class="phrase-grid"></div>
+                </div>
+                <button class="btn btn-primary btn-block" style="margin-top:16px;" onclick="verifyPhrase()">Verify Phrase</button>
+            </div>
+            <div id="forgotStep2" style="display:none;">
+                <div class="form-group">
+                    <label class="form-label">New Password</label>
+                    <input type="password" id="newPassword" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Confirm New Password</label>
+                    <input type="password" id="confirmPassword" class="form-input">
+                </div>
+                <button class="btn btn-primary btn-block" onclick="resetPassword()">Reset Password</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Scripts — only the three that exist -->
+<script src="/js/supabase.js" defer></script>
+<script src="/js/auth.js" defer></script>
+<script src="/js/pages/auth.js" defer></script>
+
+<!-- Google Translate + Language Switcher -->
+<div id="google_translate_element" style="display:none;"></div>
+<script>function googleTranslateElementInit(){new google.translate.TranslateElement({pageLanguage:'en'},'google_translate_element');}</script>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<script src="/js/components/languageSwitcher.js"></script>
+<style>.goog-te-banner-frame,.skiptranslate{display:none!important;}body{top:0!important;}.goog-te-gadget{display:none!important;}</style>
+
+</body>
+</html>
