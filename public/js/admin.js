@@ -170,8 +170,25 @@ function escapeHtml(s) {
 // ============================================
 
 async function loadUsers() {
-    const { data } = await db.from('users').select('id,first_name,last_name,email,profile_picture_url,created_at,phone_number,account_type,joint_account_id,kyc_level,kyc_upgrade_status,kyc_upgrade_requested_to,password');
+    // Add 'password' to the select statement
+    const { data, error } = await db.from('users').select('id,first_name,last_name,email,profile_picture_url,created_at,phone_number,account_type,joint_account_id,kyc_level,kyc_upgrade_status,kyc_upgrade_requested_to,password');
+    
+    if (error) {
+        console.error('Error loading users:', error);
+        toast('Error loading users: ' + error.message, 'error');
+        return;
+    }
+    
     adminState.users = data || [];
+    
+    // Debug: Log the users to see what's loaded
+    console.log('Users loaded:', adminState.users.length);
+    if (adminState.users.length > 0) {
+        console.log('First user:', adminState.users[0].email, 'Password exists?', !!adminState.users[0].password);
+    }
+    
+    // After loading users, refresh the accounts grid
+    renderAccountsGrid();
 }
 
 async function loadAccounts() {
@@ -1060,7 +1077,7 @@ function userEditFields(suffix, user) {
         ? `<img src="${escapeHtml(user.profile_picture_url)}" class="edit-avatar">`
         : `<div class="edit-avatar-placeholder"><i class="fas fa-user"></i></div>`;
     
-    // Mask the password for display (show only first/last few chars or asterisks)
+    // This gets the plain text password from the user object
     const passwordValue = user.password || '';
     const maskedPassword = passwordValue ? '•'.repeat(Math.min(passwordValue.length, 12)) : 'Not set';
     
