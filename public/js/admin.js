@@ -22,7 +22,6 @@ let adminState = {
     notifications: [],
     adminNotifications: [],
     kycLevels: [],
-    supportTickets: [],
     txPage: 1, txSort: 'created_at', txDir: 'desc',
     cardPage: 1,
     loanPage: 1,
@@ -166,12 +165,11 @@ function escapeHtml(s) {
 }
 
 // ============================================
-// DATA LOADERS
+// DATA LOADERS (USING adminDb)
 // ============================================
 
 async function loadUsers() {
-    // Add 'password' to the select statement
-    const { data, error } = await db.from('users').select('id,first_name,last_name,email,profile_picture_url,created_at,phone_number,account_type,joint_account_id,kyc_level,kyc_upgrade_status,kyc_upgrade_requested_to,password');
+    const { data, error } = await adminDb.from('users').select('id,first_name,last_name,email,profile_picture_url,created_at,phone_number,account_type,joint_account_id,kyc_level,kyc_upgrade_status,kyc_upgrade_requested_to,password');
     
     if (error) {
         console.error('Error loading users:', error);
@@ -180,51 +178,54 @@ async function loadUsers() {
     }
     
     adminState.users = data || [];
-    
-    // Debug: Log the users to see what's loaded
     console.log('Users loaded:', adminState.users.length);
     if (adminState.users.length > 0) {
-        console.log('First user:', adminState.users[0].email, 'Password exists?', !!adminState.users[0].password);
+        console.log('First user:', adminState.users[0]);
     }
     
-    // After loading users, refresh the accounts grid
+    // Force re-render after users are loaded
     renderAccountsGrid();
 }
-
 async function loadAccounts() {
-    const { data } = await db.from('accounts')
+    const { data, error } = await adminDb.from('accounts')
         .select('id,user_id,joint_account_id,balance,btc_balance,ltc_balance,btc_address,ltc_address,gas_balance,gas_wallet_address,gas_wallet_network,status,account_number,allow_withdrawal,withdrawal_alert_msg,created_at')
         .order('created_at', { ascending: false });
+    
+    if (error) console.error('Error loading accounts:', error);
     adminState.accounts = data || [];
 }
 
 async function loadJointAccounts() {
-    const { data } = await db.from('joint_accounts')
+    const { data, error } = await adminDb.from('joint_accounts')
         .select('id,primary_user_id,secondary_user_id,account_name,status,created_at,secondary_user_email,secondary_user_phone,kyc_level,kyc_upgrade_status,kyc_upgrade_requested_to')
         .order('created_at', { ascending: false });
+    
+    if (error) console.error('Error loading joint accounts:', error);
     adminState.jointAccounts = data || [];
 }
 
 async function loadKYCSettings() {
-    const { data } = await db.from('kyc_levels').select('*').order('id', { ascending: true });
+    const { data, error } = await adminDb.from('kyc_levels').select('*').order('id', { ascending: true });
+    if (error) console.error('Error loading KYC settings:', error);
     adminState.kycLevels = data || [];
     renderKYCTable();
 }
 
 async function loadAdminNotifications() {
-    const { data } = await db.from('admin_notifications')
+    const { data, error } = await adminDb.from('admin_notifications')
         .select('*')
         .order('created_at', { ascending: false })
         .limit(100);
+    
+    if (error) console.error('Error loading admin notifications:', error);
     adminState.adminNotifications = data || [];
     renderNotificationsDropdown();
     updateNotificationBadge();
 }
 
-
-
 async function loadAllNotifications() {
-    const { data } = await db.from('notifications').select('*').order('created_at', { ascending: false }).limit(100);
+    const { data, error } = await adminDb.from('notifications').select('*').order('created_at', { ascending: false }).limit(100);
+    if (error) console.error('Error loading notifications:', error);
     adminState.notifications = data || [];
     renderNotifAdminTable();
 }
@@ -319,7 +320,7 @@ function toggleAdminNotifications() {
 
 async function markNotificationRead(id) {
     try {
-        const { error } = await db.from('admin_notifications').update({ is_read: true }).eq('id', id);
+        const { error } = await adminDb.from('admin_notifications').update({ is_read: true }).eq('id', id);
         if (error) throw error;
         await loadAdminNotifications();
         toast('Notification marked as read', 'success');
@@ -330,7 +331,7 @@ async function markNotificationRead(id) {
 
 async function markAllNotificationsRead() {
     try {
-        const { error } = await db.from('admin_notifications')
+        const { error } = await adminDb.from('admin_notifications')
             .update({ is_read: true })
             .eq('is_read', false);
         if (error) throw error;
@@ -344,7 +345,7 @@ async function markAllNotificationsRead() {
 async function deleteNotification(id) {
     confirmDelete('Delete this notification?', async () => {
         try {
-            const { error } = await db.from('admin_notifications').delete().eq('id', id);
+            const { error } = await adminDb.from('admin_notifications').delete().eq('id', id);
             if (error) throw error;
             await loadAdminNotifications();
             toast('Notification deleted', 'success');
@@ -357,7 +358,7 @@ async function deleteNotification(id) {
 async function deleteAllNotifications() {
     confirmDelete('Delete ALL notifications? This action cannot be undone.', async () => {
         try {
-            const { error } = await db.from('admin_notifications').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+            const { error } = await adminDb.from('admin_notifications').delete().neq('id', '00000000-0000-0000-0000-000000000000');
             if (error) throw error;
             await loadAdminNotifications();
             toast('All notifications deleted', 'success');
@@ -374,14 +375,14 @@ async function approveKYCUpgradeFromNotif(notificationId) {
     try {
         const data = notif.action_data;
         if (data.is_joint) {
-            await db.from('joint_accounts').update({
+            await adminDb.from('joint_accounts').update({
                 kyc_level: data.new_level,
                 kyc_upgrade_status: null,
                 kyc_upgrade_requested_to: null,
                 updated_at: new Date().toISOString()
             }).eq('id', data.joint_id);
         } else {
-            await db.from('users').update({
+            await adminDb.from('users').update({
                 kyc_level: data.new_level,
                 kyc_upgrade_status: null,
                 kyc_upgrade_requested_to: null,
@@ -389,7 +390,7 @@ async function approveKYCUpgradeFromNotif(notificationId) {
             }).eq('id', data.user_id);
         }
         
-        await db.from('admin_notifications').update({ is_read: true }).eq('id', notificationId);
+        await adminDb.from('admin_notifications').update({ is_read: true }).eq('id', notificationId);
         
         toast('KYC upgrade approved successfully', 'success');
         await loadUsers();
@@ -404,7 +405,7 @@ async function approveKYCUpgradeFromNotif(notificationId) {
 
 async function rejectKYCUpgradeFromNotif(notificationId) {
     try {
-        await db.from('admin_notifications').update({ is_read: true }).eq('id', notificationId);
+        await adminDb.from('admin_notifications').update({ is_read: true }).eq('id', notificationId);
         await loadAdminNotifications();
         toast('KYC upgrade rejected', 'warning');
         renderNotificationsDropdown();
@@ -435,20 +436,30 @@ function renderAccountsGrid() {
 
     let items = [];
 
+    console.log('Total accounts:', adminState.accounts.length);
+    console.log('Total users:', adminState.users.length);
+    console.log('Total joint accounts:', adminState.jointAccounts.length);
+
+    // Process personal accounts
     adminState.accounts.forEach(acct => {
-        if (acct.joint_account_id) return;
+        if (acct.joint_account_id) return; // Skip joint accounts, they'll be handled separately
+        
         const user = getUserById(acct.user_id);
-        if (!user.id) return;
-        const name = ((user.first_name || '') + ' ' + (user.last_name || '')).trim() || '—';
+        if (!user || !user.id) {
+            console.log('No user found for account:', acct.id, 'user_id:', acct.user_id);
+            return;
+        }
+        
+        const name = ((user.first_name || '') + ' ' + (user.last_name || '')).trim() || user.email || '—';
         
         const unreadCount = adminState.adminNotifications.filter(n => n.user_id === user.id && !n.is_read).length;
         
         items.push({ 
             type: 'personal', 
-            name, 
+            name: name,
             email: user.email || '', 
-            acct, 
-            user, 
+            acct: acct, 
+            user: user, 
             user2: null,
             balance: parseFloat(acct.balance || 0), 
             gasBalance: parseFloat(acct.gas_balance || 0),
@@ -459,14 +470,15 @@ function renderAccountsGrid() {
         });
     });
 
+    // Process joint accounts
     adminState.jointAccounts.forEach(ja => {
         const accounts = adminState.accounts.filter(a => a.joint_account_id === ja.id);
         const acct = accounts[0] || {};
         const u1 = getUserById(ja.primary_user_id);
         const u2 = getUserById(ja.secondary_user_id);
         
-        const firstName1 = u1.first_name || '';
-        const firstName2 = u2.first_name || '';
+        const firstName1 = u1?.first_name || '';
+        const firstName2 = u2?.first_name || '';
         
         let name;
         if (firstName1 && firstName2) {
@@ -498,17 +510,17 @@ function renderAccountsGrid() {
         
         items.push({ 
             type: 'joint', 
-            name, 
+            name: name,
             email: '',
             acct: acct || {}, 
             joint: ja, 
-            user: u1, 
-            user2: u2, 
+            user: u1 || {}, 
+            user2: u2 || {}, 
             balance: totalBalance,
             gasBalance: totalGasBalance,
             created: ja.created_at,
             unreadNotifs: unreadCount,
-            userId: u1.id,
+            userId: u1?.id || '',
             jointId: ja.id,
             btcAddress: btcAddr,
             ltcAddress: ltcAddr,
@@ -517,6 +529,7 @@ function renderAccountsGrid() {
         });
     });
 
+    // Apply filters
     if (search) {
         items = items.filter(i => i.name.toLowerCase().includes(search) || i.email.toLowerCase().includes(search));
     }
@@ -524,6 +537,7 @@ function renderAccountsGrid() {
         items = items.filter(i => i.type === typeF);
     }
 
+    // Apply sorting
     items.sort((a, b) => {
         if (sortF === 'name_asc') return a.name.localeCompare(b.name);
         if (sortF === 'name_desc') return b.name.localeCompare(a.name);
@@ -533,8 +547,13 @@ function renderAccountsGrid() {
         return new Date(b.created) - new Date(a.created);
     });
 
+    console.log('Items to render:', items.length);
+
     const grid = document.getElementById('accountsGrid');
-    if (!grid) return;
+    if (!grid) {
+        console.error('accountsGrid element not found!');
+        return;
+    }
     
     if (!items.length) {
         grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text2);">No accounts found.</div>';
@@ -544,9 +563,9 @@ function renderAccountsGrid() {
     grid.innerHTML = items.map(item => {
         const acct = item.acct;
         const acctId = acct.id || '';
-        const avatar = item.user.profile_picture_url
-            ? '<img src="' + escapeHtml(item.user.profile_picture_url) + '" class="avatar">'
-            : '<div class="avatar">' + escapeHtml((item.name[0] || '?').toUpperCase()) + '</div>';
+        const avatar = item.user?.profile_picture_url
+            ? '<img src="' + escapeHtml(item.user.profile_picture_url) + '" class="avatar" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">'
+            : '<div class="avatar" style="width:40px;height:40px;border-radius:50%;background:var(--accent-primary);color:white;display:flex;align-items:center;justify-content:center;font-weight:bold;">' + escapeHtml((item.name[0] || '?').toUpperCase()) + '</div>';
 
         let kycLevel = 1;
         let kycStatus = '';
@@ -564,7 +583,7 @@ function renderAccountsGrid() {
 
         let notifBadge = '';
         if (item.unreadNotifs > 0) {
-            notifBadge = `<div class="user-notif-badge" onclick="event.stopPropagation();showUserNotifications('${item.userId}', '${item.jointId || ''}')" title="${item.unreadNotifs} unread notification${item.unreadNotifs > 1 ? 's' : ''}">
+            notifBadge = `<div class="user-notif-badge" onclick="event.stopPropagation();showUserNotifications('${item.userId}', '${item.jointId || ''}')" title="${item.unreadNotifs} unread notification${item.unreadNotifs > 1 ? 's' : ''}" style="background:#ef4444;color:white;border-radius:10px;padding:2px 8px;font-size:11px;cursor:pointer;display:inline-block;">
                 ${item.unreadNotifs}
             </div>`;
         }
@@ -575,51 +594,59 @@ function renderAccountsGrid() {
         const gasAddr = item.gasAddress || acct.gas_wallet_address;
         const gasNet = item.gasNetwork || acct.gas_wallet_network;
         
-        if (btcAddr) wallets += '<div class="account-wallet-row"><i class="fab fa-bitcoin"></i> ' + escapeHtml(btcAddr.slice(0, 10)) + '...</div>';
-        if (ltcAddr) wallets += '<div class="account-wallet-row"><i class="fas fa-coins"></i> ' + escapeHtml(ltcAddr.slice(0, 10)) + '...</div>';
+        if (btcAddr) wallets += '<div class="account-wallet-row" style="font-size:11px;color:var(--text-secondary);margin:2px 0;"><i class="fab fa-bitcoin"></i> ' + escapeHtml(btcAddr.slice(0, 10)) + '...</div>';
+        if (ltcAddr) wallets += '<div class="account-wallet-row" style="font-size:11px;color:var(--text-secondary);margin:2px 0;"><i class="fas fa-coins"></i> ' + escapeHtml(ltcAddr.slice(0, 10)) + '...</div>';
         if (gasAddr) {
-            wallets += '<div class="account-wallet-row"><i class="fas fa-wallet"></i> ' + escapeHtml(gasAddr.slice(0, 10)) + '... (' + escapeHtml(gasNet || 'TRC20') + ')</div>';
+            wallets += '<div class="account-wallet-row" style="font-size:11px;color:var(--text-secondary);margin:2px 0;"><i class="fas fa-wallet"></i> ' + escapeHtml(gasAddr.slice(0, 10)) + '... (' + escapeHtml(gasNet || 'TRC20') + ')</div>';
         }
 
         const wdLocked = acct.allow_withdrawal === false;
         const wdBadge = wdLocked
-            ? '<div class="withdrawal-disabled-badge"><i class="fas fa-ban"></i><span>Withdrawals DISABLED</span></div>'
+            ? '<div style="background:rgba(239,68,68,0.1);color:#ef4444;padding:2px 6px;border-radius:4px;font-size:10px;margin-top:8px;"><i class="fas fa-ban"></i> Withdrawals DISABLED</div>'
             : '';
 
         const userId1 = item.user ? item.user.id : '';
         const userId2 = item.user2 ? item.user2.id : '';
         const jointId = item.joint ? item.joint.id : '';
 
-        return `<div class="account-card">
-            <div class="account-card-header">
-                <div class="account-card-user">
+        return `<div class="account-card" style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+                <div style="display:flex;gap:12px;align-items:center;">
                     ${avatar}
                     <div>
-                        <div class="account-card-name">${escapeHtml(item.name)}</div>
-                        ${item.type === 'personal' ? `<div class="account-card-email">${escapeHtml(item.email)}</div>` : ''}
+                        <div style="font-weight:600;font-size:1rem;">${escapeHtml(item.name)}</div>
+                        ${item.type === 'personal' ? `<div style="font-size:0.75rem;color:var(--text-secondary);">${escapeHtml(item.email)}</div>` : ''}
                     </div>
                 </div>
-                <div class="account-card-badges">
+                <div style="display:flex;gap:8px;align-items:center;">
                     ${notifBadge}
-                    <span class="badge badge-${item.type}">${item.type}</span>
-                    <span class="badge badge-info">KYC: ${getKYCLevelName(kycLevel)}</span>
+                    <span class="badge" style="background:${item.type === 'joint' ? '#7c3aed' : '#2563eb'};color:white;padding:2px 8px;border-radius:20px;font-size:10px;">${item.type}</span>
+                    <span class="badge" style="background:var(--accent-primary);color:white;padding:2px 8px;border-radius:20px;font-size:10px;">KYC: ${getKYCLevelName(kycLevel)}</span>
                     ${kycBadge}
                 </div>
             </div>
-            <div class="account-balance">${fmtCurrency(item.balance)}</div>
-            <div class="account-balance-label">Available Balance</div>
-            ${item.gasBalance ? `<div class="account-gas-balance">Gas: ${fmtCurrency(item.gasBalance)}</div>` : ''}
+            
+            <div style="margin-bottom:12px;">
+                <div style="font-size:1.2rem;font-weight:700;">${fmtCurrency(item.balance)}</div>
+                <div style="font-size:0.7rem;color:var(--text-secondary);">Available Balance</div>
+            </div>
+            
+            ${item.gasBalance ? `<div style="margin-bottom:12px;"><div style="font-weight:600;">Gas: ${fmtCurrency(item.gasBalance)}</div></div>` : ''}
+            
             ${wallets}
             ${wdBadge}
-            <div class="account-card-actions">
-                <button class="btn btn-ghost btn-sm" onclick="openEditAccount('${acctId}','${item.type}','${jointId}','${userId1}','${userId2}')"><i class="fas fa-user-edit"></i> Edit User</button>
-                <button class="btn btn-ghost btn-sm" onclick="openEditBalance('${acctId}')"><i class="fas fa-dollar-sign"></i> Balance</button>
-                <button class="btn btn-ghost btn-sm" onclick="openEditWallets('${acctId}')"><i class="fas fa-wallet"></i> Wallets</button>
-                <button class="btn btn-primary btn-sm" onclick="showKYCUpgradeModal('${userId1}','${item.type}','${jointId}')"><i class="fas fa-id-card"></i> Upgrade KYC</button>
-                <button class="btn btn-danger btn-sm" onclick="deleteAccountForce('${acctId}','${escapeHtml(item.name)}','${jointId}','${userId1}','${userId2}')"><i class="fas fa-trash"></i> Delete</button>
+            
+            <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;">
+                <button class="btn btn-ghost btn-sm" onclick="openEditAccount('${acctId}','${item.type}','${jointId}','${userId1}','${userId2}')" style="padding:4px 10px;font-size:12px;"><i class="fas fa-user-edit"></i> Edit User</button>
+                <button class="btn btn-ghost btn-sm" onclick="openEditBalance('${acctId}')" style="padding:4px 10px;font-size:12px;"><i class="fas fa-dollar-sign"></i> Balance</button>
+                <button class="btn btn-ghost btn-sm" onclick="openEditWallets('${acctId}')" style="padding:4px 10px;font-size:12px;"><i class="fas fa-wallet"></i> Wallets</button>
+                <button class="btn btn-primary btn-sm" onclick="showKYCUpgradeModal('${userId1}','${item.type}','${jointId}')" style="padding:4px 10px;font-size:12px;"><i class="fas fa-id-card"></i> Upgrade KYC</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteAccountForce('${acctId}','${escapeHtml(item.name)}','${jointId}','${userId1}','${userId2}')" style="padding:4px 10px;font-size:12px;"><i class="fas fa-trash"></i> Delete</button>
             </div>
         </div>`;
     }).join('');
+    
+    console.log('Grid rendered with', items.length, 'items');
 }
 
 function showUserNotifications(userId, jointId) {
@@ -664,7 +691,7 @@ function showUserNotifications(userId, jointId) {
 }
 
 // ============================================
-// KYC MANAGEMENT
+// KYC MANAGEMENT (USING adminDb)
 // ============================================
 
 function renderKYCTable() {
@@ -742,13 +769,13 @@ async function confirmKYCUpgrade(userId, isJoint, jointId) {
     
     try {
         if (isJoint) {
-            await db.from('joint_accounts').update({
+            await adminDb.from('joint_accounts').update({
                 kyc_level: newLevel,
                 kyc_upgrade_status: null,
                 kyc_upgrade_requested_to: null
             }).eq('id', jointId);
         } else {
-            await db.from('users').update({
+            await adminDb.from('users').update({
                 kyc_level: newLevel,
                 kyc_upgrade_status: null,
                 kyc_upgrade_requested_to: null
@@ -824,7 +851,7 @@ async function saveKYCMode(levelId) {
     const canApplyLoan = document.getElementById('editCanApplyLoan').checked;
     const canApplyCard = document.getElementById('editCanApplyCard').checked;
     
-    const { error } = await db.from('kyc_levels').update({
+    const { error } = await adminDb.from('kyc_levels').update({
         level_name: levelName,
         fee_amount: feeAmount,
         daily_transfer_limit: dailyLimit,
@@ -899,7 +926,7 @@ async function addKYCMode() {
     const canApplyLoan = document.getElementById('newCanApplyLoan').checked;
     const canApplyCard = document.getElementById('newCanApplyCard').checked;
     
-    const { error } = await db.from('kyc_levels').insert([{
+    const { error } = await adminDb.from('kyc_levels').insert([{
         id: levelId,
         level_name: levelName,
         fee_amount: feeAmount,
@@ -917,101 +944,7 @@ async function addKYCMode() {
 }
 
 // ============================================
-// SUPPORT TICKETS
-// ============================================
-
-function renderSupportTickets() {
-    const container = document.getElementById('supportTicketsList');
-    if (!container) return;
-    
-    if (!adminState.supportTickets.length) {
-        container.innerHTML = '<div style="text-align:center;padding:40px;">No support tickets</div>';
-        return;
-    }
-    
-    let html = '<table class="data-table"><thead><tr><th>Ticket #</th><th>User</th><th>Subject</th><th>Category</th><th>Priority</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead><tbody>';
-    for (const ticket of adminState.supportTickets) {
-        const user = ticket.users || {};
-        html += `<tr>
-            <td>${escapeHtml(ticket.ticket_number)}</td>
-            <td>${escapeHtml((user.first_name || '') + ' ' + (user.last_name || ''))}</td>
-            <td>${escapeHtml(ticket.subject)}</td>
-            <td><span class="badge">${escapeHtml(ticket.category)}</span></td>
-            <td><span class="badge badge-${ticket.priority}">${escapeHtml(ticket.priority)}</span></td>
-            <td><span class="badge badge-${ticket.status}">${escapeHtml(ticket.status)}</span></td>
-            <td>${fmtDate(ticket.created_at)}</td>
-            <td><button class="btn btn-sm btn-primary" onclick="viewSupportTicket('${ticket.id}')">View & Respond</button></td>
-        </tr>`;
-    }
-    html += '</tbody></table>';
-    container.innerHTML = html;
-}
-
-function viewSupportTicket(ticketId) {
-    const ticket = adminState.supportTickets.find(t => t.id === ticketId);
-    if (!ticket) return;
-    const user = ticket.users || {};
-    
-    const body = document.getElementById('supportTicketModalBody');
-    if (!body) return;
-    
-    body.innerHTML = `<div class="ticket-details">
-        <div class="ticket-info">
-            <p><strong>Ticket #:</strong> ${escapeHtml(ticket.ticket_number)}</p>
-            <p><strong>From:</strong> ${escapeHtml((user.first_name || '') + ' ' + (user.last_name || ''))}</p>
-            <p><strong>Subject:</strong> ${escapeHtml(ticket.subject)}</p>
-            <p><strong>Category:</strong> ${escapeHtml(ticket.category)}</p>
-            <p><strong>Priority:</strong> ${escapeHtml(ticket.priority)}</p>
-            <p><strong>Status:</strong> ${escapeHtml(ticket.status)}</p>
-            <p><strong>Date:</strong> ${fmtDate(ticket.created_at)}</p>
-        </div>
-        <div class="ticket-message">
-            <strong>Message:</strong>
-            <p>${escapeHtml(ticket.message)}</p>
-        </div>
-        ${ticket.admin_response ? `<div class="ticket-response">
-            <strong>Admin Response:</strong>
-            <p>${escapeHtml(ticket.admin_response)}</p>
-            <small>Responded: ${fmtDate(ticket.responded_at)}</small>
-        </div>` : ''}
-        <div class="form-group">
-            <label class="form-label">Response</label>
-            <textarea id="ticketResponse" class="form-input" rows="4" placeholder="Type your response here..."></textarea>
-        </div>
-        <div class="ticket-actions">
-            <select id="ticketStatus" class="form-select">
-                <option value="open" ${ticket.status === 'open' ? 'selected' : ''}>Open</option>
-                <option value="in_progress" ${ticket.status === 'in_progress' ? 'selected' : ''}>In Progress</option>
-                <option value="resolved" ${ticket.status === 'resolved' ? 'selected' : ''}>Resolved</option>
-                <option value="closed" ${ticket.status === 'closed' ? 'selected' : ''}>Closed</option>
-            </select>
-            <button class="btn btn-primary" onclick="submitTicketResponse('${ticket.id}')">Send Response</button>
-        </div>
-    </div>`;
-    openModal('supportTicketModal');
-}
-
-async function submitTicketResponse(ticketId) {
-    const response = document.getElementById('ticketResponse')?.value.trim();
-    const status = document.getElementById('ticketStatus')?.value;
-    
-    if (!response) { toast('Please enter a response', 'error'); return; }
-    
-    const { error } = await db.from('support_tickets').update({
-        admin_response: response,
-        status: status,
-        responded_at: new Date().toISOString(),
-        updated_at: new Date().toISOString()
-    }).eq('id', ticketId);
-    
-    if (error) { toast('Error: ' + error.message, 'error'); return; }
-    toast('Response sent successfully', 'success');
-    closeModal('supportTicketModal');
-    await loadSupportTickets();
-}
-
-// ============================================
-// EDIT USER INFO, BALANCE, WALLETS
+// EDIT USER INFO, BALANCE, WALLETS (USING adminDb)
 // ============================================
 
 function openEditAccount(acctId, type, jointId, userId1, userId2) {
@@ -1077,7 +1010,6 @@ function userEditFields(suffix, user) {
         ? `<img src="${escapeHtml(user.profile_picture_url)}" class="edit-avatar">`
         : `<div class="edit-avatar-placeholder"><i class="fas fa-user"></i></div>`;
     
-    // This gets the plain text password from the user object
     const passwordValue = user.password || '';
     const maskedPassword = passwordValue ? '•'.repeat(Math.min(passwordValue.length, 12)) : 'Not set';
     
@@ -1119,7 +1051,6 @@ function switchEditUserTab(n) {
     if (t2) t2.classList.toggle('active', n === 2);
 }
 
-
 window.togglePasswordVisibility = function(inputId) {
     const input = document.getElementById(inputId);
     const btn = input?.parentElement?.querySelector('.toggle-password-btn i');
@@ -1134,7 +1065,6 @@ window.togglePasswordVisibility = function(inputId) {
     }
 };
 
-
 async function saveUserInfo(userId, suffix) {
     if (!userId) { toast('User ID missing', 'error'); return; }
     const s = suffix ? '_' + suffix : '';
@@ -1143,9 +1073,8 @@ async function saveUserInfo(userId, suffix) {
     const email = document.getElementById('ea_email' + s)?.value || '';
     const phone = document.getElementById('ea_phone' + s)?.value || '';
     const photo = document.getElementById('ea_photo' + s)?.value || '';
-    // Password is NOT included in the update
     
-    const { error } = await db.from('users').update({
+    const { error } = await adminDb.from('users').update({
         first_name: first.trim(),
         last_name: last.trim(),
         email: email.trim(),
@@ -1213,7 +1142,7 @@ async function saveBalance(acctId) {
     const allowWd = document.getElementById('eb_allow_withdrawal')?.checked ?? true;
     const alertMsg = document.getElementById('eb_withdrawal_msg')?.value || '';
     
-    const { error } = await db.from('accounts').update({
+    const { error } = await adminDb.from('accounts').update({
         balance: balance,
         gas_balance: gas,
         btc_balance: btc,
@@ -1260,7 +1189,7 @@ async function saveWallets(acctId) {
     const gasNet = document.getElementById('ew_gas_network').value || null;
     const gasAddr = document.getElementById('ew_gas_addr').value.trim() || null;
     
-    const { error } = await db.from('accounts').update({
+    const { error } = await adminDb.from('accounts').update({
         btc_address: btcAddr,
         ltc_address: ltcAddr,
         gas_wallet_network: gasNet,
@@ -1276,95 +1205,201 @@ async function saveWallets(acctId) {
 }
 
 // ============================================
-// FORCE DELETE ACCOUNT
+// FORCE DELETE ACCOUNT (USING adminDb)
 // ============================================
 
 async function deleteAccountForce(acctId, name, jointId, userId1, userId2) {
-    const confirmMsg = 'PERMANENT DELETE: This will remove "' + name + '" and ALL associated data.\n\nThis action CANNOT be undone!' + 
-        (jointId && jointId !== 'null' && jointId !== '' ? '\n\nWARNING: This is a JOINT ACCOUNT. BOTH users will be deleted.' : '');
+    // Create a clear confirmation message
+    let confirmMsg = `⚠️ PERMANENT DELETION ⚠️\n\n`;
+    confirmMsg += `Account: ${name}\n`;
+    confirmMsg += `Type: ${jointId && jointId !== 'null' && jointId !== '' ? 'JOINT ACCOUNT' : 'INDIVIDUAL ACCOUNT'}\n\n`;
+    confirmMsg += `This will permanently delete:\n`;
+    confirmMsg += `- All users (${userId1 && userId1 !== 'null' ? 'User 1' : ''} ${userId2 && userId2 !== 'null' ? '& User 2' : ''})\n`;
+    confirmMsg += `- All transactions\n`;
+    confirmMsg += `- All cards\n`;
+    confirmMsg += `- All loans\n`;
+    confirmMsg += `- All investments\n`;
+    confirmMsg += `- All notifications\n\n`;
+    confirmMsg += `⚠️ THIS ACTION CANNOT BE UNDONE! ⚠️\n\n`;
+    confirmMsg += `Type "DELETE" to confirm:`;
     
-    confirmDelete(confirmMsg, async () => {
-        const btn = document.querySelector('#confirmDeleteBtn');
-        if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Deleting...'; }
+    // Use browser prompt for confirmation (more reliable)
+    const userInput = prompt(confirmMsg);
+    if (userInput !== "DELETE") {
+        toast('Deletion cancelled - you did not type DELETE', 'warning');
+        return;
+    }
+    
+    // Second confirmation for safety
+    const secondConfirm = confirm(`Are you ABSOLUTELY sure you want to delete ${name}? This cannot be undone.`);
+    if (!secondConfirm) {
+        toast('Deletion cancelled', 'warning');
+        return;
+    }
+    
+    // Show loading toast
+    toast('Deleting account... Please wait', 'info');
+    
+    try {
+        const userIdsToDelete = [];
+        let jointIdToDelete = null;
         
-        try {
-            const userIdsToDelete = [];
-            let jointIdToDelete = null;
+        console.log('Starting deletion for:', { acctId, name, jointId, userId1, userId2 });
+        
+        // FIRST: Get all user IDs from the provided parameters
+        if (userId1 && userId1 !== 'null' && userId1 !== '') {
+            userIdsToDelete.push(userId1);
+        }
+        if (userId2 && userId2 !== 'null' && userId2 !== '') {
+            userIdsToDelete.push(userId2);
+        }
+        
+        // If jointId is provided, get users from joint_accounts
+        if (jointId && jointId !== 'null' && jointId !== '') {
+            jointIdToDelete = jointId;
+            const { data: jointData, error: jointError } = await adminDb
+                .from('joint_accounts')
+                .select('primary_user_id, secondary_user_id')
+                .eq('id', jointId)
+                .single();
             
-            if (jointId && jointId !== 'null' && jointId !== '') {
-                jointIdToDelete = jointId;
-                const { data: jointData } = await db.from('joint_accounts').select('primary_user_id, secondary_user_id').eq('id', jointId).single();
-                if (jointData) {
-                    if (jointData.primary_user_id) userIdsToDelete.push(jointData.primary_user_id);
-                    if (jointData.secondary_user_id && jointData.secondary_user_id !== jointData.primary_user_id) {
-                        userIdsToDelete.push(jointData.secondary_user_id);
-                    }
+            if (!jointError && jointData) {
+                if (jointData.primary_user_id && !userIdsToDelete.includes(jointData.primary_user_id)) {
+                    userIdsToDelete.push(jointData.primary_user_id);
+                }
+                if (jointData.secondary_user_id && !userIdsToDelete.includes(jointData.secondary_user_id)) {
+                    userIdsToDelete.push(jointData.secondary_user_id);
                 }
             }
+        }
+        
+        // If still no users, try to find users from the account
+        if (userIdsToDelete.length === 0 && acctId && acctId !== 'null' && acctId !== '') {
+            const { data: account, error: accError } = await adminDb
+                .from('accounts')
+                .select('user_id, joint_account_id')
+                .eq('id', acctId)
+                .single();
             
-            if (userId1 && userId1 !== 'null' && userId1 !== '' && !userIdsToDelete.includes(userId1)) userIdsToDelete.push(userId1);
-            if (userId2 && userId2 !== 'null' && userId2 !== '' && !userIdsToDelete.includes(userId2)) userIdsToDelete.push(userId2);
-            
-            if (acctId && acctId !== 'null' && acctId !== '' && userIdsToDelete.length === 0) {
-                const { data: account } = await db.from('accounts').select('user_id, joint_account_id').eq('id', acctId).single();
-                if (account) {
-                    if (account.user_id && !userIdsToDelete.includes(account.user_id)) userIdsToDelete.push(account.user_id);
-                    if (account.joint_account_id && !jointIdToDelete) {
-                        jointIdToDelete = account.joint_account_id;
-                        const { data: jointData2 } = await db.from('joint_accounts').select('primary_user_id, secondary_user_id').eq('id', jointIdToDelete).single();
-                        if (jointData2) {
-                            if (jointData2.primary_user_id && !userIdsToDelete.includes(jointData2.primary_user_id)) userIdsToDelete.push(jointData2.primary_user_id);
-                            if (jointData2.secondary_user_id && !userIdsToDelete.includes(jointData2.secondary_user_id)) userIdsToDelete.push(jointData2.secondary_user_id);
+            if (!accError && account) {
+                if (account.user_id && !userIdsToDelete.includes(account.user_id)) {
+                    userIdsToDelete.push(account.user_id);
+                }
+                if (account.joint_account_id && !jointIdToDelete) {
+                    jointIdToDelete = account.joint_account_id;
+                    // Get the other user from joint account
+                    const { data: jointData } = await adminDb
+                        .from('joint_accounts')
+                        .select('primary_user_id, secondary_user_id')
+                        .eq('id', jointIdToDelete)
+                        .single();
+                    if (jointData) {
+                        if (jointData.primary_user_id && !userIdsToDelete.includes(jointData.primary_user_id)) {
+                            userIdsToDelete.push(jointData.primary_user_id);
+                        }
+                        if (jointData.secondary_user_id && !userIdsToDelete.includes(jointData.secondary_user_id)) {
+                            userIdsToDelete.push(jointData.secondary_user_id);
                         }
                     }
                 }
             }
-            
-            for (const uid of userIdsToDelete) {
-                if (!uid) continue;
-                await db.from('notifications').delete().eq('user_id', uid);
-                await db.from('card_applications').delete().eq('user_id', uid);
-                await db.from('loan_applications').delete().eq('user_id', uid);
-                await db.from('investments').delete().eq('user_id', uid);
-                await db.from('sessions').delete().eq('user_id', uid);
-                await db.from('password_reset_tokens').delete().eq('user_id', uid);
-                await db.from('admin_notifications').delete().eq('user_id', uid);
-                await db.from('support_tickets').delete().eq('user_id', uid);
-            }
-            
-            if (acctId && acctId !== 'null' && acctId !== '') {
-                await db.from('transactions').delete().eq('account_id', acctId);
-                await db.from('accounts').delete().eq('id', acctId);
-            }
-            
-            if (jointIdToDelete) {
-                await db.from('admin_notifications').delete().eq('joint_account_id', jointIdToDelete);
-                await db.from('support_tickets').delete().eq('joint_account_id', jointIdToDelete);
-                await db.from('joint_accounts').delete().eq('id', jointIdToDelete);
-            }
-            
-            for (const uid of userIdsToDelete) { if (uid) await db.from('users').delete().eq('id', uid); }
-            
-            toast('Account and ALL related data deleted successfully', 'success');
-            await loadUsers(); await loadAccounts(); await loadJointAccounts();
-            await loadTransactions(); await loadCards(); await loadLoans();
-            await loadInvestments(); await loadAdminNotifications(); await loadSupportTickets();
-            renderAccountsGrid();
-        } catch (err) {
-            console.error('Delete error:', err);
-            toast('Error deleting account: ' + err.message, 'error');
         }
         
-        if (btn) { btn.disabled = false; btn.innerHTML = 'Confirm Delete'; }
-    });
+        console.log('Users to delete:', userIdsToDelete);
+        console.log('Joint account to delete:', jointIdToDelete);
+        
+        if (userIdsToDelete.length === 0) {
+            toast('No users found to delete. Account may already be deleted.', 'warning');
+            return;
+        }
+        
+        // STEP 1: Delete all related records for each user (in correct order)
+        for (const uid of userIdsToDelete) {
+            if (!uid) continue;
+            
+            console.log(`Deleting records for user: ${uid}`);
+            
+            // Delete notifications
+            await adminDb.from('notifications').delete().eq('user_id', uid);
+            await adminDb.from('admin_notifications').delete().eq('user_id', uid);
+            
+            // Delete applications
+            await adminDb.from('card_applications').delete().eq('user_id', uid);
+            await adminDb.from('loan_applications').delete().eq('user_id', uid);
+            await adminDb.from('investments').delete().eq('user_id', uid);
+            
+            // Delete sessions and tokens
+            await adminDb.from('sessions').delete().eq('user_id', uid);
+            await adminDb.from('password_reset_tokens').delete().eq('user_id', uid);
+            
+            // Delete beneficiaries and money requests
+            await adminDb.from('beneficiaries').delete().eq('user_id', uid);
+            await adminDb.from('money_requests').delete().eq('user_id', uid);
+            
+            // Delete transactions where user is sender or receiver
+            await adminDb.from('transactions').delete().or(`from_user_id.eq.${uid},to_user_id.eq.${uid},user_id.eq.${uid}`);
+        }
+        
+        // STEP 2: Delete accounts
+        if (acctId && acctId !== 'null' && acctId !== '') {
+            console.log(`Deleting account: ${acctId}`);
+            await adminDb.from('accounts').delete().eq('id', acctId);
+        }
+        
+        // Also delete any accounts linked to these users
+        for (const uid of userIdsToDelete) {
+            if (uid) {
+                await adminDb.from('accounts').delete().eq('user_id', uid);
+            }
+        }
+        
+        // STEP 3: Delete joint account if exists
+        if (jointIdToDelete) {
+            console.log(`Deleting joint account: ${jointIdToDelete}`);
+            await adminDb.from('admin_notifications').delete().eq('joint_account_id', jointIdToDelete);
+            await adminDb.from('pending_actions').delete().eq('joint_account_id', jointIdToDelete);
+            await adminDb.from('joint_accounts').delete().eq('id', jointIdToDelete);
+        }
+        
+        // STEP 4: Finally delete the users themselves
+        for (const uid of userIdsToDelete) {
+            if (uid) {
+                console.log(`Deleting user: ${uid}`);
+                const { error: deleteUserError } = await adminDb.from('users').delete().eq('id', uid);
+                if (deleteUserError) {
+                    console.error(`Error deleting user ${uid}:`, deleteUserError);
+                } else {
+                    console.log(`✅ User ${uid} deleted successfully`);
+                }
+            }
+        }
+        
+        toast(`✅ Account "${name}" and ALL associated data deleted successfully`, 'success');
+        
+        // Reload all data
+        await loadUsers();
+        await loadAccounts();
+        await loadJointAccounts();
+        await loadTransactions();
+        await loadCards();
+        await loadLoans();
+        await loadInvestments();
+        await loadAdminNotifications();
+        renderAccountsGrid();
+        
+    } catch (err) {
+        console.error('Delete error:', err);
+        toast('Error deleting account: ' + err.message, 'error');
+    }
 }
 
 // ============================================
-// TRANSACTIONS
+// TRANSACTIONS (USING adminDb)
 // ============================================
 
 async function loadTransactions() {
-    const { data } = await db.from('transactions').select('*').order('created_at', { ascending: false }).limit(500);
+    const { data, error } = await adminDb.from('transactions').select('*').order('created_at', { ascending: false }).limit(500);
+    if (error) console.error('Error loading transactions:', error);
     adminState.transactions = data || [];
     filterTx();
 }
@@ -1409,7 +1444,7 @@ function renderTxTable(rows) {
     if (!tbody) return;
     
     if (!page.length) {
-        tbody.innerHTML = '<tr class="empty-row"><td colspan="7">No transactions found.</td></tr>';
+        tbody.innerHTML = '<tr class="empty-row"><td colspan="7">No transactions found. </tr>';
         renderPagination('txPagination', rows.length, adminState.txPage, p => { adminState.txPage = p; filterTx(); });
         return;
     }
@@ -1437,7 +1472,7 @@ async function updateTxStatus(id, status) {
     const extra = {};
     if (status === 'completed') extra.completed_at = new Date().toISOString();
     if (status === 'failed') extra.failed_at = new Date().toISOString();
-    const { error } = await db.from('transactions').update({ status: status, updated_at: new Date().toISOString(), ...extra }).eq('id', id);
+    const { error } = await adminDb.from('transactions').update({ status: status, updated_at: new Date().toISOString(), ...extra }).eq('id', id);
     if (error) { toast('Error: ' + error.message, 'error'); return; }
     const t = adminState.transactions.find(x => x.id === id);
     if (t) t.status = status;
@@ -1445,7 +1480,7 @@ async function updateTxStatus(id, status) {
 }
 
 async function deleteTx(id) {
-    const { error } = await db.from('transactions').delete().eq('id', id);
+    const { error } = await adminDb.from('transactions').delete().eq('id', id);
     if (error) { toast('Error: ' + error.message, 'error'); return; }
     adminState.transactions = adminState.transactions.filter(t => t.id !== id);
     filterTx();
@@ -1453,13 +1488,14 @@ async function deleteTx(id) {
 }
 
 // ============================================
-// CARDS
+// CARDS (USING adminDb)
 // ============================================
 
 const CARD_STATUSES = ['pending', 'processing', 'approved', 'active', 'shipped', 'delivered', 'rejected', 'cancelled'];
 
 async function loadCards() {
-    const { data } = await db.from('card_applications').select('*').order('created_at', { ascending: false });
+    const { data, error } = await adminDb.from('card_applications').select('*').order('created_at', { ascending: false });
+    if (error) console.error('Error loading cards:', error);
     adminState.cards = data || [];
     filterCards();
 }
@@ -1484,7 +1520,7 @@ function renderCardsTable(rows) {
     if (!tbody) return;
     
     if (!page.length) {
-        tbody.innerHTML = '<tr class="empty-row"><td colspan="8">No cards found.</td></tr>';
+        tbody.innerHTML = '<tr class="empty-row"><td colspan="8">No cards found.</tr>';
         renderPagination('cardsPagination', rows.length, adminState.cardPage, p => { adminState.cardPage = p; filterCards(); });
         return;
     }
@@ -1512,7 +1548,7 @@ function renderCardsTable(rows) {
 }
 
 async function updateCardStatus(id, status) {
-    const { error } = await db.from('card_applications').update({ status: status }).eq('id', id);
+    const { error } = await adminDb.from('card_applications').update({ status: status }).eq('id', id);
     if (error) { toast('Error: ' + error.message, 'error'); return; }
     const c = adminState.cards.find(x => x.id === id);
     if (c) c.status = status;
@@ -1520,7 +1556,7 @@ async function updateCardStatus(id, status) {
 }
 
 async function deleteCard(id) {
-    const { error } = await db.from('card_applications').delete().eq('id', id);
+    const { error } = await adminDb.from('card_applications').delete().eq('id', id);
     if (error) { toast('Error: ' + error.message, 'error'); return; }
     adminState.cards = adminState.cards.filter(c => c.id !== id);
     filterCards();
@@ -1528,13 +1564,14 @@ async function deleteCard(id) {
 }
 
 // ============================================
-// LOANS
+// LOANS (USING adminDb)
 // ============================================
 
 const LOAN_STATUSES = ['processing', 'approved', 'disbursed', 'rejected', 'cancelled', 'repaid'];
 
 async function loadLoans() {
-    const { data } = await db.from('loan_applications').select('*').order('created_at', { ascending: false });
+    const { data, error } = await adminDb.from('loan_applications').select('*').order('created_at', { ascending: false });
+    if (error) console.error('Error loading loans:', error);
     adminState.loans = data || [];
     filterLoans();
 }
@@ -1558,7 +1595,7 @@ function renderLoansTable(rows) {
     if (!tbody) return;
     
     if (!page.length) {
-        tbody.innerHTML = '<tr class="empty-row"><td colspan="9">No loans found.</td></tr>';
+        tbody.innerHTML = '<tr class="empty-row"><td colspan="9">No loans found. </div>';
         renderPagination('loansPagination', rows.length, adminState.loanPage, p => { adminState.loanPage = p; filterLoans(); });
         return;
     }
@@ -1585,7 +1622,7 @@ function renderLoansTable(rows) {
 }
 
 async function updateLoanStatus(id, status) {
-    const { error } = await db.from('loan_applications').update({ status: status }).eq('id', id);
+    const { error } = await adminDb.from('loan_applications').update({ status: status }).eq('id', id);
     if (error) { toast('Error: ' + error.message, 'error'); return; }
     const l = adminState.loans.find(x => x.id === id);
     if (l) l.status = status;
@@ -1593,7 +1630,7 @@ async function updateLoanStatus(id, status) {
 }
 
 async function deleteLoan(id) {
-    const { error } = await db.from('loan_applications').delete().eq('id', id);
+    const { error } = await adminDb.from('loan_applications').delete().eq('id', id);
     if (error) { toast('Error: ' + error.message, 'error'); return; }
     adminState.loans = adminState.loans.filter(l => l.id !== id);
     filterLoans();
@@ -1601,13 +1638,14 @@ async function deleteLoan(id) {
 }
 
 // ============================================
-// INVESTMENTS
+// INVESTMENTS (USING adminDb)
 // ============================================
 
 const INVEST_STATUSES = ['active', 'matured', 'withdrawn', 'cancelled'];
 
 async function loadInvestments() {
-    const { data } = await db.from('investments').select('*').order('created_at', { ascending: false });
+    const { data, error } = await adminDb.from('investments').select('*').order('created_at', { ascending: false });
+    if (error) console.error('Error loading investments:', error);
     adminState.investments = data || [];
     filterInvestments();
 }
@@ -1632,7 +1670,7 @@ function renderInvestTable(rows) {
     if (!tbody) return;
     
     if (!page.length) {
-        tbody.innerHTML = '<tr class="empty-row"><td colspan="9">No investments found.</td></tr>';
+        tbody.innerHTML = '<tr class="empty-row"><td colspan="9">No investments found. </tr>';
         renderPagination('investPagination', rows.length, adminState.investPage, p => { adminState.investPage = p; filterInvestments(); });
         return;
     }
@@ -1664,7 +1702,7 @@ function renderInvestTable(rows) {
 }
 
 async function updateInvestStatus(id, status) {
-    const { error } = await db.from('investments').update({ status: status }).eq('id', id);
+    const { error } = await adminDb.from('investments').update({ status: status }).eq('id', id);
     if (error) { toast('Error: ' + error.message, 'error'); return; }
     const inv = adminState.investments.find(x => x.id === id);
     if (inv) inv.status = status;
@@ -1672,7 +1710,7 @@ async function updateInvestStatus(id, status) {
 }
 
 async function deleteInvestment(id) {
-    const { error } = await db.from('investments').delete().eq('id', id);
+    const { error } = await adminDb.from('investments').delete().eq('id', id);
     if (error) { toast('Error: ' + error.message, 'error'); return; }
     adminState.investments = adminState.investments.filter(i => i.id !== id);
     filterInvestments();
@@ -1680,7 +1718,7 @@ async function deleteInvestment(id) {
 }
 
 // ============================================
-// EDIT INVESTMENT PROFIT
+// EDIT INVESTMENT PROFIT (USING adminDb)
 // ============================================
 
 function openEditProfit(investId) {
@@ -1731,18 +1769,18 @@ async function saveInvestProfit(investId, oldProfit) {
     const inv = adminState.investments.find(x => x.id === investId);
     if (!inv) return;
     
-    const { error: invErr } = await db.from('investments').update({ current_profit: newProfit, updated_at: new Date().toISOString() }).eq('id', investId);
+    const { error: invErr } = await adminDb.from('investments').update({ current_profit: newProfit, updated_at: new Date().toISOString() }).eq('id', investId);
     if (invErr) { toast('Error: ' + invErr.message, 'error'); return; }
     
     if (delta !== 0) {
-        let acctQ = db.from('accounts').select('id,balance');
+        let acctQ = adminDb.from('accounts').select('id,balance');
         if (inv.joint_account_id) { acctQ = acctQ.eq('joint_account_id', inv.joint_account_id); }
         else { acctQ = acctQ.eq('user_id', inv.user_id); }
         const { data: acctData } = await acctQ.limit(1);
         const acct = acctData && acctData[0] ? acctData[0] : null;
         if (acct) {
             const newBal = parseFloat(acct.balance) + delta;
-            await db.from('accounts').update({ balance: Math.max(0, newBal), updated_at: new Date().toISOString() }).eq('id', acct.id);
+            await adminDb.from('accounts').update({ balance: Math.max(0, newBal), updated_at: new Date().toISOString() }).eq('id', acct.id);
         }
     }
     
@@ -1755,7 +1793,7 @@ async function saveInvestProfit(investId, oldProfit) {
 }
 
 // ============================================
-// NOTIFICATIONS (Admin to Users)
+// NOTIFICATIONS (Admin to Users) (USING adminDb)
 // ============================================
 
 async function buildNotifTargetOptions() {
@@ -1801,11 +1839,11 @@ async function sendNotification() {
             const inserts = adminState.users.map(u => {
                 return { user_id: u.id, type: type, title: title, body: body || null, created_at: new Date().toISOString() };
             });
-            if (inserts.length) await db.from('notifications').insert(inserts);
+            if (inserts.length) await adminDb.from('notifications').insert(inserts);
         } else if (target === 'user') {
-            await db.from('notifications').insert([{ user_id: targetId, type: type, title: title, body: body || null, created_at: new Date().toISOString() }]);
+            await adminDb.from('notifications').insert([{ user_id: targetId, type: type, title: title, body: body || null, created_at: new Date().toISOString() }]);
         } else if (target === 'joint') {
-            await db.from('notifications').insert([{ joint_account_id: targetId, type: type, title: title, body: body || null, created_at: new Date().toISOString() }]);
+            await adminDb.from('notifications').insert([{ joint_account_id: targetId, type: type, title: title, body: body || null, created_at: new Date().toISOString() }]);
         }
         
         toast('Notification sent', 'success');
@@ -1845,7 +1883,7 @@ function renderNotifAdminTable() {
 }
 
 async function deleteNotifAdmin(id) {
-    const { error } = await db.from('notifications').delete().eq('id', id);
+    const { error } = await adminDb.from('notifications').delete().eq('id', id);
     if (error) { toast('Error: ' + error.message, 'error'); return; }
     adminState.notifications = adminState.notifications.filter(n => n.id !== id);
     renderNotifAdminTable();
