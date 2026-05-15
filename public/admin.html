@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summit Trust — Admin Panel</title>
+    
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:title" content="Summit Trust Bank">
+    <meta property="og:description" content="Banking that works for everyone.">
+    <meta property="og:image" content="https://res.cloudinary.com/ddvwy00eg/image/upload/v1775748770/OG_j29ilj.png">
+    <meta property="og:url" content="https://summit-trustbank.com">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Summit Trust Bank">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Summit Trust Bank">
+    <meta name="twitter:description" content="Banking that works for everyone.">
+    <meta name="twitter:image" content="https://res.cloudinary.com/ddvwy00eg/image/upload/v1775748770/OG_j29ilj.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://res.cloudinary.com/ddvwy00eg/image/upload/v1775748769/favicon_klg56g.png">
+    <link rel="apple-touch-icon" href="https://res.cloudinary.com/ddvwy00eg/image/upload/v1775748769/favicon_klg56g.png">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+
+<!-- ── LOGIN ──────────────────────────────── -->
+<div id="loginScreen">
+    <div class="login-card">
+        <div class="login-logo">
+            <h1>Summit Trust Admin</h1>
+            <p>Control Panel — Restricted Access</p>
+        </div>
+        <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" id="adminEmail" class="form-input" placeholder="admin@summit-trust.com">
+        </div>
+        <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" id="adminPassword" class="form-input" placeholder="••••••••"
+                   onkeydown="if(event.key==='Enter') adminLogin()">
+        </div>
+        <button class="btn btn-primary" style="width:100%;margin-top:8px;" id="loginBtn" onclick="adminLogin()">
+            Sign In
+        </button>
+        <p id="loginError" style="color:var(--error);font-size:.8rem;margin-top:10px;display:none;"></p>
+    </div>
+</div>
+
+<!-- ── SHELL ──────────────────────────────── -->
+<div id="adminShell">
+
+    <!-- Topbar -->
+    <div class="topbar">
+        <span class="topbar-brand">⚡ Summit Trust Admin</span>
+        <div class="topbar-right">
+            <span class="topbar-email" id="adminEmailDisplay"></span>
+            <button class="btn btn-ghost btn-sm" onclick="adminLogout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('accounts',this)"><i class="fas fa-users"></i> Accounts</button>
+        <button class="tab-btn" onclick="switchTab('transactions',this)"><i class="fas fa-exchange-alt"></i> Transactions</button>
+        <button class="tab-btn" onclick="switchTab('cards',this)"><i class="fas fa-credit-card"></i> Cards</button>
+        <button class="tab-btn" onclick="switchTab('loans',this)"><i class="fas fa-hand-holding-usd"></i> Loans</button>
+        <button class="tab-btn" onclick="switchTab('investments',this)"><i class="fas fa-chart-line"></i> Investments</button>
+        <button class="tab-btn" onclick="switchTab('notifications',this)"><i class="fas fa-bell"></i> Notifications</button>
+    </div>
+
+    <!-- ── ACCOUNTS TAB ──────────────────── -->
+    <div id="tab-accounts" class="tab-content active">
+        <div class="panel">
+            <div class="panel-header">
+                <span class="panel-title"><i class="fas fa-users"></i> All Accounts</span>
+                <div class="toolbar">
+                    <input type="text" id="acctSearch" class="search-input" placeholder="Search name, email…" oninput="filterAccounts()">
+                    <select class="filter-select" id="acctTypeFilter" onchange="filterAccounts()">
+                        <option value="">All Types</option>
+                        <option value="personal">Personal</option>
+                        <option value="joint">Joint</option>
+                    </select>
+                    <select class="filter-select" id="acctSortFilter" onchange="filterAccounts()">
+                        <option value="name_asc">Name A→Z</option>
+                        <option value="name_desc">Name Z→A</option>
+                        <option value="balance_desc">Balance ↓</option>
+                        <option value="balance_asc">Balance ↑</option>
+                        <option value="created_desc">Newest</option>
+                        <option value="created_asc">Oldest</option>
+                    </select>
+                    <button class="btn btn-ghost btn-sm" onclick="loadAccounts()"><i class="fas fa-sync"></i></button>
+                </div>
+            </div>
+            <div id="accountsGrid" class="accounts-grid">
+                <div style="padding:40px;text-align:center;color:var(--text2);grid-column:1/-1;">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── TRANSACTIONS TAB ──────────────── -->
+    <div id="tab-transactions" class="tab-content">
+        <div class="panel">
+            <div class="panel-header">
+                <span class="panel-title"><i class="fas fa-exchange-alt"></i> All Transactions</span>
+                <div class="toolbar">
+                    <input type="text" id="txSearch" class="search-input" placeholder="Search description, reference…" oninput="filterTx()">
+                    <select class="filter-select" id="txTypeFilter" onchange="filterTx()">
+                        <option value="">All Types</option>
+                        <option value="send">Send</option>
+                        <option value="receive">Receive</option>
+                        <option value="transfer">Transfer</option>
+                        <option value="card_payment">Card Payment</option>
+                        <option value="loan_disbursement">Loan Disbursement</option>
+                        <option value="investment_deposit">Investment Deposit</option>
+                        <option value="investment_withdrawal">Investment Withdrawal</option>
+                        <option value="crypto_send">Crypto Send</option>
+                        <option value="crypto_receive">Crypto Receive</option>
+                        <option value="fee">Fee</option>
+                        <option value="interest">Interest</option>
+                    </select>
+                    <select class="filter-select" id="txStatusFilter" onchange="filterTx()">
+                        <option value="">All Statuses</option>
+                        <option value="pending">Pending</option>
+                        <option value="processing">Processing</option>
+                        <option value="completed">Completed</option>
+                        <option value="failed">Failed</option>
+                        <option value="rejected">Rejected</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                    <button class="btn btn-ghost btn-sm" onclick="loadTransactions()"><i class="fas fa-sync"></i></button>
+                </div>
+            </div>
+            <div class="data-table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th onclick="sortTx('created_at')">Date <i class="fas fa-sort"></i></th>
+                            <th>User</th>
+                            <th onclick="sortTx('transaction_type')">Type <i class="fas fa-sort"></i></th>
+                            <th onclick="sortTx('amount')">Amount <i class="fas fa-sort"></i></th>
+                            <th>Description</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="txBody">
+                        <tr class="loading-row"><td colspan="7"><div class="spinner"></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="pagination" id="txPagination"></div>
+        </div>
+    </div>
+
+    <!-- ── CARDS TAB ─────────────────────── -->
+    <div id="tab-cards" class="tab-content">
+        <div class="panel">
+            <div class="panel-header">
+                <span class="panel-title"><i class="fas fa-credit-card"></i> Card Applications</span>
+                <div class="toolbar">
+                    <input type="text" id="cardSearch" class="search-input" placeholder="Search holder, network…" oninput="filterCards()">
+                    <select class="filter-select" id="cardStatusFilter" onchange="filterCards()">
+                        <option value="">All Statuses</option>
+                        <option value="pending">Pending</option>
+                        <option value="processing">Processing</option>
+                        <option value="approved">Approved</option>
+                        <option value="active">Active</option>
+                        <option value="shipped">Shipped</option>
+                        <option value="delivered">Delivered</option>
+                        <option value="rejected">Rejected</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                    <button class="btn btn-ghost btn-sm" onclick="loadCards()"><i class="fas fa-sync"></i></button>
+                </div>
+            </div>
+            <div class="data-table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Holder</th>
+                            <th>Network</th>
+                            <th>Type</th>
+                            <th>Wallet</th>
+                            <th>Reference</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cardsBody">
+                        <tr class="loading-row"><td colspan="8"><div class="spinner"></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="pagination" id="cardsPagination"></div>
+        </div>
+    </div>
+
+    <!-- ── LOANS TAB ─────────────────────── -->
+    <div id="tab-loans" class="tab-content">
+        <div class="panel">
+            <div class="panel-header">
+                <span class="panel-title"><i class="fas fa-hand-holding-usd"></i> Loan Applications</span>
+                <div class="toolbar">
+                    <input type="text" id="loanSearch" class="search-input" placeholder="Search purpose, reference…" oninput="filterLoans()">
+                    <select class="filter-select" id="loanStatusFilter" onchange="filterLoans()">
+                        <option value="">All Statuses</option>
+                        <option value="processing">Processing</option>
+                        <option value="approved">Approved</option>
+                        <option value="disbursed">Disbursed</option>
+                        <option value="rejected">Rejected</option>
+                        <option value="cancelled">Cancelled</option>
+                        <option value="repaid">Repaid</option>
+                    </select>
+                    <button class="btn btn-ghost btn-sm" onclick="loadLoans()"><i class="fas fa-sync"></i></button>
+                </div>
+            </div>
+            <div class="data-table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>User</th>
+                            <th>Level</th>
+                            <th>Amount</th>
+                            <th>Total Repayable</th>
+                            <th>Term</th>
+                            <th>Reference</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="loansBody">
+                        <tr class="loading-row"><td colspan="9"><div class="spinner"></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="pagination" id="loansPagination"></div>
+        </div>
+    </div>
+
+    <!-- ── INVESTMENTS TAB ───────────────── -->
+    <div id="tab-investments" class="tab-content">
+        <div class="panel">
+            <div class="panel-header">
+                <span class="panel-title"><i class="fas fa-chart-line"></i> Investments</span>
+                <div class="toolbar">
+                    <input type="text" id="investSearch" class="search-input" placeholder="Search name, plan…" oninput="filterInvestments()">
+                    <select class="filter-select" id="investStatusFilter" onchange="filterInvestments()">
+                        <option value="">All Statuses</option>
+                        <option value="active">Active</option>
+                        <option value="matured">Matured</option>
+                        <option value="withdrawn">Withdrawn</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                    <button class="btn btn-ghost btn-sm" onclick="loadInvestments()"><i class="fas fa-sync"></i></button>
+                </div>
+            </div>
+            <div class="data-table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>User</th>
+                            <th>Name</th>
+                            <th>Plan</th>
+                            <th>Locked</th>
+                            <th>Profit</th>
+                            <th>Projected</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="investBody">
+                        <tr class="loading-row"><td colspan="9"><div class="spinner"></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="pagination" id="investPagination"></div>
+        </div>
+    </div>
+
+    <!-- ── NOTIFICATIONS TAB ─────────────── -->
+    <div id="tab-notifications" class="tab-content">
+        <div class="panel">
+            <div class="panel-header">
+                <span class="panel-title"><i class="fas fa-bell"></i> Send Notification</span>
+            </div>
+            <div style="padding:20px;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+                    <div class="form-group">
+                        <label class="form-label">Target</label>
+                        <select id="notifTarget" class="form-select" onchange="buildNotifTargetOptions()">
+                            <option value="user">Specific User</option>
+                            <option value="joint">Joint Account</option>
+                            <option value="all">All Users</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="notifTargetIdGroup">
+                        <label class="form-label">User / Account</label>
+                        <select id="notifTargetId" class="form-select"></select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Type</label>
+                        <select id="notifType" class="form-select">
+                            <option value="info">Info</option>
+                            <option value="success">Success</option>
+                            <option value="warning">Warning</option>
+                            <option value="error">Error</option>
+                            <option value="transaction">Transaction</option>
+                            <option value="card">Card</option>
+                            <option value="loan">Loan</option>
+                            <option value="investment">Investment</option>
+                            <option value="system">System</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Title</label>
+                        <input type="text" id="notifTitle" class="form-input" placeholder="Notification title">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Body</label>
+                    <textarea id="notifBody" class="form-textarea" placeholder="Notification message…"></textarea>
+                </div>
+                <button class="btn btn-primary" id="sendNotifBtn" onclick="sendNotification()">
+                    <i class="fas fa-paper-plane"></i> Send Notification
+                </button>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header">
+                <span class="panel-title"><i class="fas fa-list"></i> All Notifications</span>
+                <button class="btn btn-ghost btn-sm" onclick="loadAllNotifications()"><i class="fas fa-sync"></i></button>
+            </div>
+            <div class="data-table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Target</th>
+                            <th>Type</th>
+                            <th>Title</th>
+                            <th>Read</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="notifAdminBody">
+                        <tr class="loading-row"><td colspan="6"><div class="spinner"></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div><!-- end adminShell -->
+
+<!-- ── MODALS ─────────────────────────────── -->
+
+<!-- Edit Account Modal -->
+<div class="modal-overlay" id="editAccountModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <span class="modal-title">Edit Account</span>
+            <button class="modal-close" onclick="closeModal('editAccountModal')"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body" id="editAccountBody"></div>
+    </div>
+</div>
+
+<!-- Edit Balance Modal -->
+<div class="modal-overlay" id="editBalanceModal">
+    <div class="modal-box" style="max-width:400px;">
+        <div class="modal-header">
+            <span class="modal-title">Edit Balance</span>
+            <button class="modal-close" onclick="closeModal('editBalanceModal')"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body" id="editBalanceBody"></div>
+    </div>
+</div>
+
+<!-- Edit Wallets Modal -->
+<div class="modal-overlay" id="editWalletsModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <span class="modal-title">Edit Wallets</span>
+            <button class="modal-close" onclick="closeModal('editWalletsModal')"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body" id="editWalletsBody"></div>
+    </div>
+</div>
+
+<!-- Edit Investment Profit Modal -->
+<div class="modal-overlay" id="editProfitModal">
+    <div class="modal-box" style="max-width:420px;">
+        <div class="modal-header">
+            <span class="modal-title">Edit Investment Profit</span>
+            <button class="modal-close" onclick="closeModal('editProfitModal')"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body" id="editProfitBody"></div>
+    </div>
+</div>
+
+<!-- Confirm Delete Modal -->
+<div class="modal-overlay" id="confirmDeleteModal">
+    <div class="modal-box" style="max-width:380px;">
+        <div class="modal-header">
+            <span class="modal-title" style="color:var(--error);">Confirm Deletion</span>
+            <button class="modal-close" onclick="closeModal('confirmDeleteModal')"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body" id="confirmDeleteBody"></div>
+        <div class="modal-footer">
+            <button class="btn btn-ghost" onclick="closeModal('confirmDeleteModal')">Cancel</button>
+            <button class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+        </div>
+    </div>
+</div>
+
+<!-- Toast -->
+<div id="adminToast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/js /admin.js"></script>
+</body>
+</html>

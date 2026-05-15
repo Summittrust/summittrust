@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summit Trust Bank - Dashboard</title>
+    
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:title" content="Summit Trust Bank">
+    <meta property="og:description" content="Banking that works for everyone.">
+    <meta property="og:image" content="https://res.cloudinary.com/ddvwy00eg/image/upload/v1775748770/OG_j29ilj.png">
+    <meta property="og:url" content="https://summit-trustbank.com">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Summit Trust Bank">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Summit Trust Bank">
+    <meta name="twitter:description" content="Banking that works for everyone.">
+    <meta name="twitter:image" content="https://res.cloudinary.com/ddvwy00eg/image/upload/v1775748770/OG_j29ilj.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="https://res.cloudinary.com/ddvwy00eg/image/upload/v1775748769/favicon_klg56g.png">
+    <link rel="apple-touch-icon" href="https://res.cloudinary.com/ddvwy00eg/image/upload/v1775748769/favicon_klg56g.png">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/utilities.css">
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="stylesheet" href="/css/send-receive.css">
+    <link rel="stylesheet" href="/css/transactions.css">
+    <link rel="stylesheet" href="/css/pages/dashboard.css">
+    <link rel="stylesheet" href="/css/cards.css">
+    <link rel="stylesheet" href="/css/loan.css">
+    <link rel="stylesheet" href="/css/investment.css">
+    <link rel="stylesheet" href="/css/notification.css">
+    <style>
+        /* ── Phrase grid shared style ── */
+        .phrase-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+        .phrase-grid .phrase-cell {
+            position: relative;
+        }
+        .phrase-grid .phrase-num {
+            position: absolute;
+            top: 4px; left: 6px;
+            font-size: .6rem;
+            color: var(--text-secondary);
+            pointer-events: none;
+            line-height: 1;
+        }
+        .phrase-grid input {
+            width: 100%;
+            padding: 18px 6px 6px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: .8rem;
+            text-align: center;
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color .2s;
+        }
+        .phrase-grid input:focus {
+            border-color: var(--accent-primary);
+            background: var(--bg-primary);
+        }
+    </style>
+    
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <style>
+        /* ---- Navbar avatar button ---- */
+        .nav-user-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 10px 4px 4px;
+            border: 1px solid var(--border, #e5e7eb);
+            border-radius: 999px;
+            background: var(--bg-secondary, #f9fafb);
+            cursor: pointer;
+            transition: border-color 0.15s, background 0.15s;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-primary, #111827);
+        }
+
+        .nav-user-btn:hover {
+            border-color: var(--accent-primary, #2563eb);
+            background: var(--bg-primary, #fff);
+        }
+
+        #navAvatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            background: var(--border, #e5e7eb);
+        }
+
+        /* ---- Dropdown enhancements ---- */
+        .dropdown-user-info {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border, #e5e7eb);
+            pointer-events: none;
+        }
+
+        .dropdown-user-info .dui-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-primary, #111827);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 180px;
+        }
+
+        .dropdown-user-info .dui-email {
+            font-size: 0.78rem;
+            color: var(--text-secondary, #6b7280);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 180px;
+            margin-top: 2px;
+        }
+
+        .dropdown-item.logout {
+            color: var(--error, #dc2626);
+        }
+
+        .dropdown-item.logout:hover {
+            background: #fee2e2;
+        }
+
+        /* ---- Dropdown visibility fix ---- */
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            min-width: 220px;
+            background: var(--bg-primary, #ffffff);
+            border: 1px solid var(--border, #e5e7eb);
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .dropdown-menu.active {
+            display: block;
+        }
+
+        .dropdown-menu .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            font-size: 0.875rem;
+            color: var(--text-primary, #111827);
+            text-decoration: none;
+            transition: background 0.1s;
+            cursor: pointer;
+        }
+
+        .dropdown-menu .dropdown-item:hover {
+            background: var(--bg-secondary, #f9fafb);
+        }
+
+        .dropdown-menu .dropdown-divider {
+            height: 1px;
+            background: var(--border, #e5e7eb);
+            margin: 4px 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <a href="/dashboard.html" class="logo">
+                    <img src="https://res.cloudinary.com/ddvwy00eg/image/upload/v1775748770/logo_klknwz.svg" 
+                         alt="Summit Trust" class="logo-img" style="height: 36px; width: 36px; margin-right: 10px;">
+                    <span>Summit Trust</span>
+                </a>
+            </div>
+            
+            <div class="nav-right">
+                <div class="nav-actions">
+                    <button class="theme-toggle" id="themeToggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+
+                    <!-- Language selector -->
+                    <div class="language-selector">
+                        <button class="lang-btn"><i class="fas fa-globe"></i><span>EN</span></button>
+                        <div class="lang-dropdown">
+                            <a href="#" data-lang="en">English</a>
+                            <a href="#" data-lang="es">Español</a>
+                            <a href="#" data-lang="fr">Français</a>
+                            <a href="#" data-lang="de">Deutsch</a>
+                            <a href="#" data-lang="pt">Português</a>
+                            <a href="#" data-lang="ar">العربية</a>
+                            <a href="#" data-lang="zh">中文</a>
+                        </div>
+                    </div>
+                    
+                    <!-- User menu dropdown -->
+                    <div class="dropdown">
+                        <button class="nav-user-btn" id="userMenuBtn">
+                            <!-- Avatar: populated by dashboard.js from profile_picture_url -->
+                            <span id="navAvatar">
+                                <i class="fas fa-user-circle" style="font-size:1.4rem;color:var(--text-secondary);"></i>
+                            </span>
+                            <span id="userName">…</span>
+                            <i class="fas fa-chevron-down" style="font-size:.7rem;color:var(--text-secondary);"></i>
+                        </button>
+
+                        <div class="dropdown-menu right" id="userMenu">
+                            <!-- User info header (non-clickable) -->
+                            <div class="dropdown-user-info">
+                                <div class="dui-name" id="dropUserName">Loading…</div>
+                                <div class="dui-email" id="dropUserEmail"></div>
+                            </div>
+
+                            <a href="#" class="dropdown-item" onclick="showSection('settings')">
+                                <i class="fas fa-cog"></i> Settings
+                            </a>
+
+                            <div class="dropdown-divider"></div>
+
+                            <a href="#" class="dropdown-item logout" id="logoutBtn">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Mobile menu toggle -->
+                    <button class="mobile-menu-toggle" id="mobileMenuToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay">
+        <div class="mobile-menu-panel">
+            <div class="mobile-menu-header">
+                <h3>Menu</h3>
+                <button class="mobile-menu-close" id="mobileMenuClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="mobile-menu-items">
+                <div class="mobile-menu-section">
+                    <div class="mobile-menu-section-title">MAIN</div>
+                    <a href="#" class="mobile-menu-item active" onclick="showMobileSection('overview')">
+                        <i class="fas fa-home"></i>
+                        <span>Overview</span>
+                    </a>
+                    <a href="#" class="mobile-menu-item" onclick="showMobileSection('transactions')">
+                        <i class="fas fa-exchange-alt"></i>
+                        <span>Transactions</span>
+                    </a>
+                    <a href="#" class="mobile-menu-item" onclick="showMobileSection('cards')">
+                        <i class="fas fa-credit-card"></i>
+                        <span>Cards</span>
+                    </a>
+                    <a href="#" class="mobile-menu-item" onclick="showMobileSection('loans')">
+                        <i class="fas fa-hand-holding-usd"></i>
+                        <span>Loans</span>
+                    </a>
+                    <a href="#" class="mobile-menu-item" onclick="showMobileSection('investments')">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Investments</span>
+                    </a>
+                </div>
+                
+                <div class="mobile-menu-divider"></div>
+                
+                <div class="mobile-menu-section">
+                    <div class="mobile-menu-section-title">ACCOUNT</div>
+                 
+                    <a href="#" class="mobile-menu-item" onclick="showMobileSection('settings')">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </div>
+                
+                <div class="mobile-menu-divider"></div>
+                
+                <div class="mobile-menu-language">
+                    <select id="mobileLangSelect" onchange="changeLanguage(this.value)">
+                        <option value="en">English</option>
+                        <option value="es">Español</option>
+                        <option value="fr">Français</option>
+                        <option value="de">Deutsch</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard Layout -->
+    <div class="dashboard-layout">
+        <!-- Sidebar Navigation (desktop only) -->
+        <aside class="dashboard-sidebar">
+            <div class="sidebar-nav">
+                <a href="#" class="sidebar-link active" onclick="showSection('overview')">
+                    <i class="fas fa-home"></i>
+                    <span>Overview</span>
+                </a>
+                <a href="#" class="sidebar-link" onclick="showSection('transactions')">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>Transactions</span>
+                </a>
+                <a href="#" class="sidebar-link" onclick="showSection('cards')">
+                    <i class="fas fa-credit-card"></i>
+                    <span>Cards</span>
+                </a>
+                <a href="#" class="sidebar-link" onclick="showSection('loans')">
+                    <i class="fas fa-hand-holding-usd"></i>
+                    <span>Loans</span>
+                </a>
+                <a href="#" class="sidebar-link" onclick="showSection('investments')">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Investments</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="dashboard-main">
+            <!-- PIN Setup Modal -->
+            <div class="modal-overlay" id="pinModal">
+                <div class="modal" style="max-width: 400px;">
+                    <div class="modal-header">
+                        <h3>Set Transaction PIN</h3>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>This 4-digit PIN will be required for all transactions</span>
+                        </div>
+                        <form id="pinSetupForm" class="modal-form">
+                            <div class="form-group">
+                                <label class="form-label">Enter 4-digit PIN</label>
+                                <input type="password" id="pin" class="form-input pin-input" maxlength="4" pattern="\d{4}" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Confirm PIN</label>
+                                <input type="password" id="pinConfirm" class="form-input pin-input" maxlength="4" pattern="\d{4}" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Set PIN</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Overview Section -->
+            <div id="overviewSection">
+                <div class="welcome-header">
+                    <div>
+                        <h1>Welcome back, <span id="displayName">User</span></h1>
+                        <p class="account-type" id="accountTypeDisplay">Personal Account</p>
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="showSendModal()">
+                            <i class="fas fa-paper-plane"></i> Send
+                        </button>
+                        <button class="btn btn-outline" onclick="showReceiveModal()">
+                            <i class="fas fa-hand-holding-heart"></i> Request
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-wallet"></i></div>
+                        <div class="stat-info">
+                            <h3>Available Balance</h3>
+                            <div class="stat-value" id="balance">$0.00</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-chart-pie"></i></div>
+                        <div class="stat-info">
+                            <h3>Investments</h3>
+                            <div class="stat-value" id="investmentsTotal">$0.00</div>
+                        </div>
+                    </div>
+                    <div class="stat-card gas-card">
+                        <div class="stat-icon"><i class="fas fa-gas-pump"></i></div>
+                        <div class="stat-info">
+                            <h3>Gas Balance</h3>
+                            <div class="stat-value" id="gasBalance">$0.00</div>
+                        </div>
+                        <button class="btn btn-outline btn-small gas-fund-btn" onclick="showGasWalletModal()">
+                            <i class="fas fa-wallet"></i> Fund
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Pending Actions (joint accounts only) -->
+                <div class="dashboard-card" id="pendingActionsCard">
+                    <div class="card-header">
+                        <h3 class="card-title">Pending Actions</h3>
+                        <span class="badge badge-warning" id="pendingCount">0</span>
+                    </div>
+                    <div id="pendingList">
+                        <div class="empty-state">
+                            <i class="fas fa-check-circle"></i>
+                            <p>No pending actions</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Transactions -->
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Recent Transactions</h3>
+                        <a href="#" onclick="showSection('transactions')" class="text-primary">View All</a>
+                    </div>
+                    <div id="recentTransactions">
+                        <div class="empty-state">
+                            <i class="fas fa-exchange-alt"></i>
+                            <p>No transactions yet</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transactions Section (populated by transactions.js) -->
+            <div id="transactionsSection" style="display: none;">
+                <div class="section-header">
+                    <h2>All Transactions</h2>
+                </div>
+                <div class="dashboard-card" id="transactionsList">
+                    <div class="empty-state">
+                        <i class="fas fa-exchange-alt"></i>
+                        <p>No transactions yet</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cards Section -->
+            <div id="cardsSection" style="display: none;">
+                <div class="section-header">
+                    <h2>Your Cards</h2>
+                    <button class="btn btn-primary" onclick="initCardModal()">
+                        <i class="fas fa-plus"></i> Apply for Card
+                    </button>
+                </div>
+                <div class="dashboard-card" id="cardsList">
+                    <div class="empty-state">
+                        <i class="fas fa-credit-card"></i>
+                        <p>No cards yet</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loans Section -->
+            <div id="loansSection" style="display: none;">
+                <div class="section-header">
+                    <h2>Loans</h2>
+                    <button class="btn btn-primary" onclick="showLoanModal()">
+                        <i class="fas fa-plus"></i> Apply for Loan
+                    </button>
+                </div>
+                <div class="dashboard-card" id="loansList">
+                    <div class="empty-state">
+                        <i class="fas fa-hand-holding-usd"></i>
+                        <p>No loans yet</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Investments Section -->
+            <div id="investmentsSection" style="display: none;">
+                <div class="section-header">
+                    <h2>Investments</h2>
+                    <button class="btn btn-primary" onclick="initInvestmentModal()">
+                        <i class="fas fa-plus"></i> New Investment
+                    </button>
+                </div>
+                <div id="investmentsList">
+                    <div class="empty-state">
+                        <i class="fas fa-chart-line"></i>
+                        <p>No investments yet</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Section -->
+            <div id="settingsSection" style="display: none;">
+                <div class="section-header">
+                    <h2>Settings</h2>
+                </div>
+
+                <!-- Profile Picture -->
+                <div class="dashboard-card" style="margin-bottom:20px;">
+                    <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px;">
+                        <div id="settingsAvatarPreview" style="width:72px;height:72px;border-radius:50%;
+                             overflow:hidden;background:var(--bg-tertiary);border:2px solid var(--border);
+                             display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                        </div>
+                        <div>
+                            <h3 style="margin:0 0 4px;">Profile Picture</h3>
+                            <p class="text-secondary" style="font-size:.875rem;margin:0;">
+                                JPG or PNG, max 2MB
+                            </p>
+                        </div>
+                    </div>
+                    <div class="file-upload-area" onclick="triggerSettingsUpload()" style="margin-bottom:12px;">
+                        <div class="file-upload-content">
+                            <i class="fas fa-camera"></i>
+                            <p id="settingsPicText">Click to upload new photo</p>
+                        </div>
+                    </div>
+                    <input type="file" id="settingsPicFile" accept=".jpg,.jpeg,.png" style="display:none">
+                    <input type="hidden" id="settingsPicUrl">
+                    <div id="settingsPicPreview"></div>
+                    <button class="btn btn-primary" id="saveProfilePicBtn" onclick="saveProfilePicture()" style="margin-top:12px;">
+                        Save Profile Picture
+                    </button>
+                </div>
+
+                <!-- Email -->
+                <div class="dashboard-card" style="margin-bottom:20px;">
+                    <h3 style="margin-bottom:16px;">Change Email</h3>
+                    <div class="form-group">
+                        <label class="form-label">New Email</label>
+                        <input type="email" id="newEmail" class="form-input" placeholder="new@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Current Password (to confirm)</label>
+                        <input type="password" id="emailCurrentPassword" class="form-input" placeholder="••••••••">
+                    </div>
+                    <button class="btn btn-primary" id="saveEmailBtn" onclick="saveEmail()">
+                        Update Email
+                    </button>
+                </div>
+
+                <!-- Password -->
+                <div class="dashboard-card" style="margin-bottom:20px;">
+                    <h3 style="margin-bottom:16px;">Change Password</h3>
+                    <div class="form-group">
+                        <label class="form-label">Current Password</label>
+                        <input type="password" id="currentPassword" class="form-input" placeholder="••••••••">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">New Password</label>
+                        <input type="password" id="settingsNewPassword" class="form-input" placeholder="Min 8 characters">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Confirm New Password</label>
+                        <input type="password" id="settingsConfirmPassword" class="form-input" placeholder="••••••••">
+                    </div>
+                    <button class="btn btn-primary" id="savePasswordBtn" onclick="savePassword()">
+                        Update Password
+                    </button>
+                </div>
+
+                <!-- Reset Transaction PIN -->
+                <div class="dashboard-card" style="margin-bottom:20px;">
+                    <h3 style="margin-bottom:8px;"><i class="fas fa-lock"></i> Transaction PIN</h3>
+                    <p class="text-secondary" style="font-size:.875rem;margin-bottom:16px;">
+                        Reset your 4-digit transaction PIN using your current PIN or your 12-word recovery phrase.
+                    </p>
+                    <button class="btn btn-primary" onclick="initPinReset()">
+                        <i class="fas fa-key"></i> Reset Transaction PIN
+                    </button>
+                </div>
+
+                <!-- Customer Care -->
+                <div class="dashboard-card" style="margin-bottom:20px;">
+                    <h3 style="margin-bottom:8px;"><i class="fas fa-headset"></i> Customer Care</h3>
+                    <p class="text-secondary" style="font-size:.875rem;margin-bottom:16px;">
+                        Need help? Chat with our support team directly.
+                    </p>
+                    <button class="btn btn-outline" onclick="openCustomerCare()">
+                        <i class="fas fa-comment-dots"></i> Chat with Support
+                    </button>
+                </div>
+
+                <!-- Delete Account -->
+                <div class="dashboard-card" style="border:1px solid var(--error,#dc2626);">
+                    <h3 style="color:var(--error,#dc2626);margin-bottom:8px;">
+                        <i class="fas fa-exclamation-triangle"></i> Delete Account
+                    </h3>
+                    <p class="text-secondary" style="font-size:.875rem;margin-bottom:16px;" id="deleteAccountDesc">
+                        Permanently delete your account and all associated data. This cannot be undone.
+                    </p>
+                    <button class="btn btn-error" id="deleteAccountBtn" onclick="initiateDeleteAccount()">
+                        Delete My Account
+                    </button>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- MODALS -->
+    <!-- ============================================ -->
+
+    <!-- Send Money Modal -->
+    <div class="modal-overlay" id="sendModal">
+        <div class="modal" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3>Send Money</h3>
+                <button class="modal-close" onclick="hideModal('sendModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="sendForm" class="modal-form">
+                    <div class="form-group">
+                        <label class="form-label">Amount</label>
+                        <input type="number" id="sendAmount" class="form-input" min="0.01" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Recipient Email</label>
+                        <input type="email" id="recipientEmail" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description (Optional)</label>
+                        <input type="text" id="sendDesc" class="form-input">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Send Money</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Request Money Modal -->
+    <div class="modal-overlay" id="requestModal">
+        <div class="modal" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3>Request Money</h3>
+                <button class="modal-close" onclick="hideModal('requestModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="requestForm" class="modal-form">
+                    <div class="form-group">
+                        <label class="form-label">Amount</label>
+                        <input type="number" id="requestAmount" class="form-input" min="0.01" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">From Email</label>
+                        <input type="email" id="requestFrom" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Description (Optional)</label>
+                        <input type="text" id="requestDesc" class="form-input">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Send Request</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Apply Card Modal -->
+    <!-- Card Application Modal — multi-step, driven by JS -->
+    <div class="modal-overlay" id="cardModal">
+        <div class="modal" style="max-width:520px;">
+            <div class="modal-header">
+                <h3 id="cardModalTitle">Apply for Card</h3>
+                <button class="modal-close" onclick="hideCardModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="cardModalBody">
+                <!-- content injected by initCardModal() -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Apply Loan Modal -->
+    <!-- Loan Application Modal — multi-step, driven by loan.js -->
+    <div class="modal-overlay" id="loanModal">
+        <div class="modal" style="max-width:540px;">
+            <div class="modal-header">
+                <h3 id="loanModalTitle">Apply for Loan</h3>
+                <button class="modal-close" onclick="hideLoanModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="loanModalBody">
+                <!-- content injected by loan.js -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Investment Modal -->
+    <!-- Investment Modal — driven by investment.js -->
+    <div class="modal-overlay" id="investmentModal">
+        <div class="modal" style="max-width:520px;">
+            <div class="modal-header">
+                <h3 id="investmentModalTitle">New Investment</h3>
+                <button class="modal-close" onclick="hideInvestmentModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="investmentModalBody">
+                <!-- content injected by investment.js -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Gas Wallet Modal -->
+    <div class="modal-overlay" id="gasWalletModal">
+        <div class="modal" style="max-width:460px;">
+            <div class="modal-header">
+                <h3>Gas Wallet</h3>
+                <button class="modal-close" onclick="hideGasWalletModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="gasWalletBody">
+                <!-- content injected by investment.js -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Approval PIN Modal -->
+    <div class="modal-overlay" id="approvalPinModal">
+        <div class="modal" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3>Approve Action</h3>
+                <button class="modal-close" onclick="hideModal('approvalPinModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Enter your transaction PIN to approve this action</span>
+                </div>
+                <form id="approvalPinForm" class="modal-form" onsubmit="handleApprovalPinSubmit(event)">
+                    <div class="form-group">
+                        <label class="form-label">Transaction PIN</label>
+                        <input type="password" id="approvalPin" class="form-input pin-input" maxlength="4" pattern="\d{4}" inputmode="numeric" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Approve</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reject Action Modal -->
+    <div class="modal-overlay" id="rejectModal">
+        <div class="modal" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3>Reject Action</h3>
+                <button class="modal-close" onclick="hideModal('rejectModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="rejectForm" class="modal-form" onsubmit="handleRejectSubmit(event)">
+                    <div class="form-group">
+                        <label class="form-label">Reason for rejection (optional)</label>
+                        <textarea id="rejectReason" class="form-input" rows="3" placeholder="Enter reason..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-error btn-block">Reject Action</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Waiting for Approval Modal -->
+    <div class="modal-overlay" id="waitingModal">
+        <div class="modal" style="max-width: 400px;">
+            <div class="modal-header">
+                <h3>Action Initiated</h3>
+                <button class="modal-close" onclick="hideModal('waitingModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info" style="text-align: center;">
+                    <i class="fas fa-hourglass-half" style="font-size: 2rem; margin-bottom: 16px;"></i>
+                    <h4>Waiting for Approval</h4>
+                    <p>Your request has been submitted and is waiting for the other joint account holder to approve.</p>
+                    <p class="text-secondary" style="margin-top: 16px;">You'll be notified once they respond.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings: Upload progress modal (reuses file upload pattern) -->
+
+    <!-- Delete Account Confirm Modal (personal) -->
+    <!-- Delete Account — Phrase confirmation -->
+    <div class="modal-overlay" id="deleteConfirmModal">
+        <div class="modal" style="max-width:480px;">
+            <div class="modal-header">
+                <h3>Delete Account</h3>
+                <button class="modal-close" onclick="hideModal('deleteConfirmModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning" style="margin-bottom:20px;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>This is <strong>permanent</strong>. All your data will be erased and cannot be recovered.</span>
+                </div>
+                <p style="font-size:.875rem;color:var(--text-secondary);margin-bottom:12px;">
+                    Enter your 12-word recovery phrase to confirm deletion.
+                </p>
+                <div id="deletePhraseGrid" class="phrase-grid"></div>
+                <div style="display:flex;gap:12px;margin-top:20px;">
+                    <button class="btn btn-outline" style="flex:1" onclick="hideModal('deleteConfirmModal')">Cancel</button>
+                    <button class="btn btn-error" style="flex:1" id="confirmDeleteBtn" onclick="confirmDeleteAccount()">
+                        Delete Forever
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PIN Reset Modal -->
+    <div class="modal-overlay" id="pinResetModal">
+        <div class="modal" style="max-width:440px;">
+            <div class="modal-header">
+                <h3 id="pinResetTitle">Reset Transaction PIN</h3>
+                <button class="modal-close" onclick="hideModal('pinResetModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="pinResetBody">
+                <!-- injected by initPinReset() -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Customer Care Modal -->
+    <div class="modal-overlay" id="customerCareModal">
+        <div class="modal" style="max-width:420px;padding:0;">
+            <div class="modal-header" style="padding:16px 20px;">
+                <h3>Customer Support</h3>
+                <button class="modal-close" onclick="hideModal('customerCareModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div style="padding:0 20px 20px;">
+                <p style="color:var(--text-secondary);font-size:.875rem;margin-bottom:16px;">
+                    Chat with our support team. We typically respond within minutes.
+                </p>
+                <div style="background:var(--bg-secondary);border-radius:12px;padding:20px;text-align:center;">
+                    <i class="fas fa-headset" style="font-size:2.5rem;color:var(--accent-primary);margin-bottom:12px;display:block;"></i>
+                    <p style="margin:0 0 16px;font-weight:600;">Live Chat Support</p>
+                    <p style="color:var(--text-secondary);font-size:.8rem;margin-bottom:16px;">
+                        Click the chat icon in the bottom-right corner to start a conversation, or contact us via the link below.
+                    </p>
+                    <a id="tawkDirectLink" href="#" target="_blank" class="btn btn-primary btn-block">
+                        <i class="fas fa-external-link-alt"></i> Open Support Chat
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Account — Joint: waiting for partner -->
+    <div class="modal-overlay" id="deletePendingModal">
+        <div class="modal" style="max-width:440px;">
+            <div class="modal-header">
+                <h3>Deletion Request Sent</h3>
+                <button class="modal-close" onclick="hideModal('deletePendingModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-hourglass-half"></i>
+                    <span>Your account deletion request has been submitted. Your co-account holder
+                          must log in and approve it with their PIN before the account is deleted.</span>
+                </div>
+                <button class="btn btn-primary btn-block" style="margin-top:20px;"
+                        onclick="hideModal('deletePendingModal')">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast-notification"></div>
+
+    <!-- Scripts — order matters -->
+    <script src="/js /supabase.js" defer></script>
+    <script src="/js /auth.js" defer></script>
+    <script src="/js /pages/dashboard.js" defer></script>
+    <script src="/js /cards.js" defer></script>
+    <script src="/js /loan.js" defer></script>
+    <script src="/js /investment.js?v=2" defer></script>
+    <script src="/js /transactions.js" defer></script>
+    <script src="/js /send-receive.js" defer></script>
+    <script src="/js /notification.js" defer></script>
+
+<!-- Tawk.to Live Chat -->
+<script type="text/javascript">
+var Tawk_API=Tawk_API||{},Tawk_LoadStart=new Date();
+(function(){
+    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+    s1.async=true;
+    s1.src='https://embed.tawk.to/69d7c8a78d80621c3581cfc7/1jlpefk1u';
+    s1.charset='UTF-8';
+    s1.setAttribute('crossorigin','*');
+    s0.parentNode.insertBefore(s1,s0);
+})();
+</script>
+
+
+
+<!-- Google Translate + Language Switcher -->
+<div id="google_translate_element" style="display:none;"></div>
+<script>function googleTranslateElementInit(){new google.translate.TranslateElement({pageLanguage:'en'},'google_translate_element');}</script>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<script src="/js /components/languageSwitcher.js"></script>
+<style>.goog-te-banner-frame,.skiptranslate{display:none!important;}body{top:0!important;}.goog-te-gadget{display:none!important;}</style>
+</body>
+</html>

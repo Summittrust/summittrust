@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Summit Trust Bank - Futuristic Digital Banking</title>
+
+    <meta property="og:title" content="Summit Trust Bank">
+    <meta property="og:description" content="Banking that works for everyone.">
+    <meta property="og:image" content="https://res.cloudinary.com/ddvwy00eg/image/upload/v1775748770/OG_j29ilj.png">
+    <meta property="og:url" content="https://summit-trustbank.com">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Summit Trust Bank">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Summit Trust Bank">
+    <meta name="twitter:description" content="Banking that works for everyone.">
+    <meta name="twitter:image" content="https://res.cloudinary.com/ddvwy00eg/image/upload/v1775748770/OG_j29ilj.png">
+
+    <link rel="icon" type="image/png" href="https://res.cloudinary.com/ddvwy00eg/image/upload/v1775748769/favicon_klg56g.png">
+    <link rel="apple-touch-icon" href="https://res.cloudinary.com/ddvwy00eg/image/upload/v1775748769/favicon_klg56g.png">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/components.css">
+    <link rel="stylesheet" href="/css/utilities.css">
+    <link rel="stylesheet" href="/css/theme.css">
+    <link rel="stylesheet" href="/css/legal.css">
+    <link rel="stylesheet" href="/css/pages/home.css">
+
+    <style>
+        .feature-grid.image-right { direction: rtl; }
+        .feature-grid.image-right .feature-content { direction: ltr; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-left">
+                <a href="/index.html" class="logo">
+                    <img src="https://res.cloudinary.com/ddvwy00eg/image/upload/v1775748770/logo_klknwz.svg"
+                         alt="Summit Trust" class="logo-img" style="height:36px;width:36px;margin-right:10px;">
+                    <span>Summit Trust</span>
+                </a>
+            </div>
+            <div class="nav-right">
+                <div class="nav-links">
+                    <a href="/index.html" class="active">Home</a>
+                    <a href="/about.html">About</a>
+                </div>
+                <div class="nav-actions">
+                    <button class="theme-toggle" id="themeToggle"><i class="fas fa-moon"></i></button>
+                    <div class="language-selector">
+                        <button class="lang-btn"><i class="fas fa-globe"></i><span>EN</span></button>
+                        <div class="lang-dropdown">
+                            <a href="#" data-lang="en">English</a>
+                            <a href="#" data-lang="es">Español</a>
+                            <a href="#" data-lang="fr">Français</a>
+                            <a href="#" data-lang="de">Deutsch</a>
+                            <a href="#" data-lang="pt">Português</a>
+                            <a href="#" data-lang="ar">العربية</a>
+                            <a href="#" data-lang="zh">中文</a>
+                        </div>
+                    </div>
+                    <div class="auth-buttons">
+                        <a href="/auth.html" class="btn btn-outline"><i class="fas fa-sign-in-alt"></i> Sign In</a>
+                        <a href="/auth.html" class="btn btn-primary"><i class="fas fa-user-plus"></i> Open Account</a>
+                    </div>
+                </div>
+                <button class="mobile-menu-toggle"><i class="fas fa-bars"></i></button>
+            </div>
+        </div>
+
+        <div class="mobile-menu">
+            <a href="/index.html">Home</a>
+            <a href="/about.html">About</a>
+            <a href="/auth.html">Sign In</a>
+            <a href="/auth.html">Open Account</a>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-top:1px solid var(--border);">
+                <span style="font-size:.9rem;color:var(--text-secondary);">Dark Mode</span>
+                <button class="theme-toggle" onclick="document.getElementById('themeToggle').click()"><i class="fas fa-moon"></i></button>
+            </div>
+            <div class="mobile-lang">
+                <i class="fas fa-globe"></i>
+                <select id="mobileLangSelect">
+                    <option value="en">English</option>
+                    <option value="es">Español</option>
+                    <option value="fr">Français</option>
+                    <option value="de">Deutsch</option>
+                    <option value="pt">Português</option>
+                    <option value="ar">العربية</option>
+                    <option value="zh">中文</option>
+                </select>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-image">
+                <img src="https://res.cloudinary.com/dmbgczlom/image/upload/v1772872000/hero-image_x99izp.webp"
+                     alt="Summit Trust Bank Investment Dashboard" class="hero-img" loading="lazy">
+            </div>
+            <div class="hero-content">
+                <h1 class="hero-title">Banking for the <span class="highlight">Future</span></h1>
+                <p class="hero-subtitle">Experience the next generation of digital banking with Summit Trust. Secure, fast, and intelligent financial solutions for you and your business.</p>
+                <div class="hero-cta">
+                    <a href="/auth.html" class="btn btn-primary btn-large"><i class="fas fa-rocket"></i> Get Started</a>
+                    <a href="/about.html" class="btn btn-outline btn-large"><i class="fas fa-info-circle"></i> Learn More</a>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-item"><div class="stat-number">500K+</div><div class="stat-label">Active Users</div></div>
+                    <div class="stat-item"><div class="stat-number">$2B+</div><div class="stat-label">Transactions</div></div>
+                    <div class="stat-item"><div class="stat-number">99.9%</div><div class="stat-label">Uptime</div></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 01 Borderless Banking -->
+    <section class="feature-section borderless">
+        <div class="container">
+            <div class="feature-grid">
+                <div class="feature-visual">
+                    <img src="https://res.cloudinary.com/dmbgczlom/image/upload/v1772879558/global_jevwvj.webp" alt="Global Banking Map" class="feature-image">
+                    <div class="stats-card"><div class="stat">150+</div><div class="stat-label">Countries</div></div>
+                </div>
+                <div class="feature-content">
+                    <div class="feature-tag">01</div>
+                    <h2>Borderless Banking</h2>
+                    <p class="feature-description">Break free from geographical limitations. Summit Trust enables seamless financial operations across 150+ countries, supporting multiple currencies and international payment networks.</p>
+                    <div class="feature-details">
+                        <div class="detail-item"><i class="fas fa-check-circle"></i><span>Send money to 150+ countries instantly</span></div>
+                        <div class="detail-item"><i class="fas fa-check-circle"></i><span>Multi-currency accounts with real-time conversion</span></div>
+                        <div class="detail-item"><i class="fas fa-check-circle"></i><span>International ATM access with zero foreign fees</span></div>
+                        <div class="detail-item"><i class="fas fa-check-circle"></i><span>Global merchant payments in local currencies</span></div>
+                    </div>
+                    <a href="/auth.html" class="btn btn-primary">Start Global Banking <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 02 Joint Accounts -->
+    <section class="feature-section joint-accounts">
+        <div class="container">
+            <div class="feature-grid image-right">
+                <div class="feature-visual">
+                    <img src="https://res.cloudinary.com/dmbgczlom/image/upload/v1772879278/couple_dfguto.webp" alt="Joint Account Dashboard" class="feature-image">
+                    <div class="approval-badge"><i class="fas fa-check-double"></i><span>Dual Approval Required</span></div>
+                </div>
+                <div class="feature-content">
+                    <div class="feature-tag">02</div>
+                    <h2>Collaborative Joint Accounts</h2>
+                    <p class="feature-description">Built for partnerships that matter. Whether you're managing household finances with a partner or running a business with a co-founder, our joint accounts ensure transparency and mutual control.</p>
+                    <div class="feature-highlights">
+                        <div class="highlight-card"><i class="fas fa-user-friends"></i><h4>Two-User System</h4><p>Each user gets unique credentials, recovery phrases, and transaction PINs</p></div>
+                        <div class="highlight-card"><i class="fas fa-shield-alt"></i><h4>Dual Authorization</h4><p>All transactions require approval from both account holders</p></div>
+                        <div class="highlight-card"><i class="fas fa-bell"></i><h4>Instant Notifications</h4><p>Both users receive real-time alerts for pending approvals</p></div>
+                    </div>
+                    <a href="/auth.html" class="btn btn-primary">Create Joint Account <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 03 Investments - Updated ROI Values: 15%, 25%, 50% -->
+    <section class="feature-section investments">
+        <div class="container">
+            <div class="feature-grid">
+                <div class="feature-visual">
+                    <img src="https://res.cloudinary.com/dmbgczlom/image/upload/v1772967905/plant_j76ehd.webp" alt="Investment Goals Dashboard" class="feature-image">
+                    <div style="position:absolute;bottom:40px;left:40px;background:white;padding:20px;border-radius:16px;min-width:250px;box-shadow:var(--shadow);">
+                        <div style="display:flex;justify-content:space-between;margin-bottom:15px;padding-bottom:10px;border-bottom:1px solid var(--border);"><span style="color:var(--text-secondary);">Goal Amount</span><strong style="color:var(--text-primary);">$50,000</strong></div>
+                        <div style="display:flex;justify-content:space-between;margin-bottom:15px;"><span style="color:var(--text-secondary);">Lock Period</span><strong style="color:var(--accent-primary);">12 months</strong></div>
+                        <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-secondary);">Projected ROI</span><strong style="color:var(--success);">+50%</strong></div>
+                    </div>
+                </div>
+                <div class="feature-content">
+                    <div class="feature-tag">03</div>
+                    <h2>Customizable Investments</h2>
+                    <p class="feature-description">Set your financial goals and watch them grow. Choose your investment timeframe and let your money work for you with guaranteed returns based on lock duration.</p>
+                    <div style="margin:30px 0;">
+                        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-bottom:20px;">
+                            <div style="background:var(--bg-tertiary);padding:20px;border-radius:12px;text-align:center;border:1px solid var(--border);"><div style="font-size:1.5rem;font-weight:700;color:var(--text-primary);margin-bottom:5px;">3</div><div style="font-size:.9rem;color:var(--text-secondary);margin-bottom:10px;">Months</div><div style="font-size:1.1rem;font-weight:600;color:var(--success);">15% ROI</div></div>
+                            <div style="background:var(--bg-tertiary);padding:20px;border-radius:12px;text-align:center;border:2px solid var(--accent-primary);"><div style="font-size:1.5rem;font-weight:700;color:var(--text-primary);margin-bottom:5px;">6</div><div style="font-size:.9rem;color:var(--text-secondary);margin-bottom:10px;">Months</div><div style="font-size:1.1rem;font-weight:600;color:var(--success);">25% ROI</div></div>
+                            <div style="background:var(--bg-tertiary);padding:20px;border-radius:12px;text-align:center;border:1px solid var(--border);"><div style="font-size:1.5rem;font-weight:700;color:var(--text-primary);margin-bottom:5px;">12</div><div style="font-size:.9rem;color:var(--text-secondary);margin-bottom:10px;">Months</div><div style="font-size:1.1rem;font-weight:600;color:var(--success);">50% ROI</div></div>
+                        </div>
+                        <div style="background:var(--bg-secondary);padding:20px;border-radius:12px;">
+                            <h4 style="margin-bottom:15px;display:flex;align-items:center;gap:10px;"><i class="fas fa-lock" style="color:var(--accent-primary);"></i> How it works</h4>
+                            <ul style="list-style:none;padding:0;">
+                                <li style="display:flex;align-items:center;gap:10px;margin-bottom:12px;"><i class="fas fa-check-circle" style="color:var(--success);font-size:.9rem;"></i><span style="color:var(--text-secondary);">Set your investment goal amount</span></li>
+                                <li style="display:flex;align-items:center;gap:10px;margin-bottom:12px;"><i class="fas fa-check-circle" style="color:var(--success);font-size:.9rem;"></i><span style="color:var(--text-secondary);">Choose lock period: 3, 6, or 12 months</span></li>
+                                <li style="display:flex;align-items:center;gap:10px;margin-bottom:12px;"><i class="fas fa-check-circle" style="color:var(--success);font-size:.9rem;"></i><span style="color:var(--text-secondary);">Funds locked until maturity date</span></li>
+                                <li style="display:flex;align-items:center;gap:10px;"><i class="fas fa-check-circle" style="color:var(--success);font-size:.9rem;"></i><span style="color:var(--text-secondary);">Higher ROI for longer lock periods</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <a href="/auth.html" class="btn btn-primary">Start Investing <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 04 Loans -->
+    <section class="feature-section loans">
+        <div class="container">
+            <div class="feature-grid image-right">
+                <div class="feature-visual">
+                    <img src="https://res.cloudinary.com/dmbgczlom/image/upload/v1772970224/loan_gwv15r.webp" alt="Loan Approval Dashboard" class="feature-image">
+                    <div style="position:absolute;bottom:40px;right:40px;background:white;padding:20px;border-radius:16px;min-width:200px;box-shadow:var(--shadow);">
+                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:15px;"><div style="width:40px;height:40px;background:var(--accent-primary);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;">1</div><div><div style="font-weight:600;color:var(--text-primary);">Starter</div><div style="font-size:.9rem;color:var(--text-secondary);">Up to $10,000</div></div></div>
+                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:15px;"><div style="width:40px;height:40px;background:var(--warning);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;">2</div><div><div style="font-weight:600;color:var(--text-primary);">Growth</div><div style="font-size:.9rem;color:var(--text-secondary);">Up to $30,000</div></div></div>
+                        <div style="display:flex;align-items:center;gap:10px;"><div style="width:40px;height:40px;background:var(--success);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;">3</div><div><div style="font-weight:600;color:var(--text-primary);">Premium</div><div style="font-size:.9rem;color:var(--text-secondary);">Up to $100,000</div></div></div>
+                    </div>
+                </div>
+   <div class="feature-content">
+                    <div class="feature-tag">04</div>
+                    <h2>Instant Loans, No Collateral</h2>
+                    <p class="feature-description">Need funds fast? Get approved in minutes with zero paperwork. No credit checks, no collateral required — just the money you need, when you need it.</p>
+                    <div style="margin:30px 0;">
+                        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:15px;margin-bottom:25px;">
+                            <div style="background:var(--bg-tertiary);padding:20px;border-radius:12px;text-align:center;border:1px solid var(--border);"><div style="font-size:1rem;font-weight:600;color:var(--accent-primary);margin-bottom:5px;">Starter</div><div style="font-size:1.8rem;font-weight:700;color:var(--text-primary);margin-bottom:5px;">$10K</div><div style="font-size:.9rem;color:var(--text-secondary);">Instant approval</div><div style="font-size:.9rem;font-weight:600;color:var(--success);margin-top:8px;">4.5% APR</div></div>
+                            <div style="background:var(--bg-tertiary);padding:20px;border-radius:12px;text-align:center;border:2px solid var(--warning);"><div style="font-size:1rem;font-weight:600;color:var(--warning);margin-bottom:5px;">Growth</div><div style="font-size:1.8rem;font-weight:700;color:var(--text-primary);margin-bottom:5px;">$30K</div><div style="font-size:.9rem;color:var(--text-secondary);">Instant approval</div><div style="font-size:.9rem;font-weight:600;color:var(--success);margin-top:8px;">3.9% APR</div></div>
+                            <div style="background:var(--bg-tertiary);padding:20px;border-radius:12px;text-align:center;border:1px solid var(--border);"><div style="font-size:1rem;font-weight:600;color:var(--success);margin-bottom:5px;">Premium</div><div style="font-size:1.8rem;font-weight:700;color:var(--text-primary);margin-bottom:5px;">$100K</div><div style="font-size:.9rem;color:var(--text-secondary);">Instant approval</div><div style="font-size:.9rem;font-weight:600;color:var(--success);margin-top:8px;">2.9% APR</div></div>
+                        </div>
+                        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:15px;">
+                            <div style="display:flex;align-items:center;gap:10px;"><i class="fas fa-bolt" style="color:var(--accent-primary);font-size:1.2rem;"></i><span style="color:var(--text-primary);font-weight:500;">Instant approval</span></div>
+                            <div style="display:flex;align-items:center;gap:10px;"><i class="fas fa-percent" style="color:var(--success);font-size:1.2rem;"></i><span style="color:var(--text-primary);font-weight:500;">Lowest rates</span></div>
+                            <div style="display:flex;align-items:center;gap:10px;"><i class="fas fa-hand-peace" style="color:var(--warning);font-size:1.2rem;"></i><span style="color:var(--text-primary);font-weight:500;">No collateral</span></div>
+                        </div>
+                    </div>
+                    <a href="/auth.html" class="btn btn-primary">Get Your Loan <i class="fas fa-bolt"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 05 Security -->
+    <section class="feature-section security">
+        <div class="container">
+            <div class="feature-grid">
+                <div class="feature-visual">
+                    <img src="https://res.cloudinary.com/dmbgczlom/image/upload/v1772971405/secure_t8ezla.webp" alt="Security Dashboard" class="feature-image">
+                    <div class="approval-badge" style="background-color:var(--accent-primary);"><i class="fas fa-shield-alt"></i><span>256-bit Encryption</span></div>
+                </div>
+                <div class="feature-content">
+                    <div class="feature-tag">05</div>
+                    <h2>Next-Generation Security</h2>
+                    <p class="feature-description">Your security is our foundation. We've built multiple layers of protection to ensure your assets and data remain safe from unauthorized access.</p>
+                    <div class="security-badges">
+                        <div class="security-badge"><i class="fas fa-fingerprint"></i><span>Biometric Auth</span></div>
+                        <div class="security-badge"><i class="fas fa-shield-halved"></i><span>256-bit Encryption</span></div>
+                        <div class="security-badge"><i class="fas fa-key"></i><span>2FA Required</span></div>
+                        <div class="security-badge"><i class="fas fa-clock"></i><span>Auto-Logout</span></div>
+                        <div class="security-badge"><i class="fas fa-lock"></i><span>End-to-End Encrypted</span></div>
+                        <div class="security-badge"><i class="fas fa-user-shield"></i><span>Privacy Protected</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 06 Infrastructure -->
+    <section class="feature-section infrastructure">
+        <div class="container">
+            <div class="feature-grid image-right">
+                <div class="feature-visual">
+                    <img src="https://res.cloudinary.com/dmbgczlom/image/upload/v1772971983/cloud-tech_zul4t8.webp" alt="Cloud Infrastructure" class="feature-image">
+                    <div class="stats-card"><div class="stat">99.9%</div><div class="stat-label">Uptime</div></div>
+                </div>
+                <div class="feature-content">
+                    <div class="feature-tag">06</div>
+                    <h2>Always-Online Infrastructure</h2>
+                    <p class="feature-description">Built on enterprise-grade cloud architecture, our platform ensures you never miss a financial opportunity. Bank-grade reliability with instant transaction processing.</p>
+                    <div class="stats-grid">
+                        <div class="stat-card"><div class="stat-number">99.9%</div><div class="stat-label">Uptime SLA</div></div>
+                        <div class="stat-card"><div class="stat-number">24/7</div><div class="stat-label">Customer Support</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 07 Cards -->
+    <section class="feature-section cards">
+        <div class="container">
+            <div class="feature-grid">
+                <div class="feature-visual">
+                    <img src="https://res.cloudinary.com/dmbgczlom/image/upload/v1772973452/card_dbavks.webp" alt="Smart Cards" class="feature-image">
+                    <div style="display:flex;gap:15px;position:absolute;bottom:40px;left:40px;">
+                        <div style="background:white;padding:15px 25px;border-radius:12px;box-shadow:var(--shadow);"><i class="fas fa-credit-card" style="color:var(--accent-primary);font-size:24px;margin-right:10px;"></i><span style="color:var(--text-primary);font-weight:500;">Physical</span></div>
+                        <div style="background:white;padding:15px 25px;border-radius:12px;box-shadow:var(--shadow);"><i class="fas fa-mobile-alt" style="color:var(--accent-primary);font-size:24px;margin-right:10px;"></i><span style="color:var(--text-primary);font-weight:500;">Virtual</span></div>
+                    </div>
+                </div>
+                <div class="feature-content">
+                    <div class="feature-tag">07</div>
+                    <h2>Smart Physical & Virtual Cards</h2>
+                    <p class="feature-description">Complete control over your spending with our intelligent card system. Issue cards instantly, set limits, and manage security all from your dashboard.</p>
+                    <div class="card-types">
+                        <div class="card-type standard"><h4>Standard Card</h4><p class="limit">$200,000 daily limit</p><p class="fee">$100 processing fee</p></div>
+                        <div class="card-type elite"><h4>Elite Card</h4><p class="limit">No limit</p><p class="fee">$250 processing fee</p></div>
+                    </div>
+                    <a href="/auth.html" class="btn btn-primary">Order Your Card <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 08 Insights -->
+    <section class="feature-section insights">
+        <div class="container">
+            <div class="feature-grid image-right">
+                <div class="feature-visual">
+                    <img src="https://res.cloudinary.com/dmbgczlom/image/upload/v1772972958/insight_qo5lv3.webp" alt="Financial Insights Dashboard" class="feature-image">
+                    <div style="position:absolute;bottom:40px;right:40px;background:white;padding:20px;border-radius:16px;min-width:220px;box-shadow:var(--shadow);">
+                        <div style="display:flex;justify-content:space-between;margin-bottom:15px;padding-bottom:10px;border-bottom:1px solid var(--border);"><span style="color:var(--text-secondary);">Spending</span><strong style="color:var(--error);font-size:1.2rem;">↓ 12%</strong></div>
+                        <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-secondary);">Savings</span><strong style="color:var(--success);font-size:1.2rem;">↑ 24%</strong></div>
+                    </div>
+                </div>
+                <div class="feature-content">
+                    <div class="feature-tag">08</div>
+                    <h2>Intelligent Financial Insights</h2>
+                    <p class="feature-description">Make smarter financial decisions with AI-powered analytics. Understand your spending patterns, track goals, and receive personalized recommendations.</p>
+                    <div style="display:flex;flex-wrap:wrap;gap:15px;margin:30px 0;">
+                        <span style="background:var(--bg-tertiary);padding:10px 20px;border-radius:30px;display:inline-flex;align-items:center;gap:8px;"><i class="fas fa-chart-bar" style="color:var(--accent-primary);"></i> Spending Analysis</span>
+                        <span style="background:var(--bg-tertiary);padding:10px 20px;border-radius:30px;display:inline-flex;align-items:center;gap:8px;"><i class="fas fa-bullseye" style="color:var(--accent-primary);"></i> Goal Tracking</span>
+                        <span style="background:var(--bg-tertiary);padding:10px 20px;border-radius:30px;display:inline-flex;align-items:center;gap:8px;"><i class="fas fa-lightbulb" style="color:var(--accent-primary);"></i> Smart Recommendations</span>
+                    </div>
+                    <a href="/dashboard.html" class="btn btn-primary">View Insights <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Account Types -->
+    <section class="account-types">
+        <div class="container">
+            <div class="section-header">
+                <h2>Select Your Account Type</h2>
+                <p>Banking solutions designed for individuals and shared financial management</p>
+            </div>
+            <div class="account-grid">
+                <div class="account-card single">
+                    <div class="card-header"><i class="fas fa-user"></i><h3>Personal Account</h3></div>
+                    <div class="card-price"><span class="price">Free</span><span class="period">/month</span></div>
+                    <ul class="card-features">
+                        <li><i class="fas fa-check"></i> Personal digital banking</li>
+                        <li><i class="fas fa-check"></i> Secure transaction PIN</li>
+                        <li><i class="fas fa-check"></i> Recovery phrase protection</li>
+                        <li><i class="fas fa-check"></i> Instant transfers</li>
+                        <li><i class="fas fa-check"></i> Credit eligibility assessment</li>
+                    </ul>
+                    <a href="/auth.html" class="btn btn-outline">Open Personal Account <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="account-card joint featured">
+                    <div class="card-badge">Recommended</div>
+                    <div class="card-header"><i class="fas fa-users"></i><h3>Joint Account</h3></div>
+                    <div class="card-price"><span class="price">Free</span><span class="period">/month</span></div>
+                    <ul class="card-features">
+                        <li><i class="fas fa-check"></i> Shared financial management</li>
+                        <li><i class="fas fa-check"></i> Dual transaction authorization</li>
+                        <li><i class="fas fa-check"></i> Independent recovery credentials</li>
+                        <li><i class="fas fa-check"></i> Mandatory transaction approval</li>
+                        <li><i class="fas fa-check"></i> Unified account visibility</li>
+                    </ul>
+                    <a href="/auth.html" class="btn btn-primary">Open Joint Account <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Security -->
+    <section class="security">
+        <div class="container">
+            <div class="security-grid">
+                <div class="security-content">
+                    <h2>Enterprise-Level Security</h2>
+                    <p>Summit Trust integrates multiple layers of advanced security technologies to protect your funds and personal information.</p>
+                    <div class="security-features">
+                        <div class="security-item"><i class="fas fa-lock"></i><div><h4>Encrypted Infrastructure</h4><p>All sensitive data is secured using advanced encryption and secure hashing protocols.</p></div></div>
+                        <div class="security-item"><i class="fas fa-key"></i><div><h4>Secure Recovery Access</h4><p>Account recovery is protected through a unique multi-word recovery phrase system.</p></div></div>
+                        <div class="security-item"><i class="fas fa-shield-halved"></i><div><h4>Dual Authorization Controls</h4><p>Joint accounts require confirmation from both account holders before completing transactions.</p></div></div>
+                    </div>
+                </div>
+                <div class="security-badge"><i class="fas fa-certificate"></i><div><span>PCI DSS</span><small>Security Standards</small></div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+        <div class="container">
+            <h2>Experience modern digital banking</h2>
+            <p>Join thousands of clients who trust Summit Trust to manage and protect their finances.</p>
+            <a href="/auth.html" class="btn btn-primary btn-large"><i class="fas fa-rocket"></i> Open Your Account</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="footer-logo">
+                        <img src="https://res.cloudinary.com/ddvwy00eg/image/upload/v1775748770/logo_klknwz.svg"
+                             alt="Summit Trust" class="footer-logo-img" style="height:32px;width:32px;margin-right:10px;">
+                        <span>Summit Trust Bank</span>
+                    </div>
+                    <p>Secure digital banking designed for modern financial management.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Quick Links</h4>
+                    <a href="/index.html">Home</a>
+                    <a href="/about.html">About</a>
+                    <a href="/auth.html">Sign In</a>
+                    <a href="/auth.html">Open Account</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <a href="#" onclick="openPrivacyPolicy(event)">Privacy Policy</a>
+                    <a href="#" onclick="openTerms(event)">Terms of Service</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Connect</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Summit Trust Bank. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js /config.js"></script>
+    <script src="/js /utils/helpers.js"></script>
+    <script src="/js /components/navbar.js"></script>
+    <script src="/js /components/languageSwitcher.js"></script>
+    <script src="/js /pages/home.js"></script>
+    <script src="/js /legal.js"></script>
+
+    <script type="text/javascript">
+    var Tawk_API=Tawk_API||{},Tawk_LoadStart=new Date();
+    (function(){var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];s1.async=true;s1.src='https://embed.tawk.to/69d7c8a78d80621c3581cfc7/1jlpefk1u';s1.charset='UTF-8';s1.setAttribute('crossorigin','*');s0.parentNode.insertBefore(s1,s0);})();
+    </script>
+
+    <link rel="stylesheet" href="/css/testimonies.css">
+    <script src="/js /testimonies.js" defer></script>
+
+    <div id="google_translate_element" style="display:none;"></div>
+    <script>function googleTranslateElementInit(){new google.translate.TranslateElement({pageLanguage:'en'},'google_translate_element');}</script>
+    <script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <style>.goog-te-banner-frame,.skiptranslate{display:none!important;}body{top:0!important;}.goog-te-gadget{display:none!important;}</style>
+
+</body>
+</html>
