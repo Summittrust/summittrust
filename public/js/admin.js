@@ -2,6 +2,10 @@
 // SUMMIT TRUST ADMIN PANEL - COMPLETE
 // ============================================
 
+
+console.log('admin.js loaded successfully');
+console.log('adminLogin function defined:', typeof adminLogin);
+
 const SUPABASE_URL = 'https://jotfmjdmorjweoumdvuq.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpvdGZtamRtb3Jqd2VvdW1kdnVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3Mzk2OTksImV4cCI6MjA5MTMxNTY5OX0.bTkJKZtHEz_cBBHsYwWiWMotLpCpKU68_ROE-mKWm4s';
 
@@ -1912,3 +1916,21 @@ function renderPagination(containerId, total, currentPage, onPage) {
     html += `<span class="page-info">${total} records</span>`;
     el.innerHTML = html;
 }
+
+// At the end of your admin.js file
+document.addEventListener('DOMContentLoaded', function() {
+    const loginBtn = document.getElementById('loginBtn');
+    if (loginBtn) {
+        loginBtn.addEventListener('click', adminLogin);
+    }
+    
+    // Also handle Enter key on password field
+    const passwordInput = document.getElementById('adminPassword');
+    if (passwordInput) {
+        passwordInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                adminLogin();
+            }
+        });
+    }
+});
