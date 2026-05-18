@@ -614,7 +614,7 @@ function renderAccountsGrid() {
         const jointId = item.joint ? item.joint.id : '';
 
         return `<div class="account-card" style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+            <div style="display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
                 <div style="display:flex;gap:12px;align-items:center;">
                     ${avatar}
                     <div>
