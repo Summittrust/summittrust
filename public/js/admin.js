@@ -287,7 +287,6 @@ function renderAccountsGrid() {
       ? `<img src="${escapeHtml(item.user.profile_picture_url)}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">`
       : `<div style="width:40px;height:40px;border-radius:50%;background:var(--accent-primary);color:white;display:flex;align-items:center;justify-content:center;font-weight:bold;">${(item.name[0]||'?').toUpperCase()}</div>`;
 
-    let kycLevel = item.type === 'joint' ? (item.joint?.kyc_level || 1) : (item.user?.kyc_level || 1);
     let wallets = '';
     if (item.btcAddress) wallets += `<div style="font-size:11px;color:var(--text-secondary);"><i class="fab fa-bitcoin"></i> ${escapeHtml(item.btcAddress.slice(0,10))}...</div>`;
     if (item.ltcAddress) wallets += `<div style="font-size:11px;color:var(--text-secondary);"><i class="fas fa-coins"></i> ${escapeHtml(item.ltcAddress.slice(0,10))}...</div>`;
@@ -464,12 +463,10 @@ async function deleteAccountForce(acctId, name, jointId, userId1, userId2) {
         if (j) { if (j.primary_user_id && !ids.includes(j.primary_user_id)) ids.push(j.primary_user_id); if (j.secondary_user_id && !ids.includes(j.secondary_user_id)) ids.push(j.secondary_user_id); }
       }
 
-      // Delete auth users first
       for (const uid of ids) {
         try { await adminDb.auth.admin.deleteUser(uid); } catch(e) { console.warn('Auth delete:', e); }
       }
 
-      // Delete related data
       for (const uid of ids) {
         await adminDb.from('notifications').delete().eq('user_id', uid);
         await adminDb.from('admin_notifications').delete().eq('user_id', uid);
@@ -604,72 +601,592 @@ async function deleteTx(id) {
 }
 
 // ============================================
-// CARDS / LOANS / INVESTMENTS (abbreviated)
+// LOANS - COMPLETE APPROVAL SYSTEM
+// ============================================
+
+const LOAN_STATUSES = ['pending','processing','approved','disbursed','rejected','cancelled','repaid'];
+
+/**
+ * Update loan status with full approval workflow
+ */
+async function updateLoanStatus(loanId, newStatus, isApproved = false) {
+  try {
+    const loan = adminState.loans.find(l => l.id === loanId);
+    if (!loan) {
+      toast('Loan not found', 'error');
+      return;
+    }
+
+    // Handle approval
+    if (isApproved && newStatus === 'approved') {
+      await approveLoan(loan);
+    } 
+    // Handle rejection
+    else if (newStatus === 'rejected') {
+      await rejectLoan(loan);
+    }
+    // Handle status updates
+    else {
+      const { error } = await adminDb
+        .from('loan_applications')
+        .update({
+          status: newStatus,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', loanId);
+
+      if (error) throw error;
+      
+      // Update local state
+      const localLoan = adminState.loans.find(l => l.id === loanId);
+      if (localLoan) localLoan.status = newStatus;
+      
+      toast(`Loan status updated to ${newStatus}`, 'success');
+    }
+
+    // Refresh data
+    await loadLoans();
+    filterLoans();
+  } catch (error) {
+    console.error('Error updating loan:', error);
+    toast('Error updating loan: ' + error.message, 'error');
+  }
+}
+
+/**
+ * Approve a loan - full workflow
+ */
+async function approveLoan(loan) {
+  // Check if user meets KYC requirements
+  const user = getUserById(loan.user_id);
+  if (!user) {
+    toast('User not found', 'error');
+    return;
+  }
+
+  const kycLevel = adminState.kycLevels.find(k => k.id === user.kyc_level);
+  if (!kycLevel || !kycLevel.can_apply_loan) {
+    toast('User does not meet KYC requirements for loans', 'error');
+    return;
+  }
+
+  // Calculate loan terms
+  const interestRate = 5.5; // Default interest rate (could be dynamic based on user/loan type)
+  const termMonths = loan.term_months || 12;
+  const monthlyRate = interestRate / 100 / 12;
+  
+  // Calculate monthly payment using amortization formula
+  const monthlyPayment = loan.amount * monthlyRate * Math.pow(1 + monthlyRate, termMonths) / 
+                         (Math.pow(1 + monthlyRate, termMonths) - 1);
+  const totalRepayment = monthlyPayment * termMonths;
+
+  // Start a transaction for data consistency
+  const updates = {
+    status: 'approved',
+    interest_rate: interestRate,
+    monthly_payment: monthlyPayment,
+    total_repayment: totalRepayment,
+    total_repayable: totalRepayment,
+    approved_at: new Date().toISOString(),
+    reviewed_at: new Date().toISOString(),
+    admin_notes: `Approved by admin on ${new Date().toLocaleString()}`,
+    updated_at: new Date().toISOString()
+  };
+
+  // Update loan application
+  const { error: updateError } = await adminDb
+    .from('loan_applications')
+    .update(updates)
+    .eq('id', loan.id);
+
+  if (updateError) throw updateError;
+
+  // Update local state
+  const localLoan = adminState.loans.find(l => l.id === loan.id);
+  if (localLoan) Object.assign(localLoan, updates);
+
+  // Create disbursement transaction (pending)
+  const { error: txError } = await adminDb
+    .from('transactions')
+    .insert({
+      user_id: loan.user_id,
+      amount: loan.amount,
+      transaction_type: 'loan_disbursement',
+      status: 'pending',
+      description: `Loan disbursement - ${loan.application_reference}`,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    });
+
+  if (txError) console.warn('Failed to create transaction:', txError);
+
+  // Resolve pending action if exists
+  if (loan.pending_action_id) {
+    try {
+      await adminDb
+        .from('pending_actions')
+        .update({
+          status: 'completed',
+          completed_at: new Date().toISOString(),
+          response_notes: 'Approved by admin'
+        })
+        .eq('id', loan.pending_action_id);
+    } catch (e) {
+      console.warn('Failed to update pending action:', e);
+    }
+  }
+
+  // Send notification to user
+  await adminDb
+    .from('notifications')
+    .insert({
+      user_id: loan.user_id,
+      type: 'loan_approved',
+      title: 'Loan Approved!',
+      body: `Your loan of ${fmtCurrency(loan.amount)} has been approved. Monthly payment: ${fmtCurrency(monthlyPayment)} for ${termMonths} months.`,
+      is_read: false,
+      created_at: new Date().toISOString()
+    });
+
+  toast('Loan approved successfully!', 'success');
+}
+
+/**
+ * Reject a loan with reason
+ */
+async function rejectLoan(loan) {
+  // Show prompt for rejection reason
+  const reason = await new Promise((resolve) => {
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay open';
+    modal.id = 'rejectReasonModal';
+    modal.innerHTML = `
+      <div class="modal-box" style="max-width:440px;">
+        <div class="modal-header">
+          <span class="modal-title">Rejection Reason</span>
+          <button class="modal-close" onclick="closeModal('rejectReasonModal')"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-body">
+          <p style="color:var(--text2);margin-bottom:12px;">Please provide a reason for rejecting this loan:</p>
+          <textarea id="rejectionReason" class="form-input" rows="4" placeholder="Enter rejection reason..."></textarea>
+          <div style="display:flex;gap:10px;margin-top:16px;">
+            <button class="btn btn-ghost" style="flex:1;" onclick="closeModal('rejectReasonModal')">Cancel</button>
+            <button class="btn btn-danger" style="flex:1;" onclick="confirmReject()">Reject Loan</button>
+          </div>
+        </div>
+      </div>`;
+    document.body.appendChild(modal);
+    
+    window.confirmReject = () => {
+      const reasonText = document.getElementById('rejectionReason').value.trim();
+      closeModal('rejectReasonModal');
+      modal.remove();
+      resolve(reasonText || 'No reason provided');
+    };
+  });
+
+  if (!reason) {
+    toast('Rejection cancelled', 'info');
+    return;
+  }
+
+  // Update loan as rejected
+  const updates = {
+    status: 'rejected',
+    rejection_reason: reason,
+    reviewed_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
+  };
+
+  const { error: updateError } = await adminDb
+    .from('loan_applications')
+    .update(updates)
+    .eq('id', loan.id);
+
+  if (updateError) throw updateError;
+
+  // Update local state
+  const localLoan = adminState.loans.find(l => l.id === loan.id);
+  if (localLoan) Object.assign(localLoan, updates);
+
+  // Resolve pending action if exists
+  if (loan.pending_action_id) {
+    try {
+      await adminDb
+        .from('pending_actions')
+        .update({
+          status: 'completed',
+          completed_at: new Date().toISOString(),
+          response_notes: `Rejected: ${reason}`
+        })
+        .eq('id', loan.pending_action_id);
+    } catch (e) {
+      console.warn('Failed to update pending action:', e);
+    }
+  }
+
+  // Send rejection notification
+  await adminDb
+    .from('notifications')
+    .insert({
+      user_id: loan.user_id,
+      type: 'loan_rejected',
+      title: 'Loan Application Rejected',
+      body: `Your loan application for ${fmtCurrency(loan.amount)} was rejected. Reason: ${reason}`,
+      is_read: false,
+      created_at: new Date().toISOString()
+    });
+
+  toast('Loan rejected', 'success');
+}
+
+/**
+ * Disburse an approved loan
+ */
+async function disburseLoan(loanId) {
+  try {
+    const loan = adminState.loans.find(l => l.id === loanId);
+    if (!loan) {
+      toast('Loan not found', 'error');
+      return;
+    }
+
+    if (loan.status !== 'approved') {
+      toast('Loan must be approved before disbursement', 'error');
+      return;
+    }
+
+    // Update loan status to disbursed
+    const { error: updateError } = await adminDb
+      .from('loan_applications')
+      .update({
+        status: 'disbursed',
+        disbursed_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', loanId);
+
+    if (updateError) throw updateError;
+
+    // Update local state
+    const localLoan = adminState.loans.find(l => l.id === loanId);
+    if (localLoan) {
+      localLoan.status = 'disbursed';
+      localLoan.disbursed_at = new Date().toISOString();
+    }
+
+    // Find user's account and credit the loan amount
+    const { data: account, error: accountFetchError } = await adminDb
+      .from('accounts')
+      .select('id, balance')
+      .eq('user_id', loan.user_id)
+      .single();
+
+    if (accountFetchError) {
+      console.warn('Account not found for user:', loan.user_id);
+    } else if (account) {
+      const { error: accountError } = await adminDb
+        .from('accounts')
+        .update({
+          balance: (account.balance || 0) + loan.amount,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', account.id);
+
+      if (accountError) throw accountError;
+    }
+
+    // Update transaction status
+    await adminDb
+      .from('transactions')
+      .update({
+        status: 'completed',
+        updated_at: new Date().toISOString()
+      })
+      .eq('user_id', loan.user_id)
+      .eq('transaction_type', 'loan_disbursement')
+      .eq('description', `Loan disbursement - ${loan.application_reference}`);
+
+    // Send notification
+    await adminDb
+      .from('notifications')
+      .insert({
+        user_id: loan.user_id,
+        type: 'loan_disbursed',
+        title: 'Loan Disbursed',
+        body: `Your loan of ${fmtCurrency(loan.amount)} has been disbursed to your account.`,
+        is_read: false,
+        created_at: new Date().toISOString()
+      });
+
+    toast('Loan disbursed successfully!', 'success');
+    
+    // Refresh all data
+    await loadLoans();
+    await loadAccounts();
+    await loadTransactions();
+    filterLoans();
+    renderAccountsGrid();
+  } catch (error) {
+    console.error('Error disbursing loan:', error);
+    toast('Error disbursing loan: ' + error.message, 'error');
+  }
+}
+
+/**
+ * Filter and render loans table
+ */
+function filterLoans() {
+  const search = (document.getElementById('loanSearch')?.value || '').toLowerCase();
+  const statusFilter = document.getElementById('loanStatusFilter')?.value;
+  const typeFilter = document.getElementById('loanTypeFilter')?.value;
+  
+  let rows = adminState.loans.filter(l => {
+    const matchesSearch = !search || 
+      (l.purpose || '').toLowerCase().includes(search) ||
+      (l.application_reference || '').toLowerCase().includes(search);
+    const matchesStatus = !statusFilter || l.status === statusFilter;
+    const matchesType = !typeFilter || l.loan_type === typeFilter;
+    return matchesSearch && matchesStatus && matchesType;
+  });
+  
+  renderLoansTable(rows);
+}
+
+/**
+ * Render loans table with approval actions
+ */
+function renderLoansTable(rows) {
+  const p = rows.slice((adminState.loanPage - 1) * adminState.PAGE_SIZE, adminState.loanPage * adminState.PAGE_SIZE);
+  const tb = document.getElementById('loansBody');
+  if (!tb) return;
+
+  if (!p.length) {
+    tb.innerHTML = '<tr class="empty-row"><td colspan="9">No loans found.</td></tr>';
+    return;
+  }
+
+  tb.innerHTML = p.map(l => {
+    const user = getUserById(l.user_id);
+    const userName = user ? `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.email || 'Unknown' : 'Unknown';
+    
+    const statusColors = {
+      pending: '#f59e0b',
+      processing: '#3b82f6',
+      approved: '#10b981',
+      disbursed: '#8b5cf6',
+      rejected: '#ef4444',
+      cancelled: '#6b7280',
+      repaid: '#059669'
+    };
+
+    const canApprove = ['pending', 'processing'].includes(l.status);
+    const canDisburse = l.status === 'approved';
+
+    return `<tr>
+      <td style="font-size:12px;">${fmtDate(l.created_at)}</td>
+      <td><strong>${escapeHtml(userName)}</strong></td>
+      <td><span style="font-size:11px;color:var(--text-secondary);">${escapeHtml(l.application_reference || 'N/A')}</span></td>
+      <td><span class="badge" style="background:${l.loan_type === 'personal' ? '#2563eb' : '#7c3aed'};color:white;">${escapeHtml(l.loan_type || 'personal')}</span></td>
+      <td style="font-weight:700;">${fmtCurrency(l.amount)}</td>
+      <td><span class="badge" style="background:${statusColors[l.status] || '#6b7280'};color:white;">${escapeHtml(l.status || 'pending')}</span></td>
+      <td>${l.interest_rate ? `${l.interest_rate}%` : '—'}</td>
+      <td>${l.monthly_payment ? fmtCurrency(l.monthly_payment) : '—'}</td>
+      <td>
+        <div style="display:flex;gap:4px;flex-wrap:wrap;">
+          ${canApprove ? `
+            <button class="btn btn-success btn-sm" onclick="updateLoanStatus('${l.id}','approved',true)" title="Approve Loan" style="font-size:10px;padding:2px 8px;">
+              <i class="fas fa-check"></i> Approve
+            </button>
+            <button class="btn btn-danger btn-sm" onclick="updateLoanStatus('${l.id}','rejected',false)" title="Reject Loan" style="font-size:10px;padding:2px 8px;">
+              <i class="fas fa-times"></i> Reject
+            </button>
+          ` : ''}
+          ${canDisburse ? `
+            <button class="btn btn-primary btn-sm" onclick="disburseLoan('${l.id}')" title="Disburse Loan" style="font-size:10px;padding:2px 8px;">
+              <i class="fas fa-money-bill-wave"></i> Disburse
+            </button>
+          ` : ''}
+          <button class="btn btn-danger btn-sm" onclick="deleteLoan('${l.id}')" title="Delete Loan" style="font-size:10px;padding:2px 8px;">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  renderPagination('loanPagination', rows.length, adminState.loanPage, p => {
+    adminState.loanPage = p;
+    filterLoans();
+  });
+}
+
+/**
+ * Delete a loan
+ */
+async function deleteLoan(id) {
+  showConfirmModal('Delete Loan', 'Are you sure you want to delete this loan application? This action cannot be undone.', async () => {
+    await adminDb.from('loan_applications').delete().eq('id', id);
+    adminState.loans = adminState.loans.filter(l => l.id !== id);
+    filterLoans();
+    toast('Loan deleted', 'success');
+  });
+}
+
+// ============================================
+// CARDS
 // ============================================
 
 const CARD_STATUSES = ['pending','processing','approved','active','shipped','delivered','rejected','cancelled'];
-const LOAN_STATUSES = ['processing','approved','disbursed','rejected','cancelled','repaid'];
-const INVEST_STATUSES = ['active','matured','withdrawn','cancelled'];
-
-async function loadX() { /* already defined */ }
 
 function filterCards() {
-  const rows = adminState.cards.filter(c => (!document.getElementById('cardSearch')?.value || (c.card_holder||'').toLowerCase().includes(document.getElementById('cardSearch').value.toLowerCase())) && (!document.getElementById('cardStatusFilter')?.value || c.status===document.getElementById('cardStatusFilter').value));
+  const search = (document.getElementById('cardSearch')?.value || '').toLowerCase();
+  const statusFilter = document.getElementById('cardStatusFilter')?.value;
+  
+  const rows = adminState.cards.filter(c => {
+    const matchesSearch = !search || 
+      (c.card_holder || '').toLowerCase().includes(search);
+    const matchesStatus = !statusFilter || c.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
+  
   renderCardsTable(rows);
 }
-function renderCardsTable(rows) {
-  const p = rows.slice((adminState.cardPage-1)*adminState.PAGE_SIZE, adminState.cardPage*adminState.PAGE_SIZE);
-  const tb = document.getElementById('cardsBody'); if (!tb) return;
-  tb.innerHTML = p.length ? p.map(c => `<tr><td>${fmtDate(c.created_at)}</td><td>${escapeHtml(c.card_holder||'—')}</td><td>${c.card_network||'—'}</td><td>${c.status}</td><td><button class="btn btn-danger btn-sm" onclick="deleteCard('${c.id}')"><i class="fas fa-trash"></i></button></td></tr>`).join('') : '<tr class="empty-row"><td colspan="5">No cards.</td></tr>';
-}
-async function deleteCard(id) { await adminDb.from('card_applications').delete().eq('id', id); adminState.cards = adminState.cards.filter(c=>c.id!==id); filterCards(); toast('Deleted', 'success'); }
 
-function filterLoans() {
-  const rows = adminState.loans.filter(l => (!document.getElementById('loanSearch')?.value || (l.purpose||'').toLowerCase().includes(document.getElementById('loanSearch').value.toLowerCase())) && (!document.getElementById('loanStatusFilter')?.value || l.status===document.getElementById('loanStatusFilter').value));
-  renderLoansTable(rows);
+function renderCardsTable(rows) {
+  const p = rows.slice((adminState.cardPage - 1) * adminState.PAGE_SIZE, adminState.cardPage * adminState.PAGE_SIZE);
+  const tb = document.getElementById('cardsBody');
+  if (!tb) return;
+
+  tb.innerHTML = p.length ? p.map(c => {
+    const user = getUserById(c.user_id);
+    const userName = user ? `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.email || 'Unknown' : 'Unknown';
+    
+    return `<tr>
+      <td>${fmtDate(c.created_at)}</td>
+      <td><strong>${escapeHtml(userName)}</strong></td>
+      <td>${escapeHtml(c.card_holder || '—')}</td>
+      <td>${c.card_network || '—'}</td>
+      <td><span class="badge" style="background:${
+        c.status === 'active' ? '#10b981' :
+        c.status === 'pending' ? '#f59e0b' :
+        c.status === 'rejected' ? '#ef4444' :
+        c.status === 'cancelled' ? '#6b7280' : '#3b82f6'
+      };color:white;">${escapeHtml(c.status || 'pending')}</span></td>
+      <td>
+        <button class="btn btn-danger btn-sm" onclick="deleteCard('${c.id}')"><i class="fas fa-trash"></i></button>
+      </td>
+    </tr>`;
+  }).join('') : '<tr class="empty-row"><td colspan="6">No cards found.</td></tr>';
+  
+  renderPagination('cardPagination', rows.length, adminState.cardPage, p => {
+    adminState.cardPage = p;
+    filterCards();
+  });
 }
-function renderLoansTable(rows) {
-  const p = rows.slice((adminState.loanPage-1)*adminState.PAGE_SIZE, adminState.loanPage*adminState.PAGE_SIZE);
-  const tb = document.getElementById('loansBody'); if (!tb) return;
-  tb.innerHTML = p.length ? p.map(l => `<tr><td>${fmtDate(l.created_at)}</td><td>${fmtCurrency(l.amount)}</td><td>${l.status}</td><td><button class="btn btn-danger btn-sm" onclick="deleteLoan('${l.id}')"><i class="fas fa-trash"></i></button></td></tr>`).join('') : '<tr class="empty-row"><td colspan="4">No loans.</td></tr>';
+
+async function deleteCard(id) {
+  showConfirmModal('Delete Card', 'Are you sure you want to delete this card application?', async () => {
+    await adminDb.from('card_applications').delete().eq('id', id);
+    adminState.cards = adminState.cards.filter(c => c.id !== id);
+    filterCards();
+    toast('Card deleted', 'success');
+  });
 }
-async function deleteLoan(id) { await adminDb.from('loan_applications').delete().eq('id', id); adminState.loans = adminState.loans.filter(l=>l.id!==id); filterLoans(); toast('Deleted', 'success'); }
+
+// ============================================
+// INVESTMENTS
+// ============================================
+
+const INVEST_STATUSES = ['active','matured','withdrawn','cancelled'];
 
 function filterInvestments() {
-  const rows = adminState.investments.filter(i => (!document.getElementById('investSearch')?.value || (i.goal_name||'').toLowerCase().includes(document.getElementById('investSearch').value.toLowerCase())) && (!document.getElementById('investStatusFilter')?.value || i.status===document.getElementById('investStatusFilter').value));
+  const search = (document.getElementById('investSearch')?.value || '').toLowerCase();
+  const statusFilter = document.getElementById('investStatusFilter')?.value;
+  
+  const rows = adminState.investments.filter(i => {
+    const matchesSearch = !search || 
+      (i.goal_name || '').toLowerCase().includes(search);
+    const matchesStatus = !statusFilter || i.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
+  
   renderInvestTable(rows);
 }
+
 function renderInvestTable(rows) {
-  const p = rows.slice((adminState.investPage-1)*adminState.PAGE_SIZE, adminState.investPage*adminState.PAGE_SIZE);
-  const tb = document.getElementById('investBody'); if (!tb) return;
-  tb.innerHTML = p.length ? p.map(i => `<tr><td>${fmtDate(i.created_at)}</td><td>${escapeHtml(i.goal_name||'—')}</td><td>${fmtCurrency(i.locked_amount)}</td><td>${i.status}</td><td><button class="btn btn-danger btn-sm" onclick="deleteInvestment('${i.id}')"><i class="fas fa-trash"></i></button></td></tr>`).join('') : '<tr class="empty-row"><td colspan="5">No investments.</td></tr>';
+  const p = rows.slice((adminState.investPage - 1) * adminState.PAGE_SIZE, adminState.investPage * adminState.PAGE_SIZE);
+  const tb = document.getElementById('investBody');
+  if (!tb) return;
+
+  tb.innerHTML = p.length ? p.map(i => {
+    const user = getUserById(i.user_id);
+    const userName = user ? `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.email || 'Unknown' : 'Unknown';
+    
+    return `<tr>
+      <td>${fmtDate(i.created_at)}</td>
+      <td><strong>${escapeHtml(userName)}</strong></td>
+      <td>${escapeHtml(i.goal_name || '—')}</td>
+      <td style="font-weight:700;">${fmtCurrency(i.locked_amount)}</td>
+      <td><span class="badge" style="background:${
+        i.status === 'active' ? '#10b981' :
+        i.status === 'matured' ? '#8b5cf6' :
+        i.status === 'withdrawn' ? '#3b82f6' : '#6b7280'
+      };color:white;">${escapeHtml(i.status || 'active')}</span></td>
+      <td>
+        <button class="btn btn-danger btn-sm" onclick="deleteInvestment('${i.id}')"><i class="fas fa-trash"></i></button>
+      </td>
+    </tr>`;
+  }).join('') : '<tr class="empty-row"><td colspan="6">No investments found.</td></tr>';
+  
+  renderPagination('investPagination', rows.length, adminState.investPage, p => {
+    adminState.investPage = p;
+    filterInvestments();
+  });
 }
-async function deleteInvestment(id) { await adminDb.from('investments').delete().eq('id', id); adminState.investments = adminState.investments.filter(i=>i.id!==id); filterInvestments(); toast('Deleted', 'success'); }
+
+async function deleteInvestment(id) {
+  showConfirmModal('Delete Investment', 'Are you sure you want to delete this investment?', async () => {
+    await adminDb.from('investments').delete().eq('id', id);
+    adminState.investments = adminState.investments.filter(i => i.id !== id);
+    filterInvestments();
+    toast('Investment deleted', 'success');
+  });
+}
 
 // ============================================
 // NOTIFICATIONS
 // ============================================
 
 function updateNotificationBadge() {
-  const c = adminState.adminNotifications.filter(n=>!n.is_read).length;
+  const c = adminState.adminNotifications.filter(n => !n.is_read).length;
   const b = document.getElementById('notificationBadge');
-  if (b) { b.textContent = c>99?'99+':c; b.style.display = c>0?'inline-flex':'none'; }
+  if (b) {
+    b.textContent = c > 99 ? '99+' : c;
+    b.style.display = c > 0 ? 'inline-flex' : 'none';
+  }
 }
 
 function renderNotificationsDropdown() {
-  const c = document.getElementById('notificationsDropdownList'); if (!c) return;
-  c.innerHTML = adminState.adminNotifications.length ? adminState.adminNotifications.slice(0,20).map(n => `
-    <div class="notification-item ${n.is_read?'':'unread'}" onclick="markNotificationRead('${n.id}')">
-      <div class="notification-title">${escapeHtml(n.title)}</div>
-      <div class="notification-message">${escapeHtml(n.message)}</div>
-      <div class="notification-time">${fmtDate(n.created_at)}</div>
-    </div>`).join('') : '<div class="empty-notifications"><i class="fas fa-bell-slash"></i><p>No notifications</p></div>';
+  const c = document.getElementById('notificationsDropdownList');
+  if (!c) return;
+  
+  c.innerHTML = adminState.adminNotifications.length ? 
+    adminState.adminNotifications.slice(0, 20).map(n => `
+      <div class="notification-item ${n.is_read ? '' : 'unread'}" onclick="markNotificationRead('${n.id}')">
+        <div class="notification-title">${escapeHtml(n.title)}</div>
+        <div class="notification-message">${escapeHtml(n.message)}</div>
+        <div class="notification-time">${fmtDate(n.created_at)}</div>
+      </div>
+    `).join('') : 
+    '<div class="empty-notifications"><i class="fas fa-bell-slash"></i><p>No notifications</p></div>';
 }
 
 function toggleAdminNotifications() {
-  const d = document.getElementById('adminNotificationsDropdown'); if (!d) return;
-  d.style.display = d.style.display==='none'||d.style.display==='' ? 'block' : 'none';
-  if (d.style.display==='block') renderNotificationsDropdown();
+  const d = document.getElementById('adminNotificationsDropdown');
+  if (!d) return;
+  d.style.display = d.style.display === 'none' || d.style.display === '' ? 'block' : 'none';
+  if (d.style.display === 'block') renderNotificationsDropdown();
 }
 
 async function markNotificationRead(id) {
@@ -681,10 +1198,25 @@ async function buildNotifTargetOptions() {
   const t = document.getElementById('notifTarget')?.value;
   const g = document.getElementById('notifTargetIdGroup');
   const s = document.getElementById('notifTargetId');
-  if (t==='all') { if (g) g.style.display='none'; return; }
-  if (g) g.style.display='block';
-  if (t==='user' && s) s.innerHTML = adminState.users.map(u => `<option value="${u.id}">${escapeHtml(`${u.first_name||''} ${u.last_name||''}`.trim()||u.email)}</option>`).join('');
-  if (t==='joint' && s) s.innerHTML = adminState.jointAccounts.map(j => `<option value="${j.id}">${escapeHtml(j.account_name||'Joint')}</option>`).join('');
+  
+  if (t === 'all') {
+    if (g) g.style.display = 'none';
+    return;
+  }
+  
+  if (g) g.style.display = 'block';
+  
+  if (t === 'user' && s) {
+    s.innerHTML = adminState.users.map(u => 
+      `<option value="${u.id}">${escapeHtml(`${u.first_name || ''} ${u.last_name || ''}`.trim() || u.email)}</option>`
+    ).join('');
+  }
+  
+  if (t === 'joint' && s) {
+    s.innerHTML = adminState.jointAccounts.map(j => 
+      `<option value="${j.id}">${escapeHtml(j.account_name || 'Joint')}</option>`
+    ).join('');
+  }
 }
 
 async function sendNotification() {
@@ -693,28 +1225,62 @@ async function sendNotification() {
   const type = document.getElementById('notifType')?.value;
   const title = document.getElementById('notifTitle')?.value.trim();
   const body = document.getElementById('notifBody')?.value.trim();
-  if (!title) { toast('Enter a title', 'error'); return; }
-  const row = { type, title, body: body||null, created_at: new Date().toISOString() };
-  if (t==='all') await adminDb.from('notifications').insert(adminState.users.map(u=>({...row, user_id: u.id})));
-  else if (t==='user') await adminDb.from('notifications').insert([{...row, user_id: tid}]);
-  else if (t==='joint') await adminDb.from('notifications').insert([{...row, joint_account_id: tid}]);
-  toast('Sent', 'success');
-  document.getElementById('notifTitle').value = '';
-  document.getElementById('notifBody').value = '';
-  await loadAllNotifications();
+  
+  if (!title) {
+    toast('Enter a title', 'error');
+    return;
+  }
+  
+  const row = {
+    type,
+    title,
+    body: body || null,
+    created_at: new Date().toISOString()
+  };
+  
+  try {
+    if (t === 'all') {
+      await adminDb.from('notifications').insert(
+        adminState.users.map(u => ({ ...row, user_id: u.id }))
+      );
+    } else if (t === 'user') {
+      await adminDb.from('notifications').insert([{ ...row, user_id: tid }]);
+    } else if (t === 'joint') {
+      await adminDb.from('notifications').insert([{ ...row, joint_account_id: tid }]);
+    }
+    
+    toast('Notification sent', 'success');
+    document.getElementById('notifTitle').value = '';
+    document.getElementById('notifBody').value = '';
+    await loadAllNotifications();
+  } catch (error) {
+    toast('Error sending notification: ' + error.message, 'error');
+  }
 }
 
 function renderNotifAdminTable() {
-  const tb = document.getElementById('notifAdminBody'); if (!tb) return;
-  tb.innerHTML = adminState.notifications.length ? adminState.notifications.map(n => `
-    <tr><td>${fmtDate(n.created_at)}</td><td>${escapeHtml(n.title)}</td><td>${n.is_read?'Read':'Unread'}</td>
-    <td><button class="btn btn-danger btn-sm" onclick="deleteNotifAdmin('${n.id}')"><i class="fas fa-trash"></i></button></td></tr>`).join('') : '<tr class="empty-row"><td colspan="4">No notifications.</td></tr>';
+  const tb = document.getElementById('notifAdminBody');
+  if (!tb) return;
+  
+  tb.innerHTML = adminState.notifications.length ? 
+    adminState.notifications.map(n => `
+      <tr>
+        <td>${fmtDate(n.created_at)}</td>
+        <td>${escapeHtml(n.title)}</td>
+        <td><span class="badge" style="background:${n.is_read ? '#6b7280' : '#3b82f6'};color:white;">${n.is_read ? 'Read' : 'Unread'}</span></td>
+        <td>
+          <button class="btn btn-danger btn-sm" onclick="deleteNotifAdmin('${n.id}')"><i class="fas fa-trash"></i></button>
+        </td>
+      </tr>
+    `).join('') : 
+    '<tr class="empty-row"><td colspan="4">No notifications.</td></tr>';
 }
 
 async function deleteNotifAdmin(id) {
   await adminDb.from('notifications').delete().eq('id', id);
-  adminState.notifications = adminState.notifications.filter(n=>n.id!==id);
-  renderNotifAdminTable(); toast('Deleted', 'success');
+  adminState.notifications = adminState.notifications.filter(n => n.id !== id);
+  renderNotifAdminTable();
+  toast('Notification deleted', 'success');
 }
 
 // ============================================
@@ -722,13 +1288,46 @@ async function deleteNotifAdmin(id) {
 // ============================================
 
 function renderPagination(cid, total, page, cb) {
-  const el = document.getElementById(cid); if (!el) return;
-  const pages = Math.ceil(total/adminState.PAGE_SIZE);
-  if (pages<=1) { el.innerHTML = `<span class="page-info">${total} records</span>`; return; }
+  const el = document.getElementById(cid);
+  if (!el) return;
+  
+  const pages = Math.ceil(total / adminState.PAGE_SIZE);
+  if (pages <= 1) {
+    el.innerHTML = `<span class="page-info">${total} records</span>`;
+    return;
+  }
+  
   let h = '';
-  if (page>1) h += `<button class="page-btn" onclick="(${cb.toString()})(${page-1})">‹</button>`;
-  for (let p=Math.max(1,page-2); p<=Math.min(pages,page+2); p++) h += `<button class="page-btn${p===page?' current':''}" onclick="(${cb.toString()})(${p})">${p}</button>`;
-  if (page<pages) h += `<button class="page-btn" onclick="(${cb.toString()})(${page+1})">›</button>`;
+  if (page > 1) h += `<button class="page-btn" onclick="(${cb.toString()})(${page - 1})">‹</button>`;
+  
+  for (let p = Math.max(1, page - 2); p <= Math.min(pages, page + 2); p++) {
+    h += `<button class="page-btn${p === page ? ' current' : ''}" onclick="(${cb.toString()})(${p})">${p}</button>`;
+  }
+  
+  if (page < pages) h += `<button class="page-btn" onclick="(${cb.toString()})(${page + 1})">›</button>`;
   h += `<span class="page-info">${total} records</span>`;
   el.innerHTML = h;
 }
+
+// ============================================
+// ADDITIONAL CSS STYLES (injected)
+// ============================================
+
+// Inject required styles for the new buttons
+(function injectStyles() {
+  const style = document.createElement('style');
+  style.textContent = `
+    .btn-success {
+      background: #10b981;
+      color: white;
+    }
+    .btn-success:hover {
+      background: #059669;
+    }
+    .btn-success.btn-sm {
+      padding: 2px 8px;
+      font-size: 10px;
+    }
+  `;
+  document.head.appendChild(style);
+})();
