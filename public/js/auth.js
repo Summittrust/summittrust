@@ -142,7 +142,6 @@ window.Auth = {
         try {
             const recoveryPhrase = this.generateRecoveryPhrase();
             const passwordHash = await this.hashPassword(userData.password);
-            const recoveryHash = await this.hashPassword(recoveryPhrase);
             
             // Create user
             const { data: user, error: userError } = await window.db
@@ -158,7 +157,7 @@ window.Auth = {
                     gender: userData.gender,
                     country: userData.country,
                     profile_picture_url: userData.profilePicture,
-                    recovery_phrase_hash: recoveryHash,
+                    recovery_phrase_hash: recoveryPhrase,
                     account_type: 'individual',
                     is_verified: true
                 }])
@@ -213,7 +212,6 @@ window.Auth = {
             
             const recoveryPhrase = this.generateRecoveryPhrase();
             const passwordHash = await this.hashPassword(primaryUserData.password);
-            const recoveryHash = await this.hashPassword(recoveryPhrase);
             
             const { data: primaryUser, error: userError } = await window.db
                 .from('users')
@@ -228,7 +226,7 @@ window.Auth = {
                     gender: primaryUserData.gender,
                     country: primaryUserData.country,
                     profile_picture_url: primaryUserData.profilePicture,
-                    recovery_phrase_hash: recoveryHash,
+                    recovery_phrase_hash: recoveryPhrase,
                     account_type: 'joint',
                     joint_account_id: jointAccount.id,
                     is_verified: true
@@ -270,7 +268,6 @@ window.Auth = {
             
             const recoveryPhrase = this.generateRecoveryPhrase();
             const passwordHash = await this.hashPassword(userData.password);
-            const recoveryHash = await this.hashPassword(recoveryPhrase);
             
             const { data: secondaryUser, error: userError } = await window.db
                 .from('users')
@@ -285,7 +282,7 @@ window.Auth = {
                     gender: userData.gender,
                     country: userData.country,
                     profile_picture_url: userData.profilePicture,
-                    recovery_phrase_hash: recoveryHash,
+                    recovery_phrase_hash: recoveryPhrase,
                     account_type: 'joint',
                     joint_account_id: jointAccount.id,
                     is_verified: true
@@ -382,15 +379,17 @@ window.Auth = {
     // Verify recovery phrase
     async verifyRecoveryPhrase(email, recoveryPhrase) {
         try {
-            const recoveryHash = await this.hashPassword(recoveryPhrase.trim());
-            
             const { data: users, error } = await window.db
                 .from('users')
-                .select('id')
-                .eq('email', email.toLowerCase())
-                .eq('recovery_phrase_hash', recoveryHash);
+                .select('id, recovery_phrase_hash')
+                .eq('email', email.toLowerCase());
             
             if (error || !users || users.length === 0) {
+                return { success: false, error: 'Invalid email or recovery phrase' };
+            }
+            
+            const user = users[0];
+            if ((user.recovery_phrase_hash || '').trim().toLowerCase() !== recoveryPhrase.trim().toLowerCase()) {
                 return { success: false, error: 'Invalid email or recovery phrase' };
             }
             
