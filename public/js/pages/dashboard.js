@@ -44,6 +44,11 @@ async function initDashboard() {
         // Get user data from the session (CHANGE THIS)
         const userData = session.users;
         
+        if (userData?.is_disabled) {
+            showDisabledScreen(userData.disabled_reason);
+            return;
+        }
+        
         currentUser = {
             id: session.user_id,  // CHANGE - use session.user_id
             email: userData?.email || '',
@@ -2783,3 +2788,20 @@ async function getUserAccount() {
 
 // Make sure hideModal is globally available
 window.hideModal = hideModal;
+
+function showDisabledScreen(reason) {
+    document.body.innerHTML = `
+        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;background:#0f172a;color:#f8fafc;font-family:sans-serif;padding:24px;text-align:center;">
+            <div style="background:#fef2f2;color:#ef4444;width:80px;height:80px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2.5rem;margin-bottom:24px;box-shadow:0 10px 15px -3px rgba(239,68,68,0.2);">
+                <i class="fas fa-ban"></i>
+            </div>
+            <h1 style="font-size:2rem;font-weight:700;margin-bottom:12px;letter-spacing:-0.025em;">Account Suspended</h1>
+            <p style="color:#94a3b8;max-width:480px;font-size:1.05rem;line-height:1.6;margin-bottom:32px;">
+                ${reason || 'Your account has been temporarily disabled by the administration. Please contact support for assistance.'}
+            </p>
+            <button onclick="localStorage.removeItem('Summit_Trust_session'); window.location.href='/auth.html';" style="background:#3b82f6;color:white;border:none;padding:12px 32px;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 6px -1px rgba(59,130,246,0.2);">
+                Log Out
+            </button>
+        </div>
+    `;
+}
