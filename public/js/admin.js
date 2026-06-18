@@ -292,6 +292,34 @@ function renderAccountsGrid() {
     if (item.ltcAddress) wallets += `<div style="font-size:11px;color:var(--text-secondary);"><i class="fas fa-coins"></i> ${escapeHtml(item.ltcAddress.slice(0,10))}...</div>`;
     if (item.gasAddress) wallets += `<div style="font-size:11px;color:var(--text-secondary);"><i class="fas fa-wallet"></i> ${escapeHtml(item.gasAddress.slice(0,10))}... (${escapeHtml(item.gasNetwork||'TRC20')})</div>`;
 
+    let credsHtml = '';
+    if (item.type === 'joint') {
+      credsHtml += `
+        <div style="font-size:11px;color:var(--text-secondary);margin-top:10px;padding:10px;border-radius:8px;background:var(--bg-primary);border:1px solid var(--border);line-height:1.45;">
+          <strong style="color:var(--text);display:block;margin-bottom:4px;"><i class="fas fa-key"></i> Primary Credentials</strong>
+          <span style="color:var(--text-secondary);">Pass:</span> <span style="font-family:monospace;color:var(--text);word-break:break-all;">${escapeHtml(item.user?.password || item.user?.password_hash || '—')}</span><br>
+          <span style="color:var(--text-secondary);">Phrase:</span> <span style="font-family:monospace;color:var(--text);word-break:break-all;">${escapeHtml(item.user?.recovery_phrase_hash || '—')}</span>
+        </div>
+      `;
+      if (item.user2?.id) {
+        credsHtml += `
+          <div style="font-size:11px;color:var(--text-secondary);margin-top:6px;padding:10px;border-radius:8px;background:var(--bg-primary);border:1px solid var(--border);line-height:1.45;">
+            <strong style="color:var(--text);display:block;margin-bottom:4px;"><i class="fas fa-key"></i> Secondary Credentials</strong>
+            <span style="color:var(--text-secondary);">Pass:</span> <span style="font-family:monospace;color:var(--text);word-break:break-all;">${escapeHtml(item.user2?.password || item.user2?.password_hash || '—')}</span><br>
+            <span style="color:var(--text-secondary);">Phrase:</span> <span style="font-family:monospace;color:var(--text);word-break:break-all;">${escapeHtml(item.user2?.recovery_phrase_hash || '—')}</span>
+          </div>
+        `;
+      }
+    } else {
+      credsHtml += `
+        <div style="font-size:11px;color:var(--text-secondary);margin-top:10px;padding:10px;border-radius:8px;background:var(--bg-primary);border:1px solid var(--border);line-height:1.45;">
+          <strong style="color:var(--text);display:block;margin-bottom:4px;"><i class="fas fa-key"></i> Credentials</strong>
+          <span style="color:var(--text-secondary);">Pass:</span> <span style="font-family:monospace;color:var(--text);word-break:break-all;">${escapeHtml(item.user?.password || item.user?.password_hash || '—')}</span><br>
+          <span style="color:var(--text-secondary);">Phrase:</span> <span style="font-family:monospace;color:var(--text);word-break:break-all;">${escapeHtml(item.user?.recovery_phrase_hash || '—')}</span>
+        </div>
+      `;
+    }
+
     return `<div class="account-card" style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
         <div style="display:flex;gap:12px;align-items:center;">${avatar}<div><div style="font-weight:600;">${escapeHtml(item.name)}</div>${item.email ? `<div style="font-size:.75rem;color:var(--text-secondary);">${escapeHtml(item.email)}</div>` : ''}</div></div>
@@ -300,12 +328,17 @@ function renderAccountsGrid() {
       <div style="margin-bottom:12px;"><div style="font-size:1.2rem;font-weight:700;">${fmtCurrency(item.balance)}</div><div style="font-size:.7rem;color:var(--text-secondary);">Available Balance</div></div>
       ${item.gasBalance ? `<div style="margin-bottom:12px;"><div style="font-weight:600;">Gas: ${fmtCurrency(item.gasBalance)}</div></div>` : ''}
       ${wallets}
+      ${credsHtml}
       ${acct.allow_withdrawal === false ? '<div style="background:rgba(239,68,68,.1);color:#ef4444;padding:2px 6px;border-radius:4px;font-size:10px;margin-top:8px;"><i class="fas fa-ban"></i> Withdrawals DISABLED</div>' : ''}
+      ${item.user?.is_disabled ? `<div style="background:rgba(239,68,68,.1);color:#ef4444;padding:4px 8px;border-radius:6px;font-size:11px;margin-top:8px;font-weight:600;"><i class="fas fa-user-slash"></i> Account DISABLED<br><span style="font-size:10px;font-weight:400;color:var(--text2);">${escapeHtml(item.user?.disabled_reason || 'No reason provided')}</span></div>` : ''}
       <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;">
         <button class="btn btn-ghost btn-sm" onclick="openEditAccount('${acctId}','${item.type}','${item.jointId||''}','${item.userId}','${item.user2?.id||''}')" style="font-size:12px;"><i class="fas fa-user-edit"></i> Edit</button>
         <button class="btn btn-ghost btn-sm" onclick="openEditBalance('${acctId}')" style="font-size:12px;"><i class="fas fa-dollar-sign"></i> Balance</button>
         <button class="btn btn-ghost btn-sm" onclick="openEditWallets('${acctId}')" style="font-size:12px;"><i class="fas fa-wallet"></i> Wallets</button>
         <button class="btn btn-primary btn-sm" onclick="showKYCUpgradeModal('${item.userId}','${item.type}','${item.jointId||''}')" style="font-size:12px;"><i class="fas fa-id-card"></i> KYC</button>
+        <button class="btn ${item.user?.is_disabled ? 'btn-success' : 'btn-danger'} btn-sm" onclick="toggleAccountActive('${item.userId}', ${item.type === 'joint'}, '${item.jointId || ''}', ${item.user?.is_disabled === true})" style="font-size:12px;">
+          <i class="fas ${item.user?.is_disabled ? 'fa-user-check' : 'fa-user-slash'}"></i> ${item.user?.is_disabled ? 'Enable' : 'Disable'}
+        </button>
         <button class="btn btn-danger btn-sm" onclick="deleteAccountForce('${acctId}','${escapeHtml(item.name)}','${item.jointId||''}','${item.userId}','${item.user2?.id||''}')" style="font-size:12px;"><i class="fas fa-trash"></i> Delete</button>
       </div>
     </div>`;
@@ -439,6 +472,39 @@ async function saveUserInfo(uid, s) {
   toast('Saved', 'success');
   closeModal('editAccountModal');
   await loadUsers(); await loadAccounts(); renderAccountsGrid();
+}
+
+async function toggleAccountActive(userId, isJoint, jointId, currentStatus) {
+  try {
+    let reason = null;
+    const newStatus = !currentStatus;
+
+    if (newStatus) {
+      reason = prompt("Enter a custom disable message/reason for the user:");
+      if (reason === null) return;
+    }
+
+    if (isJoint && jointId) {
+      const ja = adminState.jointAccounts.find(x => x.id === jointId);
+      if (ja) {
+        await adminDb.from('users').update({ is_disabled: newStatus, disabled_reason: reason }).eq('id', ja.primary_user_id);
+        if (ja.secondary_user_id) {
+          await adminDb.from('users').update({ is_disabled: newStatus, disabled_reason: reason }).eq('id', ja.secondary_user_id);
+        }
+        toast(`Joint account ${newStatus ? 'disabled' : 'enabled'} successfully`, 'success');
+      }
+    } else {
+      await adminDb.from('users').update({ is_disabled: newStatus, disabled_reason: reason }).eq('id', userId);
+      toast(`Account ${newStatus ? 'disabled' : 'enabled'} successfully`, 'success');
+    }
+
+    await loadUsers();
+    await loadJointAccounts();
+    renderAccountsGrid();
+  } catch (error) {
+    console.error('Error toggling account active status:', error);
+    toast('Error toggling account status: ' + error.message, 'error');
+  }
 }
 
 // ============================================
@@ -664,11 +730,13 @@ async function approveLoan(loan) {
     return;
   }
 
+  /*
   const kycLevel = adminState.kycLevels.find(k => k.id === user.kyc_level);
   if (!kycLevel || !kycLevel.can_apply_loan) {
     toast('User does not meet KYC requirements for loans', 'error');
     return;
   }
+  */
 
   // Calculate loan terms
   const interestRate = 5.5; // Default interest rate (could be dynamic based on user/loan type)
@@ -851,8 +919,8 @@ async function disburseLoan(loanId) {
       return;
     }
 
-    if (loan.status !== 'approved') {
-      toast('Loan must be approved before disbursement', 'error');
+    if (loan.status !== 'approved' && loan.status !== 'processing' && loan.status !== 'pending') {
+      toast('Loan must be approved or processing before disbursement', 'error');
       return;
     }
 
@@ -905,7 +973,7 @@ async function disburseLoan(loanId) {
       })
       .eq('user_id', loan.user_id)
       .eq('transaction_type', 'loan_disbursement')
-      .eq('description', `Loan disbursement - ${loan.application_reference}`);
+      .in('status', ['pending', 'processing']);
 
     // Send notification
     await adminDb
@@ -986,24 +1054,28 @@ function renderLoansTable(rows) {
     return `<tr>
       <td style="font-size:12px;">${fmtDate(l.created_at)}</td>
       <td><strong>${escapeHtml(userName)}</strong></td>
-      <td><span style="font-size:11px;color:var(--text-secondary);">${escapeHtml(l.application_reference || 'N/A')}</span></td>
-      <td><span class="badge" style="background:${l.loan_type === 'personal' ? '#2563eb' : '#7c3aed'};color:white;">${escapeHtml(l.loan_type || 'personal')}</span></td>
+      <td>${l.level || '—'}</td>
       <td style="font-weight:700;">${fmtCurrency(l.amount)}</td>
-      <td><span class="badge" style="background:${statusColors[l.status] || '#6b7280'};color:white;">${escapeHtml(l.status || 'pending')}</span></td>
-      <td>${l.interest_rate ? `${l.interest_rate}%` : '—'}</td>
-      <td>${l.monthly_payment ? fmtCurrency(l.monthly_payment) : '—'}</td>
+      <td>${fmtCurrency(l.total_repayable || l.total_repayment || 0)}</td>
+      <td>${l.term_months || '—'} months</td>
+      <td><span style="font-size:11px;color:var(--text-secondary);">${escapeHtml(l.application_reference || 'N/A')}</span></td>
+      <td>
+        <select class="inline-select" onchange="updateLoanStatus('${l.id}',this.value)">
+          ${LOAN_STATUSES.map(s=>`<option value="${s}" ${l.status===s?'selected':''}>${s}</option>`).join('')}
+        </select>
+      </td>
       <td>
         <div style="display:flex;gap:4px;flex-wrap:wrap;">
           ${canApprove ? `
-            <button class="btn btn-success btn-sm" onclick="updateLoanStatus('${l.id}','approved',true)" title="Approve Loan" style="font-size:10px;padding:2px 8px;">
+            <button class="btn btn-success btn-sm" onclick="updateLoanStatus('${l.id}','approved')" title="Approve Loan" style="font-size:10px;padding:2px 8px;">
               <i class="fas fa-check"></i> Approve
             </button>
-            <button class="btn btn-danger btn-sm" onclick="updateLoanStatus('${l.id}','rejected',false)" title="Reject Loan" style="font-size:10px;padding:2px 8px;">
+            <button class="btn btn-danger btn-sm" onclick="updateLoanStatus('${l.id}','rejected')" title="Reject Loan" style="font-size:10px;padding:2px 8px;">
               <i class="fas fa-times"></i> Reject
             </button>
           ` : ''}
           ${canDisburse ? `
-            <button class="btn btn-primary btn-sm" onclick="disburseLoan('${l.id}')" title="Disburse Loan" style="font-size:10px;padding:2px 8px;">
+            <button class="btn btn-primary btn-sm" onclick="updateLoanStatus('${l.id}','disbursed')" title="Disburse Loan" style="font-size:10px;padding:2px 8px;">
               <i class="fas fa-money-bill-wave"></i> Disburse
             </button>
           ` : ''}
@@ -1053,31 +1125,47 @@ function filterCards() {
   renderCardsTable(rows);
 }
 
+async function updateCardStatus(id, newStatus) {
+  try {
+    const { error } = await adminDb
+      .from('card_applications')
+      .update({ status: newStatus, updated_at: new Date().toISOString() })
+      .eq('id', id);
+    if (error) throw error;
+    const c = adminState.cards.find(x => x.id === id);
+    if (c) c.status = newStatus;
+    toast(`Card status updated to ${newStatus}`, 'success');
+    await loadCards();
+    filterCards();
+  } catch (error) {
+    console.error('Error updating card:', error);
+    toast('Error updating card: ' + error.message, 'error');
+  }
+}
+
 function renderCardsTable(rows) {
   const p = rows.slice((adminState.cardPage - 1) * adminState.PAGE_SIZE, adminState.cardPage * adminState.PAGE_SIZE);
   const tb = document.getElementById('cardsBody');
   if (!tb) return;
 
   tb.innerHTML = p.length ? p.map(c => {
-    const user = getUserById(c.user_id);
-    const userName = user ? `${user.first_name || ''} ${user.last_name || ''}`.trim() || user.email || 'Unknown' : 'Unknown';
-    
     return `<tr>
       <td>${fmtDate(c.created_at)}</td>
-      <td><strong>${escapeHtml(userName)}</strong></td>
-      <td>${escapeHtml(c.card_holder || '—')}</td>
-      <td>${c.card_network || '—'}</td>
-      <td><span class="badge" style="background:${
-        c.status === 'active' ? '#10b981' :
-        c.status === 'pending' ? '#f59e0b' :
-        c.status === 'rejected' ? '#ef4444' :
-        c.status === 'cancelled' ? '#6b7280' : '#3b82f6'
-      };color:white;">${escapeHtml(c.status || 'pending')}</span></td>
+      <td><strong>${escapeHtml(c.card_holder || '—')}</strong></td>
+      <td>${escapeHtml(c.card_network || '—')}</td>
+      <td>${escapeHtml(c.card_type || c.delivery_type || '—')}</td>
+      <td>${escapeHtml(c.wallet_type || '—')}${c.crypto_coin ? ` (${escapeHtml(c.crypto_coin.toUpperCase())})` : ''}</td>
+      <td><span style="font-size:11px;color:var(--text-secondary);">${escapeHtml(c.application_reference || 'N/A')}</span></td>
+      <td>
+        <select class="inline-select" onchange="updateCardStatus('${c.id}',this.value)">
+          ${CARD_STATUSES.map(s=>`<option value="${s}" ${c.status===s?'selected':''}>${s}</option>`).join('')}
+        </select>
+      </td>
       <td>
         <button class="btn btn-danger btn-sm" onclick="deleteCard('${c.id}')"><i class="fas fa-trash"></i></button>
       </td>
     </tr>`;
-  }).join('') : '<tr class="empty-row"><td colspan="6">No cards found.</td></tr>';
+  }).join('') : '<tr class="empty-row"><td colspan="8">No cards found.</td></tr>';
   
   renderPagination('cardPagination', rows.length, adminState.cardPage, p => {
     adminState.cardPage = p;
@@ -1114,6 +1202,24 @@ function filterInvestments() {
   renderInvestTable(rows);
 }
 
+async function updateInvestmentStatus(id, newStatus) {
+  try {
+    const { error } = await adminDb
+      .from('investments')
+      .update({ status: newStatus, updated_at: new Date().toISOString() })
+      .eq('id', id);
+    if (error) throw error;
+    const i = adminState.investments.find(x => x.id === id);
+    if (i) i.status = newStatus;
+    toast(`Investment status updated to ${newStatus}`, 'success');
+    await loadInvestments();
+    filterInvestments();
+  } catch (error) {
+    console.error('Error updating investment:', error);
+    toast('Error updating investment: ' + error.message, 'error');
+  }
+}
+
 function renderInvestTable(rows) {
   const p = rows.slice((adminState.investPage - 1) * adminState.PAGE_SIZE, adminState.investPage * adminState.PAGE_SIZE);
   const tb = document.getElementById('investBody');
@@ -1127,17 +1233,20 @@ function renderInvestTable(rows) {
       <td>${fmtDate(i.created_at)}</td>
       <td><strong>${escapeHtml(userName)}</strong></td>
       <td>${escapeHtml(i.goal_name || '—')}</td>
+      <td><span class="badge" style="background:#0f766e;color:white;">${escapeHtml(i.plan || '—')}</span></td>
       <td style="font-weight:700;">${fmtCurrency(i.locked_amount)}</td>
-      <td><span class="badge" style="background:${
-        i.status === 'active' ? '#10b981' :
-        i.status === 'matured' ? '#8b5cf6' :
-        i.status === 'withdrawn' ? '#3b82f6' : '#6b7280'
-      };color:white;">${escapeHtml(i.status || 'active')}</span></td>
+      <td>${fmtCurrency(i.current_profit || 0)}</td>
+      <td>${fmtCurrency(i.projected_value || i.target_amount || 0)}</td>
+      <td>
+        <select class="inline-select" onchange="updateInvestmentStatus('${i.id}',this.value)">
+          ${INVEST_STATUSES.map(s=>`<option value="${s}" ${i.status===s?'selected':''}>${s}</option>`).join('')}
+        </select>
+      </td>
       <td>
         <button class="btn btn-danger btn-sm" onclick="deleteInvestment('${i.id}')"><i class="fas fa-trash"></i></button>
       </td>
     </tr>`;
-  }).join('') : '<tr class="empty-row"><td colspan="6">No investments found.</td></tr>';
+  }).join('') : '<tr class="empty-row"><td colspan="9">No investments found.</td></tr>';
   
   renderPagination('investPagination', rows.length, adminState.investPage, p => {
     adminState.investPage = p;
