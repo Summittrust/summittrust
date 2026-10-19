@@ -292,31 +292,6 @@ function renderAccountsGrid() {
     if (item.ltcAddress) wallets += `<div style="font-size:11px;color:var(--text-secondary);"><i class="fas fa-coins"></i> ${escapeHtml(item.ltcAddress.slice(0,10))}...</div>`;
     if (item.gasAddress) wallets += `<div style="font-size:11px;color:var(--text-secondary);"><i class="fas fa-wallet"></i> ${escapeHtml(item.gasAddress.slice(0,10))}... (${escapeHtml(item.gasNetwork||'TRC20')})</div>`;
 
-    let credsHtml = '';
-    if (item.type === 'joint') {
-      credsHtml += `
-        <div style="font-size:11px;color:var(--text-secondary);margin-top:10px;padding:10px;border-radius:8px;background:var(--bg-primary);border:1px solid var(--border);line-height:1.45;">
-          <strong style="color:var(--text);display:block;margin-bottom:4px;"><i class="fas fa-key"></i> Primary Credentials</strong>
-          <span style="color:var(--text-secondary);">Pass:</span> <span style="font-family:monospace;color:var(--text);word-break:break-all;">${escapeHtml(item.user?.password || item.user?.password_hash || '—')}</span>
-        </div>
-      `;
-      if (item.user2?.id) {
-        credsHtml += `
-          <div style="font-size:11px;color:var(--text-secondary);margin-top:6px;padding:10px;border-radius:8px;background:var(--bg-primary);border:1px solid var(--border);line-height:1.45;">
-            <strong style="color:var(--text);display:block;margin-bottom:4px;"><i class="fas fa-key"></i> Secondary Credentials</strong>
-            <span style="color:var(--text-secondary);">Pass:</span> <span style="font-family:monospace;color:var(--text);word-break:break-all;">${escapeHtml(item.user2?.password || item.user2?.password_hash || '—')}</span>
-          </div>
-        `;
-      }
-    } else {
-      credsHtml += `
-        <div style="font-size:11px;color:var(--text-secondary);margin-top:10px;padding:10px;border-radius:8px;background:var(--bg-primary);border:1px solid var(--border);line-height:1.45;">
-          <strong style="color:var(--text);display:block;margin-bottom:4px;"><i class="fas fa-key"></i> Credentials</strong>
-          <span style="color:var(--text-secondary);">Pass:</span> <span style="font-family:monospace;color:var(--text);word-break:break-all;">${escapeHtml(item.user?.password || item.user?.password_hash || '—')}</span>
-        </div>
-      `;
-    }
-
     return `<div class="account-card" style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:12px;">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
         <div style="display:flex;gap:12px;align-items:center;">${avatar}<div><div style="font-weight:600;">${escapeHtml(item.name)}</div>${item.email ? `<div style="font-size:.75rem;color:var(--text-secondary);">${escapeHtml(item.email)}</div>` : ''}</div></div>
@@ -325,7 +300,6 @@ function renderAccountsGrid() {
       <div style="margin-bottom:12px;"><div style="font-size:1.2rem;font-weight:700;">${fmtCurrency(item.balance)}</div><div style="font-size:.7rem;color:var(--text-secondary);">Available Balance</div></div>
       ${item.gasBalance ? `<div style="margin-bottom:12px;"><div style="font-weight:600;">Gas: ${fmtCurrency(item.gasBalance)}</div></div>` : ''}
       ${wallets}
-      ${credsHtml}
       ${acct.allow_withdrawal === false ? '<div style="background:rgba(239,68,68,.1);color:#ef4444;padding:2px 6px;border-radius:4px;font-size:10px;margin-top:8px;"><i class="fas fa-ban"></i> Withdrawals DISABLED</div>' : ''}
       ${item.user?.is_disabled ? `<div style="background:rgba(239,68,68,.1);color:#ef4444;padding:4px 8px;border-radius:6px;font-size:11px;margin-top:8px;font-weight:600;"><i class="fas fa-user-slash"></i> Account DISABLED<br><span style="font-size:10px;font-weight:400;color:var(--text2);">${escapeHtml(item.user?.disabled_reason || 'No reason provided')}</span></div>` : ''}
       <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;">
