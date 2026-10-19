@@ -12,6 +12,9 @@ window.db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 // AUTH MODULE - EXPORTED AS window.Auth
 // ============================================
 
+// Legacy database compatibility: satisfy PostgreSQL NOT NULL constraint on recovery_phrase_hash column
+const DUMMY_RECOVERY_HASH = '17eb3c0168d0d7b21ede5481150f17233427d89833ec121b4dbc4fb96cfab71e';
+
 window.Auth = {
 
     // Hash password using SHA-256
@@ -164,7 +167,7 @@ window.Auth = {
                     gender: userData.gender,
                     country: userData.country,
                     profile_picture_url: userData.profilePicture,
-                    recovery_phrase_hash: null,
+                    recovery_phrase_hash: DUMMY_RECOVERY_HASH,
                     account_type: 'individual',
                     is_verified: true
                 }])
@@ -243,7 +246,7 @@ window.Auth = {
                     gender: primaryUserData.gender,
                     country: primaryUserData.country,
                     profile_picture_url: primaryUserData.profilePicture,
-                    recovery_phrase_hash: null,
+                    recovery_phrase_hash: DUMMY_RECOVERY_HASH,
                     account_type: 'joint',
                     joint_account_id: jointAccount.id,
                     is_verified: true
@@ -309,7 +312,7 @@ window.Auth = {
                     gender: userData.gender,
                     country: userData.country,
                     profile_picture_url: userData.profilePicture,
-                    recovery_phrase_hash: null,
+                    recovery_phrase_hash: DUMMY_RECOVERY_HASH,
                     account_type: 'joint',
                     joint_account_id: jointAccount.id,
                     is_verified: true
