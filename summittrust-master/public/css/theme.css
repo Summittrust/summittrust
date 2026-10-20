@@ -1,0 +1,271 @@
+/* Summit Trust Bank - Theme CSS */
+
+/* Light Theme Variables — Bone & Carbon */
+:root {
+    --bg-primary: #F9F6F1;
+    --bg-secondary: #F2EDE6;
+    --bg-tertiary: #EBE4DA;
+    --text-primary: #111111;
+    --text-secondary: #2b2b2b;
+    --text-tertiary: #8C8580;
+    --accent-primary: #1f5cce;
+    --accent-secondary: #173d85;
+    --success: #2D7A4F;
+    --warning: #3970d6;
+    --error: #C0392B;
+    --border: #E8E2D9;
+    --card-bg: #FFFFFF;
+    --shadow: rgba(17, 17, 17, 0.06) 0px 6px 24px 0px;
+}
+
+/* Dark Theme — Carbon */
+[data-theme="dark"] {
+    --bg-primary: #111111;
+    --bg-secondary: #1C1C1C;
+    --bg-tertiary: #242424;
+    --text-primary: #ececec;
+    --text-secondary: #9b9b9b;
+    --text-tertiary: #736C65;
+    --accent-primary: #1f5cce;
+    --accent-secondary: #173d85;
+    --success: #3DAA6A;
+    --warning: #3970d6;
+    --error: #E04535;
+    --border: #2E2E2E;
+    --card-bg: #1C1C1C;
+    --shadow: rgba(0, 0, 0, 0.35) 0px 6px 24px 0px;
+}
+
+/* Theme-specific component styles */
+[data-theme="dark"] .card {
+    background-color: var(--card-bg);
+}
+
+[data-theme="dark"] .form-input {
+    background-color: var(--bg-secondary);
+}
+
+[data-theme="dark"] .btn-outline {
+    background-color: transparent;
+}
+
+[data-theme="dark"] .btn-outline:hover {
+    background-color: var(--bg-tertiary);
+}
+
+[data-theme="dark"] .modal {
+    background-color: var(--card-bg);
+}
+
+[data-theme="dark"] .table tr:hover td {
+    background-color: var(--bg-tertiary);
+}
+
+/* Theme transition */
+body,
+.card,
+.btn,
+.form-input,
+.navbar,
+.modal,
+.table tr td {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Custom scrollbar for dark theme */
+[data-theme="dark"] ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 5px;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+    background: var(--text-tertiary);
+}
+
+/* Print styles */
+@media print {
+    [data-theme="dark"] {
+        --bg-primary: #ffffff;
+        --text-primary: #000000;
+        --border: #dddddd;
+    }
+    
+    .no-print {
+        display: none !important;
+    }
+    
+    .print-only {
+        display: block !important;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    :root {
+        --accent-primary: #B84800;
+        --text-primary: #000000;
+        --border: #000000;
+    }
+    
+    [data-theme="dark"] {
+        --accent-primary: #FF8C3A;
+        --text-primary: #ffffff;
+        --border: #ffffff;
+    }
+}
+
+/* Reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* RTL Support */
+[dir="rtl"] {
+    text-align: right;
+}
+
+[dir="rtl"] .ml-auto {
+    margin-left: 0;
+    margin-right: auto;
+}
+
+[dir="rtl"] .navbar .nav-links {
+    margin-right: 0;
+    margin-left: auto;
+}
+
+[dir="rtl"] .language-selector .lang-dropdown {
+    right: auto;
+    left: 0;
+}
+
+[dir="rtl"] .modal-footer {
+    justify-content: flex-start;
+}
+
+[dir="rtl"] .table th,
+[dir="rtl"] .table td {
+    text-align: right;
+}
+
+/* Focus styles for accessibility */
+:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
+}
+
+/* Skip to content link for accessibility */
+.skip-to-content {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--accent-primary);
+    color: white;
+    padding: 8px 16px;
+    text-decoration: none;
+    z-index: 9999;
+}
+
+.skip-to-content:focus {
+    top: 0;
+}
+
+/* Loading skeleton animation */
+.skeleton {
+    background: linear-gradient(
+        90deg,
+        var(--bg-tertiary) 25%,
+        var(--border) 50%,
+        var(--bg-tertiary) 75%
+    );
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+}
+
+@keyframes skeleton-loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Glass morphism effect */
+.glass {
+    background: rgba(249, 246, 241, 0.6);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(232, 226, 217, 0.6);
+}
+
+[data-theme="dark"] .glass {
+    background: rgba(17, 17, 17, 0.6);
+    border: 1px solid rgba(46, 46, 46, 0.6);
+}
+
+/* Status colors */
+.status-active {
+    color: var(--success);
+    background-color: rgba(45, 122, 79, 0.1);
+}
+
+.status-pending {
+    color: var(--warning);
+    background-color: rgba(196, 122, 26, 0.1);
+}
+
+.status-blocked {
+    color: var(--error);
+    background-color: rgba(192, 57, 43, 0.1);
+}
+
+.status-approved {
+    color: var(--success);
+    background-color: rgba(45, 122, 79, 0.1);
+}
+
+.status-rejected {
+    color: var(--error);
+    background-color: rgba(192, 57, 43, 0.1);
+}
+
+/* Transaction status specific */
+.tx-completed { color: var(--success); }
+.tx-pending { color: var(--warning); }
+.tx-failed { color: var(--error); }
+
+/* Card type indicators */
+.card-standard {
+    border-left: 4px solid var(--accent-primary);
+}
+
+.card-elite {
+    border-left: 4px solid var(--warning);
+}
+
+/* Account type indicators */
+.account-single {
+    border-left: 4px solid var(--success);
+}
+
+.account-joint {
+    border-left: 4px solid var(--accent-primary);
+}
+
+/* Investment lock periods */
+.lock-short { color: var(--success); }
+.lock-medium { color: var(--warning); }
+.lock-long { color: var(--accent-primary); }
