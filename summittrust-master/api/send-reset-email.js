@@ -133,6 +133,7 @@ module.exports = async (req, res) => {
             },
             body: JSON.stringify({
                 channel: 'email',
+                from: 'Summit Trust <help@smt.nitrosend.net>',
                 to: cleanEmail,
                 subject: `${otpCode} is your Summit Trust password reset code`,
                 body: emailHtml,
