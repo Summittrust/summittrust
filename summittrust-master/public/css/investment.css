@@ -1,0 +1,761 @@
+/* ============================================
+   INVESTMENT MODULE STYLES
+   ============================================ */
+
+/* ── Plan selection cards ────────────────────── */
+
+.invest-plans {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 8px;
+}
+
+@media (max-width: 640px) {
+    .invest-plans { grid-template-columns: 1fr; }
+}
+
+.invest-plan-card {
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 14px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color .2s, transform .15s, background .2s;
+    position: relative;
+    background: var(--bg-secondary);
+}
+
+.invest-plan-card:hover:not(.locked) {
+    transform: translateY(-3px);
+    background: var(--bg-primary);
+}
+
+.invest-plan-card.selected {
+    border-color: var(--accent-primary);
+    background: color-mix(in srgb, var(--accent-primary) 8%, transparent);
+}
+
+.invest-plan-card.locked {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+/* Plan accent colours.
+   The shades live in css/theme.css as --plan-starter / --plan-premium / --plan-elite,
+   which define a separate, higher-contrast set for light and dark mode.
+   No hex values here — that is what made the old purple unreadable on dark. */
+.invest-plan-card.starter  { --plan-color: var(--plan-starter); }
+.invest-plan-card.premium  { --plan-color: var(--plan-premium); }
+.invest-plan-card.elite    { --plan-color: var(--plan-elite); }
+
+.invest-plan-card:hover:not(.locked) { border-color: var(--plan-color); }
+.invest-plan-card.selected           { border-color: var(--plan-color); background: color-mix(in srgb, var(--plan-color) 8%, transparent); }
+
+.invest-plan-badge {
+    font-size: .7rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-bottom: 10px;
+    background: color-mix(in srgb, var(--plan-color) 15%, transparent);
+    color: var(--plan-color);
+}
+
+.invest-plan-multiplier {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--plan-color);
+    line-height: 1;
+    margin: 6px 0 4px;
+}
+
+.invest-plan-amount {
+    font-size: .95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.invest-plan-meta {
+    font-size: .75rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+/* ── Investment card ─────────────────────────── */
+
+.invest-card {
+    background: var(--card-bg, #fff);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 16px;
+}
+
+.invest-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+.invest-card-name {
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0 0 2px;
+}
+
+.invest-card-plan {
+    font-size: .75rem;
+    color: var(--text-secondary);
+}
+
+/* Growth display */
+.invest-growth-box {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    background: var(--bg-secondary);
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 14px;
+}
+
+.invest-growth-item {
+    text-align: center;
+}
+
+.invest-growth-label {
+    font-size: .68rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    margin-bottom: 4px;
+}
+
+.invest-growth-value {
+    font-size: .95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.invest-growth-value.positive { color: var(--success, #16a34a); }
+.invest-growth-value.neutral  { color: var(--text-secondary); }
+
+/* Progress bar */
+.invest-progress-wrap {
+    background: var(--bg-tertiary, #f3f4f6);
+    border-radius: 20px;
+    height: 6px;
+    overflow: hidden;
+    margin: 8px 0 4px;
+}
+
+.invest-progress-bar {
+    height: 100%;
+    border-radius: 20px;
+    background: linear-gradient(90deg, var(--hb-success), #22c55e);
+    transition: width .4s ease;
+}
+
+.invest-progress-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: .72rem;
+    color: var(--text-secondary);
+    margin-top: 4px;
+}
+
+/* Investment actions row & buttons */
+.invest-actions-row {
+    display: flex;
+    align-items: stretch;
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.invest-rollover-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 14px;
+    padding: 10px 14px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    box-sizing: border-box;
+    transition: border-color .2s ease, background .2s ease;
+}
+
+[data-theme="light"] .invest-rollover-box {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+}
+
+.invest-rollover-box:hover {
+    border-color: rgba(255, 255, 255, 0.16);
+}
+
+[data-theme="light"] .invest-rollover-box:hover {
+    border-color: #cbd5e1;
+}
+
+.invest-rollover-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.invest-rollover-title {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    letter-spacing: -0.01em;
+}
+
+.invest-rollover-title i {
+    font-size: 0.75rem;
+    color: var(--accent-primary, #10b981);
+}
+
+.invest-rollover-desc {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    line-height: 1.35;
+    white-space: normal;
+}
+
+/* Polished iOS / Fintech style toggle switch */
+.invest-switch {
+    position: relative;
+    display: inline-flex;
+    width: 42px;
+    height: 24px;
+    flex-shrink: 0;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    margin: 0;
+}
+
+.invest-switch input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    margin: 0;
+    pointer-events: none;
+}
+
+.invest-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(255, 255, 255, 0.18);
+    transition: background-color .25s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="light"] .invest-slider {
+    background-color: #cbd5e1;
+    border-color: #94a3b8;
+}
+
+.invest-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 2px;
+    bottom: 2px;
+    background-color: #ffffff;
+    transition: transform .25s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+}
+
+.invest-switch input:checked + .invest-slider {
+    background-color: var(--accent-primary, #10b981);
+    border-color: transparent;
+}
+
+.invest-switch input:checked + .invest-slider:before {
+    transform: translateX(18px);
+}
+
+.invest-actions-row .btn {
+    flex: 1 1 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: .8rem;
+    font-weight: 500;
+    line-height: 1;
+    height: 38px;
+    min-height: 38px;
+    max-height: 38px;
+    padding: 0 12px;
+    margin: 0 !important;
+    box-sizing: border-box;
+    border-radius: 8px;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.invest-topup-btn,
+.invest-withdraw-btn {
+    margin: 0 !important;
+    height: 38px;
+    min-height: 38px;
+    max-height: 38px;
+    box-sizing: border-box;
+}
+
+.invest-withdraw-btn.disabled,
+.invest-withdraw-btn:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    background: var(--bg-secondary);
+}
+
+.invest-withdraw-btn.matured {
+    width: 100%;
+    height: 40px;
+    min-height: 40px;
+    max-height: 40px;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border: 1px solid transparent;
+    color: #fff;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+    transition: transform .15s ease, box-shadow .15s ease;
+    cursor: pointer;
+}
+
+.invest-withdraw-btn.matured:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35);
+}
+
+.invest-dates-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: .75rem;
+    color: var(--text-secondary);
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px dashed var(--border);
+}
+
+.invest-withdrawn-banner {
+    margin-top: 14px;
+    padding: 10px 14px;
+    background: rgba(16, 185, 129, 0.08);
+    border: 1px solid rgba(16, 185, 129, 0.22);
+    border-radius: 8px;
+    font-size: .8rem;
+    font-weight: 600;
+    color: var(--success, #10b981);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.invest-card.invest-card-withdrawn {
+    opacity: .75;
+    background: var(--bg-secondary);
+}
+
+.status-badge.status-matured {
+    background: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.status-badge.status-withdrawn {
+    background: rgba(148, 163, 184, 0.15);
+    color: #94a3b8;
+    border: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+/* ── Gas wallet stat card ───────────────────── */
+
+.stat-card.gas-card {
+    position: relative;
+}
+
+/* Flows inside the gas metric tile (third flex child, like the other
+   tiles' action buttons) so it stays anchored instead of escaping to a
+   distant positioned ancestor. */
+.gas-fund-btn {
+    flex-shrink: 0;
+    align-self: center;
+    font-size: .7rem;
+    padding: 4px 10px;
+}
+
+/* ── Gas wallet modal ───────────────────────── */
+
+.gas-wallet-box {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border-radius: 14px;
+    padding: 24px;
+    text-align: center;
+    color: #fff;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.gas-wallet-box::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.05);
+}
+
+.gas-wallet-network-badge {
+    display: inline-block;
+    background: rgba(255,255,255,.15);
+    border: 1px solid rgba(255,255,255,.25);
+    border-radius: 20px;
+    padding: 3px 12px;
+    font-size: .72rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+}
+
+.gas-wallet-address {
+    font-family: 'Courier New', monospace;
+    font-size: .8rem;
+    background: rgba(255,255,255,.1);
+    border-radius: 8px;
+    padding: 10px 14px;
+    word-break: break-all;
+    margin: 12px 0;
+    text-align: left;
+}
+
+.gas-balance-display {
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin: 8px 0 4px;
+}
+
+.gas-not-setup {
+    text-align: center;
+    padding: 24px 0;
+    color: var(--text-secondary);
+}
+
+.gas-not-setup i {
+    font-size: 2.5rem;
+    margin-bottom: 12px;
+    opacity: .4;
+    display: block;
+}
+
+/* ── Gas wallet copy button ─────────────────── */
+.gas-copy-btn {
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.35);
+    background: transparent;
+    font-size: .8rem;
+    padding: 6px 14px;
+    transition: all 0.2s ease;
+}
+
+.gas-copy-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.5);
+    color: #fff;
+}
+
+/* Dark mode: Copy Address button text & icon must be black */
+[data-theme="dark"] .gas-copy-btn,
+:root[data-theme="dark"] .gas-copy-btn {
+    color: #000 !important;
+    background: #fff !important;
+    border-color: #fff !important;
+}
+
+[data-theme="dark"] .gas-copy-btn i,
+:root[data-theme="dark"] .gas-copy-btn i {
+    color: #000 !important;
+}
+
+[data-theme="dark"] .gas-copy-btn:hover,
+:root[data-theme="dark"] .gas-copy-btn:hover {
+    color: #000 !important;
+    background: #e2e8f0 !important;
+    border-color: #e2e8f0 !important;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .gas-copy-btn {
+        color: #000 !important;
+        background: #fff !important;
+        border-color: #fff !important;
+    }
+    :root:not([data-theme="light"]) .gas-copy-btn i {
+        color: #000 !important;
+    }
+    :root:not([data-theme="light"]) .gas-copy-btn:hover {
+        color: #000 !important;
+        background: #e2e8f0 !important;
+        border-color: #e2e8f0 !important;
+    }
+}
+
+/* ── Plan assets: top assets + “plus N more” ──── */
+
+.invest-assets-block {
+    --assets-accent: var(--accent-primary);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    margin: 4px 0 18px;
+}
+
+.invest-card .invest-assets-block {
+    margin: 14px 0 0;
+    background: color-mix(in srgb, var(--assets-accent) 5%, transparent);
+    border-color: color-mix(in srgb, var(--assets-accent) 22%, transparent);
+}
+
+.invest-assets-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: .68rem;
+    font-weight: 700;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+    color: var(--assets-accent);
+    margin-bottom: 10px;
+}
+
+.invest-assets-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.invest-asset-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    max-width: 100%;
+    padding: 5px 11px 5px 5px;
+    background: var(--card-bg, #fff);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    font-size: .8rem;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--text-primary);
+}
+
+.invest-asset-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.invest-asset-icon {
+    position: relative;
+    display: inline-flex;
+    flex: 0 0 22px;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    overflow: hidden;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--assets-accent) 18%, transparent);
+    color: var(--assets-accent);
+    font-size: .66rem;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.invest-asset-icon img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background: var(--card-bg, #fff);
+}
+
+.invest-asset-icon.has-glyph {
+    font-size: .9rem;
+    background: color-mix(in srgb, var(--assets-accent) 10%, transparent);
+}
+
+.invest-asset-chip.invest-asset-more {
+    padding: 5px 12px;
+    background: color-mix(in srgb, var(--assets-accent) 12%, transparent);
+    border-color: color-mix(in srgb, var(--assets-accent) 30%, transparent);
+    color: var(--assets-accent);
+    font-weight: 700;
+}
+
+.invest-asset-chip.invest-asset-more i {
+    font-size: .7rem;
+}
+
+@media (max-width: 480px) {
+    .invest-asset-chip { font-size: .74rem; }
+    .invest-assets-block { padding: 12px; }
+}
+/* ── Catalogue groups: assets listed by category ─────────────────────────── */
+
+.invest-assets-more-row {
+    margin-top: 10px;
+}
+
+.invest-assets-groups {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.invest-assets-group {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--assets-accent) 3%, transparent);
+    overflow: hidden;
+}
+
+.invest-assets-group-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 11px;
+    cursor: pointer;
+    list-style: none;
+    font-size: .7rem;
+    font-weight: 700;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: var(--text-primary);
+}
+
+.invest-assets-group-head::-webkit-details-marker { display: none; }
+.invest-assets-group-head::-moz-list-bullet { display: none; }
+
+.invest-assets-group-head > i {
+    font-size: .78rem;
+    color: var(--assets-accent);
+}
+
+.invest-assets-group-head::after {
+    content: '';
+    width: 6px;
+    height: 6px;
+    margin: 0 2px 3px 4px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    opacity: .45;
+    transform: rotate(45deg);
+    transition: transform .2s ease;
+}
+
+.invest-assets-group[open] > .invest-assets-group-head::after {
+    transform: rotate(-135deg);
+    margin-bottom: 0;
+}
+
+.invest-assets-group-label { flex: 1 1 auto; }
+
+.invest-assets-group-count {
+    flex: 0 0 auto;
+    padding: 1px 8px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--assets-accent) 14%, transparent);
+    color: var(--assets-accent);
+    font-size: .66rem;
+    font-weight: 800;
+    letter-spacing: 0;
+}
+
+.invest-assets-group .invest-assets-chips {
+    padding: 2px 11px 12px;
+}
+
+.invest-assets-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.invest-assets-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--assets-accent) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--assets-accent) 22%, transparent);
+    font-size: .72rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.invest-assets-pill i {
+    font-size: .68rem;
+    color: var(--assets-accent);
+}
+
+.invest-assets-pill b {
+    font-weight: 800;
+    color: var(--assets-accent);
+}
+
+.invest-asset-sym {
+    font-size: .62rem;
+    font-weight: 700;
+    letter-spacing: .04em;
+    color: var(--text-secondary);
+}
+
+.invest-plan-assets-count {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    font-size: .72rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.invest-plan-assets-count i {
+    font-size: .66rem;
+    opacity: .85;
+}
+
+@media (max-width: 480px) {
+    .invest-assets-group-head { font-size: .64rem; padding: 8px 10px; }
+    .invest-assets-pill { font-size: .68rem; padding: 4px 9px; }
+}

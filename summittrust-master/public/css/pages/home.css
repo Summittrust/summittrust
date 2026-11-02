@@ -1,0 +1,2070 @@
+/* ==========================================================================
+   Summit Trust Holdings — Home Page Stylesheet
+   Architecture: Editorial FinTech / Bento Grid / Titanium Card Cockpit
+   Typography: Cormorant Garamond (Display) & Inter (Body)
+   Tokens: theme.css (Ink, Brass, Paper, Paper Deep)
+   ========================================================================== */
+
+/* ── HERO EXPERIENCE ────────────────────────────────────────────────────── */
+.horizon-hero {
+    position: relative;
+    background-color: var(--bg);
+    color: var(--text);
+    padding: 120px 0 100px;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+}
+
+/* Ambient glow & architectural grid */
+.horizon-hero::before {
+    content: '';
+    position: absolute;
+    top: -20%;
+    right: -10%;
+    width: 65vw;
+    height: 65vw;
+    max-width: 900px;
+    max-height: 900px;
+    background: radial-gradient(circle, rgba(176, 141, 87, 0.08) 0%, rgba(15, 42, 36, 0.04) 40%, transparent 70%);
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.horizon-hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+        linear-gradient(rgba(176, 141, 87, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(176, 141, 87, 0.04) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse at 50% 50%, black 40%, transparent 80%);
+    -webkit-mask-image: radial-gradient(ellipse at 50% 50%, black 40%, transparent 80%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+.horizon-hero .container {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 50px;
+    align-items: center;
+}
+
+/* Pill badge */
+.hero-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 16px;
+    border-radius: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 24px;
+}
+
+.hero-pill-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--rcb-positive, #9B78FF);
+    box-shadow: 0 0 10px var(--rcb-positive, #9B78FF);
+    animation: pulse 2s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+/* Hero Typography */
+.hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 4.5vw + 0.5rem, 4.25rem);
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    margin-bottom: 24px;
+}
+
+.text-amber {
+    color: var(--accent);
+    background: none;
+    -webkit-text-fill-color: var(--accent);
+}
+
+.hero-subtitle {
+    font-size: 1.15rem;
+    line-height: 1.7;
+    color: var(--text-muted);
+    max-width: 540px;
+    margin-bottom: 40px;
+    font-weight: 400;
+}
+
+.hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 48px;
+}
+
+/* Hero Buttons */
+.btn-open-private,
+:root:not([data-theme="dark"]) .btn-open-private,
+[data-theme="light"] .btn-open-private {
+    background: var(--primary) !important;
+    color: var(--on-primary) !important;
+    border: 1.5px solid var(--primary) !important;
+    font-weight: 700 !important;
+    padding: 14px 28px !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 14px rgba(108, 63, 240, 0.35) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 10px !important;
+    text-decoration: none !important;
+    transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), background var(--dur) var(--ease) !important;
+}
+
+.btn-open-private i,
+:root:not([data-theme="dark"]) .btn-open-private i,
+[data-theme="light"] .btn-open-private i {
+    color: var(--on-primary) !important;
+}
+
+.btn-open-private:hover,
+:root:not([data-theme="dark"]) .btn-open-private:hover,
+[data-theme="light"] .btn-open-private:hover {
+    background: var(--primary-hover) !important;
+    border-color: var(--primary-hover) !important;
+    color: var(--on-primary) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 24px rgba(108, 63, 240, 0.45) !important;
+}
+
+[data-theme="dark"] .btn-open-private {
+    background: var(--primary) !important;
+    color: #12082F !important;
+    border: 1.5px solid var(--primary) !important;
+    box-shadow: 0 4px 14px rgba(155, 120, 255, 0.35) !important;
+}
+
+[data-theme="dark"] .btn-open-private i {
+    color: #12082F !important;
+}
+
+[data-theme="dark"] .btn-open-private:hover {
+    background: var(--primary-hover) !important;
+    border-color: var(--primary-hover) !important;
+    color: #12082F !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 24px rgba(155, 120, 255, 0.5) !important;
+}
+
+.btn-amber {
+    background: var(--accent) !important;
+    color: #FFFFFF !important;
+    border: 1.5px solid var(--accent) !important;
+    font-weight: 700 !important;
+    padding: 14px 28px !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 14px rgba(232, 85, 154, 0.35) !important;
+    transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), background var(--dur) var(--ease) !important;
+}
+
+.btn-amber:hover {
+    background: #D6336C !important;
+    border-color: #D6336C !important;
+    color: #FFFFFF !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 24px rgba(232, 85, 154, 0.5) !important;
+}
+
+.btn-ghost-white {
+    background: transparent !important;
+    color: var(--text) !important;
+    border: 1.5px solid var(--border) !important;
+    font-weight: 600 !important;
+    padding: 14px 26px !important;
+    border-radius: 8px !important;
+    backdrop-filter: blur(8px) !important;
+    transition: all var(--dur) var(--ease) !important;
+}
+
+.btn-ghost-white:hover {
+    background: var(--surface-2) !important;
+    border-color: var(--primary) !important;
+    color: var(--primary) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25) !important;
+}
+
+.invest-plan-card.featured .btn-outline {
+    border-color: rgba(255, 255, 255, 0.35) !important;
+    color: var(--hb-white) !important;
+}
+
+.invest-plan-card.featured .btn-outline:hover {
+    background: var(--hb-white) !important;
+    border-color: var(--hb-white) !important;
+    color: #0F2A24 !important;
+}
+
+/* Trust bullet list in hero */
+.hero-bullets {
+    display: flex;
+    gap: 28px;
+    flex-wrap: wrap;
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+}
+
+.hero-bullet-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.hero-bullet-item i {
+    color: var(--accent);
+    font-size: 0.85rem;
+}
+
+/* ── HERO VISUAL STAGE (Large Replaceable Image) ────────────────────── */
+.hero-visual-stage {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.hero-image-card {
+    position: relative;
+    width: 100%;
+    max-width: 500px;
+    border-radius: 24px;
+    background: linear-gradient(135deg, rgba(36, 23, 87, 0.75) 0%, rgba(15, 8, 40, 0.9) 100%);
+    border: 1px solid rgba(155, 120, 255, 0.28);
+    box-shadow: 0 30px 70px rgba(0, 0, 0, 0.5), 0 0 50px rgba(108, 63, 240, 0.2);
+    padding: 12px;
+    backdrop-filter: blur(10px);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.hero-image-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 35px 85px rgba(0, 0, 0, 0.6), 0 0 60px rgba(108, 63, 240, 0.3);
+}
+
+.hero-main-img {
+    width: 100%;
+    height: 440px;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 18px;
+    display: block;
+}
+
+/* Floating overlay badges on hero image */
+.hero-float-badge {
+    position: absolute;
+    background: rgba(26, 16, 64, 0.94);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(155, 120, 255, 0.35);
+    border-radius: 12px;
+    padding: 12px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5);
+    z-index: 4;
+    transition: transform 0.3s ease;
+}
+
+.hero-float-badge:hover {
+    transform: translateY(-3px);
+}
+
+.hero-float-badge.pos-top-right {
+    top: -20px;
+    right: -20px;
+}
+
+.hero-float-badge.pos-bottom-left {
+    bottom: -22px;
+    left: -20px;
+}
+
+.hero-badge-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.hero-badge-icon.icon-amber {
+    background: rgba(232, 85, 154, 0.2);
+    color: var(--accent);
+}
+
+.hero-badge-icon.icon-success {
+    background: rgba(108, 63, 240, 0.22);
+    color: var(--primary);
+}
+
+.hero-badge-text {
+    line-height: 1.3;
+}
+
+.hero-badge-title {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.hero-badge-desc {
+    font-family: var(--font-display);
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-top: 2px;
+}
+
+/* ── HERO FINANCIAL COCKPIT (Visual Stage) ──────────────────────────────── */
+.cockpit-stage {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    perspective: 1000px;
+}
+
+/* Titanium Metal Card */
+.titanium-card {
+    position: relative;
+    width: 100%;
+    max-width: 380px;
+    height: 230px;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #241757 0%, #150B38 70%, #0F0828 100%);
+    border: 1px solid rgba(155, 120, 255, 0.28);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45), 0 0 40px rgba(108, 63, 240, 0.2);
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    z-index: 3;
+    overflow: hidden;
+    transform: rotate3d(1, 1, 0, 4deg);
+    transition: transform 0.5s ease;
+}
+
+.titanium-card:hover {
+    transform: rotate3d(0, 0, 0, 0deg) scale(1.02);
+}
+
+.titanium-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 160px;
+    height: 160px;
+    background: radial-gradient(circle, rgba(255, 179, 71, 0.15) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.card-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.card-brand svg {
+    width: 32px;
+    height: 32px;
+}
+
+.card-brand span {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+    color: var(--hb-white);
+}
+
+.card-chip {
+    width: 40px;
+    height: 28px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #FFD180 0%, #D49B4B 100%);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    position: relative;
+}
+
+.card-middle {
+    margin: 18px 0 10px;
+}
+
+.card-number {
+    font-family: var(--font-mono);
+    font-size: 1.15rem;
+    letter-spacing: 0.16em;
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+
+.card-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.card-holder {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(232, 240, 250, 0.7);
+}
+
+.card-holder strong {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--hb-white);
+    letter-spacing: 0.06em;
+    margin-top: 2px;
+}
+
+.card-tier-pill {
+    padding: 3px 10px;
+    border-radius: 8px;
+    background: rgba(255, 179, 71, 0.15);
+    border: 1px solid var(--hb-amber);
+    color: var(--hb-amber);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+/* Floating telemetry badges */
+.telemetry-badge {
+    position: absolute;
+    background: rgba(15, 42, 36, 0.92);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(176, 141, 87, 0.25);
+    border-radius: 12px;
+    padding: 12px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
+    z-index: 4;
+    transition: transform 0.3s ease;
+}
+
+.telemetry-badge:hover {
+    transform: translateY(-4px);
+}
+
+.telemetry-badge.pos-top-right {
+    top: -30px;
+    right: -20px;
+}
+
+.telemetry-badge.pos-bottom-left {
+    bottom: -35px;
+    left: -25px;
+}
+
+.telemetry-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+}
+
+.telemetry-icon.icon-amber {
+    background: rgba(255, 179, 71, 0.15);
+    color: var(--hb-amber);
+}
+
+.telemetry-icon.icon-success {
+    background: var(--hb-success-bg);
+    color: var(--hb-success);
+}
+
+.telemetry-text {
+    line-height: 1.3;
+}
+
+.telemetry-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: rgba(232, 240, 250, 0.65);
+}
+
+.telemetry-val {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--hb-white);
+}
+
+/* ── METRICS RIBBON (INSTITUTIONAL STRIP) ────────────────────────────────── */
+.metrics-ribbon {
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--hb-line);
+    padding: 32px 0;
+    position: relative;
+    z-index: 5;
+}
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+}
+
+.metric-cell {
+    padding: 0 16px;
+    border-right: 1px solid var(--hb-line);
+    text-align: left;
+}
+
+.metric-cell:last-child {
+    border-right: none;
+}
+
+.metric-cell .stat-number {
+    font-family: var(--font-display);
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+}
+
+.metric-cell .stat-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    color: var(--hb-slate);
+}
+
+/* ── SECTION HEADER ARCHITECTURE ────────────────────────────────────────── */
+.horizon-section {
+    padding: 100px 0;
+    position: relative;
+}
+
+.horizon-section.bg-cloud {
+    background-color: var(--hb-cloud);
+}
+
+.horizon-section.bg-white {
+    background-color: var(--color-surface);
+}
+
+.horizon-section.bg-midnight {
+    background-color: var(--hb-midnight);
+    color: var(--hb-white);
+}
+
+.section-head-wrap {
+    text-align: center;
+    max-width: 680px;
+    margin: 0 auto 64px;
+}
+
+.section-eyebrow {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--color-link);
+    margin-bottom: 12px;
+    background: var(--hb-mist);
+    padding: 4px 14px;
+    border-radius: 8px;
+}
+
+.bg-midnight .section-eyebrow {
+    color: var(--hb-amber);
+    background: rgba(255, 179, 71, 0.12);
+}
+
+.section-main-title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 3.5vw, 2.75rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+}
+
+.bg-midnight .section-main-title {
+    color: var(--hb-white);
+}
+
+.section-lead {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    margin: 0;
+}
+
+.bg-midnight .section-lead {
+    color: rgba(232, 240, 250, 0.8);
+}
+
+/* ── BENTO GRID ECOSYSTEM ────────────────────────────────────────────────── */
+.bento-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    max-width: 1240px;
+    margin: 0 auto;
+}
+
+.bento-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 36px 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+
+.bento-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--primary);
+}
+
+.bento-col-2 {
+    grid-column: span 2;
+}
+
+.bento-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.bento-tag {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--primary);
+}
+
+.bento-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--surface-2);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.15rem;
+}
+
+.bento-title {
+    font-family: var(--font-display);
+    font-size: 1.45rem;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    color: var(--text);
+    margin-bottom: 12px;
+    line-height: 1.25;
+}
+
+.bento-desc {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+    margin-bottom: 28px;
+}
+
+/* Bento custom interactive widgets */
+.bento-widget {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin-top: auto;
+}
+
+/* Dual-approval approval bar (Bento 1) */
+.dual-approval-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.dual-signer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 0.85rem;
+}
+
+.signer-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.signer-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: var(--on-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.signer-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--accent);
+}
+
+/* Yield pills (Bento 2) */
+.yield-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    text-align: center;
+}
+
+.yield-pill {
+    padding: 12px 6px;
+    border-radius: 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    transition: all 0.2s ease;
+}
+
+.yield-pill.featured {
+    border-color: var(--primary);
+    background: linear-gradient(135deg, rgba(108, 63, 240, 0.25), rgba(232, 85, 154, 0.2));
+    color: var(--text);
+}
+
+.yield-months {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+}
+
+.yield-pill.featured .yield-months {
+    color: var(--accent);
+    font-weight: 700;
+}
+
+.yield-rate {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--primary);
+}
+
+.yield-pill.featured .yield-rate {
+    color: var(--text);
+}
+
+/* Currency ticker (Bento 3) */
+.currency-ticker {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.currency-pair {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.currency-rate {
+    color: var(--hb-success);
+}
+
+/* Credit tiers (Bento 4) */
+.credit-tiers {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.credit-tier-item {
+    flex: 1;
+    text-align: center;
+    padding: 10px 4px;
+    border-radius: 8px;
+    background: var(--color-surface);
+    border: 1px solid var(--hb-line);
+}
+
+.credit-tier-amt {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+}
+
+.credit-tier-rate {
+    font-size: 0.72rem;
+    color: var(--hb-success);
+    font-weight: 600;
+}
+
+/* Security indicators (Bento 6) */
+.security-status-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.security-status-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.security-status-item i {
+    color: var(--hb-success);
+}
+
+/* ── THE HORIZON COCKPIT (INTERACTIVE PREVIEW) ───────────────────────────── */
+.cockpit-preview-wrap {
+    max-width: 1040px;
+    margin: 0 auto;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+}
+
+.cockpit-header-bar {
+    background: var(--surface-2);
+    color: var(--text);
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+}
+
+.cockpit-dots {
+    display: flex;
+    gap: 8px;
+}
+
+.cockpit-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.25);
+}
+
+.cockpit-dot:nth-child(1) { background: #FF5F56; }
+.cockpit-dot:nth-child(2) { background: #FFBD2E; }
+.cockpit-dot:nth-child(3) { background: #27C93F; }
+
+.cockpit-client-tag {
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.cockpit-body {
+    padding: 36px 32px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 36px;
+    align-items: center;
+    background: var(--surface);
+}
+
+.cockpit-balance-box {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+}
+
+.cockpit-bal-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+}
+
+.cockpit-bal-amount {
+    font-family: var(--font-display);
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: var(--text);
+    letter-spacing: -0.02em;
+    margin-bottom: 14px;
+}
+
+.cockpit-actions-row {
+    display: flex;
+    gap: 10px;
+}
+
+.cockpit-btn {
+    flex: 1;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.cockpit-btn.primary {
+    background: var(--primary);
+    color: #12082F;
+    border-color: var(--primary);
+}
+
+.cockpit-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.cockpit-ledger {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.ledger-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 14px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-size: 0.85rem;
+}
+
+.ledger-item-desc {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.ledger-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+}
+
+.ledger-icon.in { background: rgba(15, 157, 107, 0.2); color: var(--success); }
+.ledger-icon.out { background: rgba(108, 63, 240, 0.2); color: var(--primary); }
+
+.ledger-amt {
+    font-weight: 700;
+    font-family: var(--font-mono);
+}
+
+.ledger-amt.in { color: var(--success); }
+.ledger-amt.out { color: var(--text); }
+
+/* ── ACCOUNT ARCHITECTURE COMPARISON ─────────────────────────────────────── */
+.account-structures-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    max-width: 1040px;
+    margin: 0 auto;
+}
+
+.account-card-horizon {
+    border-radius: 24px;
+    padding: 44px 36px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(15, 42, 36, 0.06);
+    transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+
+.account-card-horizon:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(15, 42, 36, 0.12);
+}
+
+/* Individual card */
+.account-card-horizon.tier-personal {
+    background: var(--color-surface);
+    border: 1px solid var(--hb-line);
+}
+
+/* Joint card (Featured) */
+.account-card-horizon.tier-joint {
+    background: var(--surface-2);
+    color: var(--text);
+    border: 2px solid var(--primary);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4), 0 0 24px rgba(108, 63, 240, 0.25);
+}
+
+.tier-badge {
+    position: absolute;
+    top: -12px;
+    right: 36px;
+    padding: 4px 16px;
+    border-radius: 8px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: var(--accent);
+    color: #FFFFFF;
+    box-shadow: 0 4px 12px rgba(232, 85, 154, 0.4);
+}
+
+.tier-head {
+    margin-bottom: 24px;
+}
+
+.tier-icon-wrap {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    margin-bottom: 20px;
+}
+
+.tier-personal .tier-icon-wrap {
+    background: var(--surface-2);
+    color: var(--primary);
+}
+
+.tier-joint .tier-icon-wrap {
+    background: rgba(108, 63, 240, 0.2);
+    color: var(--primary);
+}
+
+.tier-name {
+    font-family: var(--font-display);
+    font-size: 1.65rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+    color: var(--text);
+}
+
+.tier-personal .tier-name { color: var(--text); }
+.tier-joint .tier-name { color: var(--text); }
+
+.tier-sub {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 0;
+    color: var(--text-muted);
+}
+
+.tier-personal .tier-sub { color: var(--text-muted); }
+.tier-joint .tier-sub { color: var(--text-muted); }
+
+.tier-price-row {
+    margin: 24px 0 28px;
+    padding: 16px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.tier-price-row strong {
+    font-family: var(--font-display);
+    font-size: 2.4rem;
+    font-weight: 800;
+    color: var(--text);
+}
+
+.tier-personal .tier-price-row strong { color: var(--text); }
+.tier-joint .tier-price-row strong { color: var(--text); }
+
+[data-theme="dark"] .metric-cell .stat-number,
+[data-theme="dark"] .tier-price-row strong,
+[data-theme="dark"] .tier-personal .tier-price-row strong {
+    color: var(--text) !important;
+}
+
+.tier-price-row span {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.tier-joint .tier-price-row span {
+    color: var(--text-muted);
+}
+
+.tier-features-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.tier-features-list li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.92rem;
+    color: var(--text);
+}
+
+.tier-personal .tier-features-list li { color: var(--text); }
+.tier-joint .tier-features-list li { color: var(--text); }
+
+.tier-personal .tier-features-list i { color: var(--primary); font-size: 0.9rem; }
+.tier-joint .tier-features-list i { color: var(--accent); font-size: 0.9rem; }
+
+/* ── SECURITY TRUST MARQUEE ──────────────────────────────────────────────── */
+.security-marquee-strip {
+    background: var(--surface-2);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 36px 0;
+}
+
+.trust-badges-row {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 24px;
+}
+
+.trust-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    color: var(--text);
+}
+
+.trust-item i {
+    font-size: 1.5rem;
+    color: var(--accent);
+}
+
+.trust-label strong {
+    display: block;
+    font-size: 0.92rem;
+    letter-spacing: 0.02em;
+    color: var(--text);
+}
+
+.trust-label small {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+/* ── HORIZON GRAND CTA ───────────────────────────────────────────────────── */
+.horizon-grand-cta {
+    background: var(--surface);
+    color: var(--text);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 120px 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.horizon-grand-cta::before {
+    content: '';
+    position: absolute;
+    bottom: -50%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60vw;
+    height: 40vw;
+    background: radial-gradient(ellipse at 50% 50%, rgba(176, 141, 87, 0.08) 0%, rgba(15, 42, 36, 0.04) 50%, transparent 80%);
+    filter: blur(60px);
+    pointer-events: none;
+}
+
+.cta-box-content {
+    position: relative;
+    z-index: 2;
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.cta-box-content h2 {
+    font-family: var(--font-display);
+    font-size: clamp(2.25rem, 4vw, 3.25rem);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    color: var(--text);
+    margin-bottom: 20px;
+    line-height: 1.15;
+}
+
+.cta-box-content p {
+    font-size: 1.15rem;
+    color: var(--text-muted);
+    line-height: 1.65;
+    margin-bottom: 40px;
+}
+
+/* ── RESPONSIVE ADAPTATIONS ──────────────────────────────────────────────── */
+@media (max-width: 992px) {
+    .hero-float-badge.pos-top-right,
+    .telemetry-badge.pos-top-right {
+        right: 0 !important;
+        top: -10px !important;
+    }
+    .hero-float-badge.pos-bottom-left,
+    .telemetry-badge.pos-bottom-left {
+        left: 0 !important;
+        bottom: -10px !important;
+    }
+
+    .horizon-hero .container {
+        grid-template-columns: 1fr;
+        gap: 60px;
+        text-align: center;
+    }
+
+    .hero-subtitle {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .hero-actions {
+        justify-content: center;
+    }
+
+    .hero-bullets {
+        justify-content: center;
+    }
+
+    .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
+    }
+
+    .metric-cell {
+        border-right: none;
+        border-bottom: 1px solid var(--hb-line);
+        padding-bottom: 16px;
+    }
+
+    .metric-cell:nth-child(3),
+    .metric-cell:nth-child(4) {
+        border-bottom: none;
+    }
+
+    .bento-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .bento-col-2 {
+        grid-column: span 1;
+    }
+
+    .cockpit-body {
+        grid-template-columns: 1fr;
+    }
+
+    .account-structures-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .horizon-hero {
+        padding: 90px 0 60px;
+    }
+
+    .telemetry-badge {
+        position: static;
+        margin-top: 16px;
+        width: 100%;
+    }
+
+    .hero-main-img {
+        height: 320px;
+    }
+
+    .hero-float-badge {
+        position: static;
+        margin-top: 12px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .cockpit-stage {
+        flex-direction: column;
+    }
+
+    .metrics-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .metric-cell {
+        border-right: none;
+        border-bottom: 1px solid var(--hb-line);
+    }
+
+    .bento-card {
+        padding: 24px 20px;
+    }
+
+    .yield-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .cockpit-header-bar {
+        padding: 12px 16px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .cockpit-client-tag {
+        font-size: 0.72rem;
+        white-space: normal;
+        word-break: break-word;
+    }
+}
+
+/* ── WEALTH PILLARS SECTION ──────────────────────────────────────────────── */
+.wealth-pillars-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-bottom: 60px;
+}
+
+.wealth-pillar-card {
+    background: var(--color-surface);
+    border: 1px solid var(--hb-line);
+    border-radius: 16px;
+    padding: 32px 28px;
+    position: relative;
+    transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+    display: flex;
+    flex-direction: column;
+}
+
+.wealth-pillar-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 36px rgba(15, 42, 36, 0.08);
+}
+
+.wealth-pillar-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    background: var(--hb-mist);
+    color: var(--color-link);
+}
+
+.wealth-pillar-card.pillar-grow .wealth-pillar-icon {
+    background: color-mix(in srgb, var(--plan-starter) 14%, transparent);
+    color: var(--plan-starter);
+}
+
+.wealth-pillar-card.pillar-liquid .wealth-pillar-icon {
+    background: rgba(255, 179, 71, 0.15);
+    color: var(--hb-amber);
+}
+
+.wealth-pillar-num {
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+
+.wealth-pillar-title {
+    font-family: var(--font-display);
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+}
+
+.wealth-pillar-desc {
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+    flex-grow: 1;
+}
+
+.wealth-pillar-bullets {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.wealth-pillar-bullets li {
+    font-size: 0.85rem;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.wealth-pillar-bullets li i {
+    color: var(--hb-success);
+    font-size: 0.8rem;
+}
+
+/* ── MULTI-ASSET INVESTMENT PLANS SECTION ────────────────────────────────── */
+.invest-plans-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    align-items: stretch;
+}
+
+.invest-plan-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 36px 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+
+.invest-plan-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+}
+
+.invest-plan-card.featured {
+    background: var(--surface-2);
+    color: var(--text);
+    border: 2px solid var(--primary);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), 0 0 30px rgba(108, 63, 240, 0.25);
+}
+
+.invest-plan-badge {
+    position: absolute;
+    top: -13px;
+    right: 28px;
+    padding: 4px 16px;
+    border-radius: 8px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: var(--accent);
+    color: #FFFFFF;
+    box-shadow: 0 4px 14px rgba(232, 85, 154, 0.45);
+}
+
+/* Plan badge accents */
+.invest-plan-badge.badge-starter {
+    background: color-mix(in srgb, var(--primary) 20%, transparent);
+    color: var(--primary);
+    border: 1px solid color-mix(in srgb, var(--primary) 40%, transparent);
+    box-shadow: none;
+}
+
+.invest-plan-badge.badge-elite {
+    background: color-mix(in srgb, var(--accent) 20%, transparent);
+    color: var(--accent);
+    border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    box-shadow: none;
+}
+
+.invest-plan-head {
+    margin-bottom: 20px;
+}
+
+.invest-plan-name {
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+    color: var(--text);
+}
+
+.invest-plan-card.featured .invest-plan-name { color: var(--text); }
+.invest-plan-card:not(.featured) .invest-plan-name { color: var(--text); }
+
+.invest-plan-sub {
+    font-size: 0.88rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+.invest-plan-card.featured .invest-plan-sub { color: var(--text-muted); }
+
+.invest-plan-metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 20px 0 24px;
+    padding: 16px;
+    background: var(--surface);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+}
+
+.invest-plan-card.featured .invest-plan-metrics {
+    background: var(--surface);
+    border-color: rgba(155, 120, 255, 0.3);
+}
+
+.plan-metric-box {
+    display: flex;
+    flex-direction: column;
+}
+
+.plan-metric-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+}
+
+.invest-plan-card.featured .plan-metric-label { color: var(--text-muted); }
+
+.plan-metric-val {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--text);
+    font-family: var(--font-display);
+}
+
+.invest-plan-card.featured .plan-metric-val { color: var(--text); }
+.plan-metric-val.rate { color: var(--primary); }
+.invest-plan-card.featured .plan-metric-val.rate { color: var(--accent); }
+
+.invest-plan-assets-wrap {
+    margin-bottom: 24px;
+}
+
+.assets-wrap-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.invest-plan-card.featured .assets-wrap-title { color: var(--text-muted); }
+
+.plan-assets-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.plan-assets-more-row {
+    margin-top: 10px;
+}
+
+.asset-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.invest-plan-card.featured .asset-chip {
+    background: var(--surface);
+    border-color: rgba(155, 120, 255, 0.3);
+    color: var(--text);
+}
+
+.asset-chip img {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    object-fit: contain;
+}
+
+.asset-chip-more {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    background: rgba(108, 63, 240, 0.15);
+    border: 1px solid rgba(108, 63, 240, 0.3);
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.asset-chip em {
+    font-style: normal;
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    opacity: 0.6;
+}
+
+.asset-glyph {
+    font-size: 0.82rem;
+    line-height: 1;
+}
+
+/* Catalogue grouped by category (home plan cards) */
+.plan-assets-groups {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.plan-assets-group {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    overflow: hidden;
+}
+
+.invest-plan-card.featured .plan-assets-group {
+    border-color: rgba(155, 120, 255, 0.3);
+    background: var(--surface);
+}
+
+.pag-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    cursor: pointer;
+    list-style: none;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.pag-head::-webkit-details-marker { display: none; }
+.pag-head::-moz-list-bullet { display: none; }
+
+.pag-head > i {
+    font-size: 0.72rem;
+    opacity: 0.75;
+}
+
+.pag-head::after {
+    content: '';
+    width: 5px;
+    height: 5px;
+    margin: 0 2px 3px 4px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    opacity: 0.5;
+    transform: rotate(45deg);
+    transition: transform 0.2s ease;
+}
+
+.plan-assets-group[open] > .pag-head::after {
+    transform: rotate(-135deg);
+    margin-bottom: 0;
+}
+
+.invest-plan-card.featured .pag-head { color: var(--text-muted); }
+
+.pag-label { flex: 1 1 auto; }
+
+.pag-count {
+    flex: 0 0 auto;
+    padding: 1px 7px;
+    border-radius: 999px;
+    background: rgba(108, 63, 240, 0.16);
+    color: var(--text);
+    font-size: 0.66rem;
+    font-weight: 800;
+    letter-spacing: 0;
+}
+
+.invest-plan-card.featured .pag-count {
+    background: rgba(155, 120, 255, 0.25);
+    color: var(--text);
+}
+
+.plan-assets-group .plan-assets-chips {
+    padding: 2px 10px 10px;
+}
+
+/* ── LIQUIDITY & TIERED LOANS SECTION ────────────────────────────────────── */
+.credit-insight {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    background: var(--color-surface);
+    border: 1px solid var(--hb-line);
+    border-radius: 18px;
+    padding: 26px 28px;
+    margin-bottom: 32px;
+}
+
+.credit-insight__item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.credit-insight__icon {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    border-radius: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    background: var(--hb-mist);
+    color: var(--color-link);
+}
+
+.credit-insight__title {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--text-primary);
+    margin: 0 0 5px;
+}
+
+.credit-insight__text {
+    font-size: 0.85rem;
+    line-height: 1.55;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.liquidity-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+}
+
+.liquidity-card {
+    background: var(--color-surface);
+    border: 1px solid var(--hb-line);
+    border-radius: 18px;
+    padding: 32px 28px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+
+.liquidity-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px rgba(15, 42, 36, 0.09);
+}
+
+.liquidity-card.tier-3 {
+    border: 2px solid rgba(239, 68, 68, 0.35);
+    background: linear-gradient(180deg, var(--color-surface) 0%, rgba(239, 68, 68, 0.02) 100%);
+}
+
+.liquidity-tier-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 4px 12px;
+    border-radius: 6px;
+    margin-bottom: 14px;
+}
+
+.liquidity-card.tier-1 .liquidity-tier-tag {
+    background: color-mix(in srgb, var(--plan-starter) 12%, transparent);
+    color: var(--plan-starter);
+}
+.liquidity-card.tier-2 .liquidity-tier-tag {
+    background: color-mix(in srgb, var(--plan-premium) 12%, transparent);
+    color: var(--plan-premium);
+}
+.liquidity-card.tier-3 .liquidity-tier-tag {
+    background: color-mix(in srgb, var(--plan-elite) 12%, transparent);
+    color: var(--plan-elite);
+}
+
+.liquidity-amount-display {
+    margin: 12px 0 18px;
+}
+
+.liquidity-amount-big {
+    font-family: var(--font-display);
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1.1;
+}
+
+.liquidity-amount-sub {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    margin-top: 4px;
+}
+
+.liquidity-joint-pill {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    background: var(--hb-mist);
+    border-radius: 10px;
+    margin-bottom: 20px;
+    font-size: 0.82rem;
+}
+
+.liquidity-joint-pill strong {
+    color: var(--text-primary);
+}
+
+.liquidity-features-list {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.liquidity-features-list li {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.liquidity-features-list li i {
+    color: var(--hb-success);
+    margin-top: 3px;
+    font-size: 0.8rem;
+}
+
+@media (max-width: 992px) {
+    .wealth-pillars-grid,
+    .invest-plans-grid,
+    .liquidity-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .credit-insight {
+        grid-template-columns: 1fr;
+        gap: 22px;
+        padding: 24px;
+    }
+}
+
+/* ── RISK & LEVERAGE (shared: home + about) ───────────────────────────────── */
+.riskdesk-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.riskdesk-card {
+    background: color-mix(in srgb, var(--accent-primary) 4%, var(--color-surface));
+    border: 1px solid var(--hb-line);
+    border-radius: 16px;
+    padding: 28px 26px;
+    display: flex;
+    flex-direction: column;
+    transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+
+.riskdesk-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 36px rgba(15, 42, 36, 0.08);
+}
+
+.riskdesk-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 14px;
+}
+
+.riskdesk-icon {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    background: var(--hb-mist);
+    color: var(--color-link);
+}
+
+.riskdesk-card.is-lever .riskdesk-icon {
+    background: rgba(176, 141, 87, 0.15);
+    color: var(--hb-amber);
+}
+
+.riskdesk-card.is-lock .riskdesk-icon {
+    background: rgba(34, 197, 94, 0.14);
+    color: #16a34a;
+}
+
+.riskdesk-num {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    margin-bottom: 3px;
+}
+
+.riskdesk-title {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.riskdesk-desc {
+    font-size: 0.88rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+@media (max-width: 992px) {
+    .riskdesk-grid {
+        grid-template-columns: 1fr;
+    }
+}
+

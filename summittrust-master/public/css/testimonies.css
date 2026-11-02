@@ -1,0 +1,269 @@
+/* ==========================================================================
+   SUMMIT TRUST HOLDINGS — Social Proof / Testimonies Live Activity Ticker
+   ========================================================================== */
+
+#testimonyTicker {
+    position: fixed;
+    bottom: 24px;
+    left: 24px;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column-reverse; /* Stack upward cleanly */
+    gap: 10px;
+    pointer-events: none;
+    max-width: 360px;
+    width: calc(100vw - 48px);
+}
+
+.testimony-popup {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--surface, #1A1040);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--border, #36276F);
+    border-radius: 14px;
+    padding: 12px 14px;
+    box-shadow: 0 10px 28px -4px rgba(0, 0, 0, 0.45);
+    pointer-events: auto;
+    cursor: default;
+    overflow: hidden;
+    transition: transform 0.2s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.2s ease;
+
+    /* Entry animation */
+    animation: testimonyIn .4s cubic-bezier(.34, 1.56, .64, 1) forwards;
+}
+
+.testimony-popup:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 34px -4px rgba(0, 0, 0, 0.6);
+}
+
+.testimony-popup.leaving {
+    animation: testimonyOut .35s ease-in forwards;
+}
+
+@keyframes testimonyIn {
+    from {
+        opacity: 0;
+        transform: translateY(16px) scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes testimonyOut {
+    from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.96);
+    }
+}
+
+/* Avatar styling */
+.testimony-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--primary, #6C3FF0), var(--accent, #E8559A));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FFFFFF;
+    font-size: 0.82rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(108, 63, 240, 0.35);
+    overflow: hidden;
+}
+
+.testimony-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Body / Text */
+.testimony-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.testimony-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 2px;
+}
+
+.testimony-name {
+    font-family: var(--font-display, "DM Sans", sans-serif);
+    font-weight: 700;
+    font-size: 0.88rem;
+    color: var(--text, #F4F0FF);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.testimony-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--text-muted, #A89FCB);
+    flex-shrink: 0;
+}
+
+.testimony-pulse {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent, #FF8EC2);
+    box-shadow: 0 0 0 0 rgba(232, 85, 154, 0.6);
+    animation: livePulse 1.8s infinite;
+}
+
+@keyframes livePulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(232, 85, 154, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 5px rgba(232, 85, 154, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(232, 85, 154, 0);
+    }
+}
+
+.testimony-msg {
+    font-family: var(--font-body, "Inter", sans-serif);
+    font-size: 0.77rem;
+    color: var(--text-muted, #A89FCB);
+    line-height: 1.35;
+}
+
+.testimony-msg .highlight-amount {
+    font-weight: 700;
+    color: var(--accent, #FF8EC2);
+}
+
+.testimony-msg .highlight-action {
+    font-weight: 600;
+    color: var(--primary, #9B78FF);
+}
+
+/* Icon / Close */
+.testimony-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
+    flex-shrink: 0;
+    margin-left: 2px;
+}
+
+.testimony-icon {
+    font-size: 0.92rem;
+    line-height: 1;
+}
+
+.testimony-icon.profit {
+    color: var(--accent, #FF8EC2);
+}
+
+.testimony-icon.signup {
+    color: var(--primary, #9B78FF);
+}
+
+.testimony-icon.vault {
+    color: var(--warning, #F2B45A);
+}
+
+.testimony-icon.verified {
+    color: var(--primary, #9B78FF);
+}
+
+.testimony-close-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted, #A89FCB);
+    font-size: 0.7rem;
+    line-height: 1;
+    padding: 2px;
+    cursor: pointer;
+    opacity: 0.55;
+    border-radius: 4px;
+    transition: opacity 0.15s, color 0.15s;
+}
+
+.testimony-close-btn:hover {
+    opacity: 1;
+    color: var(--text, #F4F0FF);
+}
+
+/* Dark Theme Adjustments */
+[data-theme="dark"] .testimony-popup {
+    background: #1A1040;
+    border-color: #36276F;
+    box-shadow: 0 14px 38px -4px rgba(0, 0, 0, 0.55), 0 4px 12px -2px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .testimony-popup:hover {
+    box-shadow: 0 18px 44px -4px rgba(0, 0, 0, 0.65), 0 6px 16px -2px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .testimony-msg .highlight-amount {
+    color: #FF8EC2;
+}
+
+[data-theme="dark"] .testimony-msg .highlight-action {
+    color: #9B78FF;
+}
+
+[data-theme="dark"] .testimony-icon.profit {
+    color: #FF8EC2;
+}
+
+[data-theme="dark"] .testimony-icon.signup {
+    color: #9B78FF;
+}
+
+[data-theme="dark"] .testimony-pulse {
+    background: #FF8EC2;
+}
+
+/* Mobile Responsive */
+@media (max-width: 640px) {
+    #testimonyTicker {
+        left: 12px;
+        right: 12px;
+        bottom: 16px;
+        max-width: none;
+        width: calc(100vw - 24px);
+    }
+
+    .testimony-popup {
+        padding: 10px 12px;
+    }
+
+    .testimony-avatar {
+        width: 34px;
+        height: 34px;
+        font-size: 0.75rem;
+    }
+
+    .testimony-msg {
+        font-size: 0.74rem;
+    }
+}

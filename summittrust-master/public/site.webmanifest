@@ -1,0 +1,21 @@
+{
+  "name": "Summit Trust Holdings - Wealth Management, held in trust",
+  "short_name": "Summit Trust Holdings",
+  "description": "Private wealth management, multi-asset portfolios, collateral-free credit lines and dual-approval accounts, based in London, United Kingdom.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#F6F3FF",
+  "theme_color": "#6C3FF0",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["finance", "business"],
+  "icons": [
+    {
+      "src": "https://res.cloudinary.com/ddvwy00eg/image/upload/v1793590574/favicon_oz94ys.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

@@ -1,0 +1,1101 @@
+/* ==========================================================================
+   Summit Trust Holdings — SEND & RECEIVE MODALS (LUXURY SWISS DESIGN SYSTEM)
+   ========================================================================== */
+
+/* ── Modal Overlay & Backdrop ─────────────────────────────────── */
+#sendModal,
+#receiveModal {
+    backdrop-filter: blur(14px) !important;
+    -webkit-backdrop-filter: blur(14px) !important;
+    background: rgba(8, 20, 16, 0.78) !important;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+    z-index: 2100;
+}
+
+#sendModal.active,
+#receiveModal.active {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* ── Modal Window Box ─────────────────────────────────────────── */
+.modal.send-modal-box,
+.modal.receive-modal-box,
+#sendModal .modal,
+#receiveModal .modal {
+    max-width: 520px !important;
+    width: 100%;
+    background: var(--card-bg, #FFFFFF) !important;
+    border: 1px solid rgba(176, 141, 87, 0.28) !important;
+    border-radius: 22px !important;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.05) !important;
+    overflow: hidden !important;
+    display: flex;
+    flex-direction: column;
+    animation: rcbModalPop 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    box-sizing: border-box;
+}
+
+@keyframes rcbModalPop {
+    from {
+        opacity: 0;
+        transform: scale(0.96) translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* ── Modal Header ─────────────────────────────────────────────── */
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-secondary);
+}
+
+.modal-icon-badge {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: rgba(176, 141, 87, 0.12);
+    border: 1px solid rgba(176, 141, 87, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent, #6C3FF0);
+    font-size: 1.05rem;
+    flex-shrink: 0;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.25;
+}
+
+.modal-header .subtitle {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    display: block;
+    margin-top: 2px;
+}
+
+.modal-close {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+    background: var(--border);
+    color: var(--text-primary);
+    transform: rotate(90deg);
+}
+
+/* ── Modal Body Scrollable ────────────────────────────────────── */
+.send-modal-box .modal-body,
+.receive-modal-box .modal-body,
+#sendModal .modal-body,
+#requestModal .modal-body {
+    padding: 22px 24px calc(24px + env(safe-area-inset-bottom, 16px));
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    flex: 1 1 auto;
+    min-height: 0;
+    max-height: none;
+}
+
+.modal-body::-webkit-scrollbar {
+    width: 6px;
+}
+.modal-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+.modal-body::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 10px;
+}
+
+/* ── Modern Segmented Control ─────────────────────────────────── */
+.modern-segment-control {
+    display: flex;
+    gap: 6px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 5px;
+    margin-bottom: 20px;
+}
+
+.segment-btn {
+    flex: 1;
+    padding: 8px 10px;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    background: transparent;
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 0.76rem;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    line-height: 1.25;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.segment-btn i {
+    font-size: 1.15rem;
+    line-height: 1;
+    display: block;
+}
+
+.segment-btn span {
+    font-size: 0.76rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    display: block;
+    text-align: center;
+}
+
+.segment-btn:hover {
+    color: var(--text-primary);
+    background: rgba(0, 0, 0, 0.03);
+}
+
+[data-theme="dark"] .segment-btn:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.segment-btn.active {
+    background: var(--accent-primary, #1B0F4A);
+    color: #FFFFFF !important;
+    border-color: rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.14);
+}
+
+.segment-btn.active i,
+.segment-btn.active span {
+    color: #FFFFFF !important;
+}
+
+[data-theme="dark"] .segment-btn.active {
+    background: var(--rcb-brass, #6C3FF0);
+    color: #1B0F4A !important;
+    border-color: rgba(176, 141, 87, 0.3);
+}
+
+[data-theme="dark"] .segment-btn.active i,
+[data-theme="dark"] .segment-btn.active span {
+    color: #1B0F4A !important;
+}
+
+/* ── Step Progress Indicator (Send Modal) ─────────────────────── */
+.modern-step-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 22px;
+    padding: 0 8px;
+}
+
+.modern-step-nav .step-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    transition: color 0.2s ease;
+}
+
+.modern-step-nav .step-item.active {
+    color: var(--text-primary);
+}
+
+.modern-step-nav .step-item.completed {
+    color: var(--success, #9B78FF);
+}
+
+.modern-step-nav .step-badge {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+}
+
+.modern-step-nav .step-item.active .step-badge {
+    background: var(--accent-primary, #1B0F4A);
+    color: #FFFFFF;
+    border-color: var(--accent-primary, #1B0F4A);
+    box-shadow: 0 2px 6px rgba(15, 42, 36, 0.25);
+}
+
+[data-theme="dark"] .modern-step-nav .step-item.active .step-badge {
+    background: var(--rcb-brass, #6C3FF0);
+    color: #1B0F4A;
+    border-color: var(--rcb-brass, #6C3FF0);
+}
+
+.modern-step-nav .step-item.completed .step-badge {
+    background: var(--success, #9B78FF);
+    color: #FFFFFF;
+    border-color: var(--success, #9B78FF);
+}
+
+.modern-step-nav .step-divider {
+    flex: 1;
+    height: 2px;
+    background: var(--border);
+    margin: 0 10px;
+    border-radius: 2px;
+    transition: background 0.2s ease;
+}
+
+.modern-step-nav .step-divider.done {
+    background: var(--success, #9B78FF);
+}
+
+/* Legacy Step indicator aliases for safety */
+.step-indicator { display: none !important; }
+
+/* ── Amount Input Card (Send Modal) ───────────────────────────── */
+.amount-card-wrapper {
+    background: var(--bg-secondary);
+    border: 1.5px solid var(--border);
+    border-radius: 16px;
+    padding: 18px 20px;
+    margin-bottom: 20px;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.amount-card-wrapper:focus-within {
+    border-color: var(--accent, #6C3FF0);
+    box-shadow: 0 0 0 3px rgba(176, 141, 87, 0.18);
+}
+
+.amount-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+}
+
+.amount-card-header .balance-val {
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.amount-card-header .btn-use-max {
+    background: none;
+    border: none;
+    color: var(--accent, #6C3FF0);
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.amount-card-header .btn-use-max:hover {
+    background: rgba(176, 141, 87, 0.1);
+}
+
+.amount-input-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    background: transparent;
+    border: none;
+    padding: 0;
+}
+
+.amount-currency {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--accent, #6C3FF0);
+    line-height: 1;
+    user-select: none;
+}
+
+.amount-input {
+    flex: 1;
+    width: 100%;
+    min-width: 0;
+    border: none !important;
+    outline: none !important;
+    background: transparent !important;
+    font-size: 2.2rem !important;
+    font-weight: 700 !important;
+    color: var(--text-primary) !important;
+    font-variant-numeric: tabular-nums;
+    font-family: inherit;
+    line-height: 1.2;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+}
+
+.amount-input::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.35;
+}
+
+/* Percentage Quick-Picks */
+.percentage-chips-row {
+    display: flex;
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.pct-chip {
+    flex: 1;
+    padding: 6px 0;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg-tertiary);
+    color: var(--text-secondary);
+    font-size: 0.76rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.15s ease;
+}
+
+.pct-chip:hover {
+    border-color: var(--accent, #6C3FF0);
+    color: var(--text-primary);
+    background: var(--bg-secondary);
+}
+
+.amount-validation-message {
+    font-size: 0.82rem;
+    margin-top: 8px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.amount-validation-message.error {
+    background: rgba(162, 59, 42, 0.1);
+    color: var(--error, #A23B2A);
+    border: 1px solid rgba(162, 59, 42, 0.2);
+}
+.amount-validation-message.success {
+    background: rgba(47, 107, 79, 0.1);
+    color: var(--success, #9B78FF);
+    border: 1px solid rgba(47, 107, 79, 0.2);
+}
+
+/* ==========================================================================
+   RECEIVE MODAL STYLING
+   ========================================================================== */
+
+/* ── Bank Wire (USD) Card ─────────────────────────────────────── */
+.usd-receive-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.swiss-bank-card {
+    background: linear-gradient(135deg, #1B0F4A 0%, #2A1580 100%);
+    border: 1px solid rgba(176, 141, 87, 0.35);
+    border-radius: 16px;
+    padding: 22px;
+    color: #F4F0FF;
+    box-shadow: 0 10px 28px rgba(15, 42, 36, 0.25);
+    position: relative;
+    overflow: hidden;
+}
+
+.swiss-bank-card::before {
+    content: '';
+    position: absolute;
+    top: -30px;
+    right: -30px;
+    width: 140px;
+    height: 140px;
+    background: radial-gradient(circle, rgba(176, 141, 87, 0.25) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.bank-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.bank-card-title {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #6C3FF0;
+}
+
+.bank-card-currency {
+    font-size: 0.75rem;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.12);
+    padding: 3px 8px;
+    border-radius: 12px;
+    letter-spacing: 0.04em;
+    color: #FFFFFF;
+}
+
+.bank-card-acct-lbl {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: 0 0 4px;
+    color: rgba(244, 239, 230, 0.7);
+}
+
+.bank-card-acct-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-width: 0;
+}
+
+.bank-card-acct-num {
+    font-size: 1.15rem;
+    font-weight: 700;
+    font-family: var(--font-mono, monospace);
+    letter-spacing: 0.04em;
+    color: #FFFFFF;
+    font-variant-numeric: tabular-nums;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.btn-copy-card {
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #FFFFFF;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 0.76rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+.btn-copy-card:hover {
+    background: rgba(255, 255, 255, 0.26);
+}
+
+.swiss-specs-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.modal-actions-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 4px;
+}
+
+.modal-actions-row .btn {
+    padding: 12px 16px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.modal-footnote {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    line-height: 1.45;
+    margin: 4px 0 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.modal-footnote i {
+    color: var(--accent, #6C3FF0);
+}
+
+/* ── Crypto Coin Tabs (Strictly BTC vs LTC) ──────────────────── */
+.crypto-coin-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.coin-tab-btn {
+    flex: 1;
+    padding: 7px 12px;
+    border-radius: 9px;
+    border: 1.5px solid var(--border);
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: 0.78rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.coin-tab-btn i {
+    font-size: 0.95rem;
+}
+
+.coin-tab-btn span {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+}
+
+.coin-tab-btn:hover {
+    border-color: var(--accent, #6C3FF0);
+    color: var(--text-primary);
+}
+
+.coin-tab-btn.active-btc {
+    border-color: #f7931a;
+    background: rgba(247, 147, 26, 0.08);
+    color: #f7931a;
+    box-shadow: 0 2px 10px rgba(247, 147, 26, 0.12);
+}
+
+.coin-tab-btn.active-ltc {
+    border-color: #345d9d;
+    background: rgba(52, 93, 157, 0.08);
+    color: #345d9d;
+    box-shadow: 0 2px 10px rgba(52, 93, 157, 0.12);
+}
+
+/* ── Dedicated Single-Coin Vault Card ────────────────────────── */
+.crypto-vault-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 20px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.vault-card-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.vault-coin-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.88rem;
+    font-weight: 700;
+}
+
+.vault-net-tag {
+    font-size: 0.74rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    padding: 4px 10px;
+    border-radius: 14px;
+    letter-spacing: 0.02em;
+}
+
+/* QR Code Display */
+.vault-qr-wrapper {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0 2px;
+}
+
+.vault-qr-frame {
+    display: inline-block;
+    padding: 12px;
+    background: #FFFFFF !important;
+    border-radius: 16px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+}
+
+.vault-qr-frame img {
+    display: block;
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+}
+
+.vault-qr-hint {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+}
+
+/* Address Row & Copy */
+.vault-address-container {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 14px;
+}
+
+.vault-address-lbl {
+    display: block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+}
+
+.vault-address-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.vault-address-code {
+    flex: 1;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    word-break: break-all;
+    user-select: all;
+    line-height: 1.4;
+}
+
+.btn-copy-address {
+    background: var(--accent-primary, #1B0F4A);
+    color: #FFFFFF !important;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+}
+
+.btn-copy-address:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="dark"] .btn-copy-address {
+    background: var(--rcb-brass, #6C3FF0);
+    color: #1B0F4A !important;
+}
+
+/* Balance & Download Actions */
+.vault-actions-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 14px;
+    background: var(--bg-tertiary);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+}
+
+.vault-balance-badge {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    font-size: 0.85rem;
+}
+
+.vault-balance-badge .lbl {
+    color: var(--text-secondary);
+}
+
+.vault-balance-badge .val {
+    font-family: var(--font-mono, monospace);
+    font-size: 0.95rem;
+    font-variant-numeric: tabular-nums;
+}
+
+.btn-download-slip {
+    padding: 7px 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+/* 2x2 Specs Grid */
+.vault-specs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.spec-cell {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.spec-lbl {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--text-secondary);
+}
+
+.spec-val {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Safety Alert */
+.vault-safety-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: rgba(176, 141, 87, 0.08);
+    border: 1px solid rgba(176, 141, 87, 0.22);
+    font-size: 0.78rem;
+    line-height: 1.45;
+    color: var(--text-primary);
+}
+
+.vault-safety-note i {
+    color: var(--accent, #6C3FF0);
+    font-size: 0.9rem;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+/* ── Form Inputs & Controls ───────────────────────────────────── */
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.form-input,
+.form-select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+}
+
+.form-input:focus,
+.form-select:focus {
+    outline: none;
+    border-color: var(--accent, #6C3FF0);
+    box-shadow: 0 0 0 3px rgba(176, 141, 87, 0.15);
+}
+
+/* ── Beneficiary Selection (Send Step 2) ──────────────────────── */
+.beneficiary-section {
+    margin-bottom: 20px;
+}
+
+.beneficiary-tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 16px;
+}
+
+.beneficiary-tab {
+    flex: 1;
+    padding: 9px 12px;
+    border: 1px solid var(--border);
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.beneficiary-tab:hover {
+    border-color: var(--accent, #6C3FF0);
+    color: var(--text-primary);
+}
+
+.beneficiary-tab.active {
+    background: var(--accent-primary, #1B0F4A);
+    color: #FFFFFF;
+    border-color: var(--accent-primary, #1B0F4A);
+}
+
+[data-theme="dark"] .beneficiary-tab.active {
+    background: var(--rcb-brass, #6C3FF0);
+    color: #1B0F4A;
+    border-color: var(--rcb-brass, #6C3FF0);
+}
+
+.beneficiaries-list {
+    max-height: 260px;
+    overflow-y: auto;
+    margin-bottom: 16px;
+    padding-right: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.beneficiary-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--bg-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.beneficiary-item:hover {
+    border-color: var(--accent, #6C3FF0);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.beneficiary-item.selected {
+    border-color: var(--accent, #6C3FF0);
+    background: rgba(176, 141, 87, 0.08);
+    box-shadow: 0 0 0 1px var(--accent, #6C3FF0);
+}
+
+.beneficiary-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: rgba(176, 141, 87, 0.15);
+    color: var(--accent, #6C3FF0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.beneficiary-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+}
+
+.beneficiary-details {
+    display: flex;
+    gap: 10px;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+}
+
+/* ── Review Step ──────────────────────────────────────────────── */
+.review-section {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 18px 20px;
+    margin-bottom: 20px;
+}
+
+.review-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.88rem;
+}
+
+.review-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.review-label {
+    color: var(--text-secondary);
+}
+
+.review-value {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.review-amount {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--accent-primary);
+    font-variant-numeric: tabular-nums;
+}
+
+/* ── Action Buttons ───────────────────────────────────────────── */
+.btn-next {
+    background: var(--accent-primary, #1B0F4A);
+    color: #FFFFFF !important;
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s ease;
+}
+
+.btn-next:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+}
+
+.btn-next:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+[data-theme="dark"] .btn-next {
+    background: var(--rcb-brass, #6C3FF0);
+    color: #1B0F4A !important;
+}
+
+.btn-back {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    padding: 12px 18px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-back:hover {
+    border-color: var(--text-primary);
+    color: var(--text-primary);
+}
+
+/* ── Mobile Responsive ────────────────────────────────────────── */
+@media (max-width: 580px) {
+    .modal.send-modal-box,
+    .modal.receive-modal-box {
+        max-width: 100% !important;
+        margin: 0 !important;
+        border-radius: 24px 24px 0 0 !important;
+    }
+    .send-modal-box .modal-body,
+    .receive-modal-box .modal-body,
+    #sendModal .modal-body,
+    #requestModal .modal-body {
+        padding: 16px 16px calc(44px + env(safe-area-inset-bottom, 24px)) !important;
+    }
+    .bank-card-acct-num {
+        font-size: 1.05rem;
+    }
+    .vault-specs-grid {
+        grid-template-columns: 1fr;
+    }
+    .modal-actions-row {
+        flex-direction: column;
+    }
+    .vault-actions-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
