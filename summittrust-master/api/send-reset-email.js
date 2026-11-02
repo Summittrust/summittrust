@@ -28,7 +28,7 @@ module.exports = async (req, res) => {
 
         const SUPABASE_URL = 'https://jotfmjdmorjweoumdvuq.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpvdGZtamRtb3Jqd2VvdW1kdnVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3Mzk2OTksImV4cCI6MjA5MTMxNTY5OX0.bTkJKZtHEz_cBBHsYwWiWMotLpCpKU68_ROE-mKWm4s';
-        const NITROSEND_API_KEY = process.env.NITROSEND_API_KEY || 'nskey_live_e385858f36dec80034a2eb0f49b99244';
+        const NITROSEND_API_KEY = process.env.NITROSEND_API_KEY || 'nskey_live_44879eb57a52d337b55f7687101029cb';
 
         // 1. Verify user exists in database
         const userCheck = await fetch(`${SUPABASE_URL}/rest/v1/users?email=eq.${encodeURIComponent(cleanEmail)}&select=id,first_name,email`, {
@@ -69,48 +69,51 @@ module.exports = async (req, res) => {
             throw new Error('Failed to create reset code in database');
         }
 
-        // 4. Construct email template
+        // 4. Construct email template matching Summit Trust Holdings branding & color scheme
         const emailHtml = `
             <!DOCTYPE html>
             <html>
             <head><meta charset="utf-8"></head>
-            <body style="margin:0;padding:24px;background-color:#f8fafc;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+            <body style="margin:0;padding:24px;background-color:#F6F3FF;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
                 <table width="100%" border="0" cellspacing="0" cellpadding="0">
                     <tr>
                         <td align="center">
-                            <table width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width:520px;background:#ffffff;border-radius:16px;border:1px solid #e2e8f0;overflow:hidden;box-shadow:0 4px 6px -1px rgba(0,0,0,0.05);">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0" style="max-width:520px;background:#ffffff;border-radius:16px;border:1px solid #DDD5F7;overflow:hidden;box-shadow:0 8px 24px rgba(27,15,74,0.08);">
                                 <tr>
-                                    <td style="padding:32px 32px 24px;text-align:center;background:linear-gradient(135deg,#0f172a,#1e293b);color:#ffffff;">
-                                        <h1 style="margin:0;font-size:24px;letter-spacing:-0.5px;font-weight:700;">Summit Trust</h1>
-                                        <p style="margin:6px 0 0;font-size:13px;color:#94a3b8;letter-spacing:1px;text-transform:uppercase;">Digital Bank Security</p>
+                                    <td style="padding:32px 32px 24px;text-align:left;background:#1B0F4A;border-bottom:2px solid #6C3FF0;">
+                                        <h1 style="margin:0;font-size:22px;letter-spacing:0.4px;font-weight:700;color:#FFFFFF;font-family:Georgia,serif;">Summit Trust Holdings</h1>
+                                        <p style="margin:6px 0 0;font-size:11px;color:#DDD5F7;letter-spacing:1px;text-transform:uppercase;font-weight:600;">Private Wealth &bull; Security &bull; London, UK</p>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td style="padding:32px 32px 24px;">
-                                        <h2 style="margin:0 0 12px;font-size:18px;color:#0f172a;">Password Reset Request</h2>
+                                        <h2 style="margin:0 0 12px;font-size:18px;color:#1B0F4A;">Password Reset Verification Code</h2>
                                         <p style="margin:0 0 20px;font-size:14px;line-height:1.6;color:#475569;">
                                             Hello ${user.first_name || 'Valued Client'},<br>
-                                            We received a request to reset the password for your Summit Trust account. Enter the verification code below to proceed:
+                                            We received a request to reset the password for your Summit Trust Holdings account. Enter the verification code below to establish a new password:
                                         </p>
-                                        <div style="background:#f1f5f9;border:1px dashed #cbd5e1;border-radius:12px;padding:20px;text-align:center;margin:24px 0;">
-                                            <span style="font-family:'Courier New',Courier,monospace;font-size:36px;font-weight:800;letter-spacing:8px;color:#0284c7;">
+                                        <div style="background:#EFEAFE;border:1px dashed #6C3FF0;border-radius:12px;padding:20px;text-align:center;margin:24px 0;">
+                                            <span style="font-family:'Courier New',Courier,monospace;font-size:36px;font-weight:800;letter-spacing:8px;color:#6C3FF0;">
                                                 ${otpCode}
                                             </span>
                                         </div>
-                                        <p style="margin:0 0 16px;font-size:13px;line-height:1.5;color:#64748b;text-align:center;">
+                                        <p style="margin:0 0 16px;font-size:13px;line-height:1.5;color:#6B6486;text-align:center;">
                                             This verification code expires in <strong>15 minutes</strong>.
                                         </p>
-                                        <div style="background:#fef2f2;border-left:4px solid #ef4444;padding:12px 16px;border-radius:6px;margin:20px 0;">
-                                            <p style="margin:0;font-size:12px;color:#991b1b;line-height:1.5;">
-                                                <strong>Security Reminder:</strong> Never share this code with anyone. Summit Trust staff will never ask for your password or reset codes.
+                                        <div style="background:#FFE3F0;border-left:4px solid #E8559A;padding:12px 16px;border-radius:6px;margin:20px 0;">
+                                            <p style="margin:0;font-size:12px;color:#991B1B;line-height:1.5;">
+                                                <strong>Security Reminder:</strong> Never share this code with anyone. Summit Trust Holdings staff will never ask for your password or reset codes.
                                             </p>
                                         </div>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="padding:20px 32px;background:#f8fafc;border-top:1px solid #e2e8f0;text-align:center;">
-                                        <p style="margin:0;font-size:12px;color:#94a3b8;">
-                                            © ${new Date().getFullYear()} Summit Trust Digital Bank. All rights reserved.
+                                    <td style="padding:20px 32px;background:#F6F3FF;border-top:1px solid #DDD5F7;text-align:center;">
+                                        <p style="margin:0 0 4px;font-size:11px;color:#6B6486;">
+                                            100 Bishopsgate, London EC2N 4AG, United Kingdom &bull; 256-bit AES Encrypted
+                                        </p>
+                                        <p style="margin:0;font-size:11px;color:#94a3b8;">
+                                            &copy; ${new Date().getFullYear()} Summit Trust Holdings. All rights reserved.
                                         </p>
                                     </td>
                                 </tr>
@@ -133,11 +136,11 @@ module.exports = async (req, res) => {
             },
             body: JSON.stringify({
                 channel: 'email',
-                from: 'Summit Trust <help@smt.nitrosend.net>',
+                from: 'Summit Trust Holdings <help@reserved-citizen.nitrosend.net>',
                 to: cleanEmail,
-                subject: `${otpCode} is your Summit Trust password reset code`,
+                subject: `${otpCode} is your Summit Trust Holdings reset code`,
                 html: emailHtml,
-                body: `Hello ${user.first_name || 'Valued Client'},\n\nYour Summit Trust password reset verification code is: ${otpCode}\n\nThis code will expire in 15 minutes.\n\nIf you did not request this code, please ignore this email.\n\nSummit Trust Digital Bank`,
+                body: `Hello ${user.first_name || 'Valued Client'},\n\nYour Summit Trust Holdings password reset verification code is: ${otpCode}\n\nThis code will expire in 15 minutes.\n\nIf you did not request this code, please ignore this email.\n\nSummit Trust Holdings`,
                 idempotency_key: idempotencyKey
             })
         });
