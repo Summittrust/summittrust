@@ -14,7 +14,7 @@
         date: 'Effective: January 1, 2024',
         html: `
 <h2>1. Introduction</h2>
-<p>Welcome to <strong>Summit Trust Holdings</strong> ("Summit Trust Holdings", "we", "our", "us"). This Privacy Policy explains how we collect, use, disclose, and safeguard your personal information when you use our website, mobile application, and financial services (collectively, the "Services").</p>
+<p>Welcome to <strong>Summit Trust Holding</strong> ("Summit Trust Holding", "we", "our", "us"). This Privacy Policy explains how we collect, use, disclose, and safeguard your personal information when you use our website, mobile application, and financial services (collectively, the "Services").</p>
 <p>By accessing or using our Services, you agree to this Privacy Policy. If you do not agree, please discontinue use immediately.</p>
 
 <h2>2. Information We Collect</h2>
@@ -76,7 +76,7 @@
 
 <h2>11. Contact Us</h2>
 <p>For privacy inquiries: <a href="mailto:summittrustbnk@proton.me">summittrustbnk@proton.me</a><br>
-Summit Trust Holdings · Privacy Team · London, United Kingdom.</p>
+Summit Trust Holding · Privacy Team · London, United Kingdom.</p>
         `
     };
 
@@ -85,10 +85,10 @@ Summit Trust Holdings · Privacy Team · London, United Kingdom.</p>
         date: 'Effective: January 1, 2024',
         html: `
 <h2>1. Acceptance of Terms</h2>
-<p>By creating an account or using any feature of <strong>Summit Trust Holdings</strong> ("Summit Trust Holdings", "we", "us"), you agree to be legally bound by these Terms of Service ("Terms"). If you do not agree, you may not use our Services.</p>
+<p>By creating an account or using any feature of <strong>Summit Trust Holding</strong> ("Summit Trust Holding", "we", "us"), you agree to be legally bound by these Terms of Service ("Terms"). If you do not agree, you may not use our Services.</p>
 
 <h2>2. Eligibility</h2>
-<p>To use Summit Trust Holdings, you must:</p>
+<p>To use Summit Trust Holding, you must:</p>
 <ul>
     <li>Be at least 18 years of age (or the age of majority in your jurisdiction).</li>
     <li>Provide accurate, complete, and current registration information.</li>
@@ -97,11 +97,11 @@ Summit Trust Holdings · Privacy Team · London, United Kingdom.</p>
 </ul>
 
 <h2>3. Account Registration & Security</h2>
-<p>You are responsible for maintaining the confidentiality of your credentials (password, PIN). You must notify us immediately at <a href="mailto:summittrustbnk@proton.me">summittrustbnk@proton.me</a> if you suspect unauthorised access. Summit Trust Holdings is not liable for losses resulting from your failure to safeguard credentials.</p>
+<p>You are responsible for maintaining the confidentiality of your credentials (password, PIN). You must notify us immediately at <a href="mailto:summittrustbnk@proton.me">summittrustbnk@proton.me</a> if you suspect unauthorised access. Summit Trust Holding is not liable for losses resulting from your failure to safeguard credentials.</p>
 <p>Account recovery is conducted through verified email password reset links sent to your registered email address.</p>
 
 <h2>4. Permitted Use</h2>
-<p>You agree to use Summit Trust Holdings solely for lawful purposes. You may not:</p>
+<p>You agree to use Summit Trust Holding solely for lawful purposes. You may not:</p>
 <ul>
     <li>Use the Services for money laundering, terrorism financing, or fraud.</li>
     <li>Reverse-engineer, decompile, or attempt to extract our source code.</li>
@@ -111,7 +111,7 @@ Summit Trust Holdings · Privacy Team · London, United Kingdom.</p>
 </ul>
 
 <h2>5. Transactions & Fees</h2>
-<p>All transactions are processed in real time. <strong>Completed transactions are final and irreversible</strong> except where required by applicable law. Fees (if any) are disclosed before transaction confirmation. Summit Trust Holdings reserves the right to update fee schedules with 30 days' notice.</p>
+<p>All transactions are processed in real time. <strong>Completed transactions are final and irreversible</strong> except where required by applicable law. Fees (if any) are disclosed before transaction confirmation. Summit Trust Holding reserves the right to update fee schedules with 30 days' notice.</p>
 
 <h2>6. Joint Accounts</h2>
 <p>Joint accounts require approval from both account holders for transactions above threshold limits. Each holder is jointly and severally liable for all obligations arising from the account. Either holder may request closure; outstanding balances must be settled before closure is processed.</p>
@@ -120,16 +120,16 @@ Summit Trust Holdings · Privacy Team · London, United Kingdom.</p>
 <p>Investment goal features involve locking funds for a specified period. Early withdrawal may forfeit accrued returns and incur penalties as disclosed at time of creation. <strong>Projected returns are estimates, not guarantees.</strong> Past performance does not guarantee future results.</p>
 
 <h2>8. Loan Products</h2>
-<p>Loan disbursements are subject to credit assessment at Summit Trust Holdings's sole discretion. Failure to repay may result in account suspension, credit reporting, and legal action. Interest rates and repayment schedules are disclosed in your loan agreement.</p>
+<p>Loan disbursements are subject to credit assessment at Summit Trust Holding's sole discretion. Failure to repay may result in account suspension, credit reporting, and legal action. Interest rates and repayment schedules are disclosed in your loan agreement.</p>
 
 <h2>9. Card Services</h2>
-<p>Debit cards issued by Summit Trust Holdings remain our property. Report lost or stolen cards immediately. You are liable for unauthorised transactions occurring before you report the card missing.</p>
+<p>Debit cards issued by Summit Trust Holding remain our property. Report lost or stolen cards immediately. You are liable for unauthorised transactions occurring before you report the card missing.</p>
 
 <h2>10. Suspension & Termination</h2>
-<p>Summit Trust Holdings may suspend or terminate your account immediately if we detect fraud, legal violations, or activity that jeopardises our platform or other users. We will provide notice and recourse where legally required. You may close your account at any time by following the in-app account deletion process.</p>
+<p>Summit Trust Holding may suspend or terminate your account immediately if we detect fraud, legal violations, or activity that jeopardises our platform or other users. We will provide notice and recourse where legally required. You may close your account at any time by following the in-app account deletion process.</p>
 
 <h2>11. Limitation of Liability</h2>
-<p>To the maximum extent permitted by law, Summit Trust Holdings's aggregate liability to you for any claim arising out of or related to these Terms or the Services shall not exceed the total fees paid by you to Summit Trust Holdings in the 12 months preceding the claim. We are not liable for indirect, incidental, or consequential damages.</p>
+<p>To the maximum extent permitted by law, Summit Trust Holding's aggregate liability to you for any claim arising out of or related to these Terms or the Services shall not exceed the total fees paid by you to Summit Trust Holding in the 12 months preceding the claim. We are not liable for indirect, incidental, or consequential damages.</p>
 
 <h2>12. Dispute Resolution</h2>
 <p>Any disputes shall be first attempted to be resolved through our customer support. If unresolved within 30 days, disputes shall be referred to binding arbitration under the rules of the applicable arbitration body in your jurisdiction. Class action waiver applies to the fullest extent permitted by law.</p>
@@ -142,7 +142,7 @@ Summit Trust Holdings · Privacy Team · London, United Kingdom.</p>
 
 <h2>15. Contact</h2>
 <p>Legal inquiries: <a href="mailto:summittrustbnk@proton.me">summittrustbnk@proton.me</a><br>
-Summit Trust Holdings · Legal Department · London, United Kingdom.</p>
+Summit Trust Holding · Legal Department · London, United Kingdom.</p>
         `
     };
 

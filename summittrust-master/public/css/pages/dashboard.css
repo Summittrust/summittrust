@@ -790,7 +790,7 @@
 }
 
 /* ==========================================================================
-   Summit Trust Holdings — ULTRA-MODERN SWISS PRIVATE VAULT DASHBOARD
+   Summit Trust Holding — ULTRA-MODERN SWISS PRIVATE VAULT DASHBOARD
    ========================================================================== */
 
 /* Member Cockpit Header */
@@ -1479,7 +1479,7 @@
 
 .rcb-preset-chip:hover {
     border-color: var(--accent, #ab854b);
-    color: var(--text, #0f2a24);
+    color: var(--text, #F4F0FF);
 }
 
 .rcb-preset-chip.active {
@@ -1668,3 +1668,4 @@ body:has(.tx-drawer-overlay.active) div[id*="tawk" i] {
     z-index: -99999 !important;
     transform: scale(0) !important;
 }
+

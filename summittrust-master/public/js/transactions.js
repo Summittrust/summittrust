@@ -565,13 +565,13 @@ const TxPage = (() => {
             const debit = isDebit(t);
 
             // ---- header band ----
-            doc.setFillColor(15, 42, 36);          // Summit Trust Holdings ink
+            doc.setFillColor(15, 42, 36);          // Summit Trust Holding ink
             doc.rect(0, 0, W, 80, 'F');
 
             doc.setTextColor(244, 239, 230);
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(22);
-            doc.text('Summit Trust Holdings', 40, 36);
+            doc.text('Summit Trust Holding', 40, 36);
 
             doc.setFont('helvetica', 'normal');
             doc.setFontSize(11);
@@ -654,7 +654,7 @@ const TxPage = (() => {
             doc.setFont('helvetica', 'normal');
             doc.setFontSize(9);
             doc.setTextColor(244, 239, 230);
-            doc.text('Summit Trust Holdings  •  London, United Kingdom  •  summittrustbnk@proton.me', W / 2, pH - 16, { align: 'center' });
+            doc.text('Summit Trust Holding  •  London, United Kingdom  •  summittrustbnk@proton.me', W / 2, pH - 16, { align: 'center' });
 
             const ref  = t.transaction_reference || t.id.slice(0, 8);
             doc.save(`Citizen-Wealth-receipt-${ref}.pdf`);
@@ -682,7 +682,7 @@ const TxPage = (() => {
                 doc.setFont('helvetica', 'bold');
                 doc.setFontSize(16);
                 doc.setTextColor(244, 239, 230);
-                doc.text('Summit Trust Holdings  —  Private Client Statement', 30, 32);
+                doc.text('Summit Trust Holding  —  Private Client Statement', 30, 32);
                 doc.setFont('helvetica', 'normal');
                 doc.setFontSize(9);
                 doc.text(`${currentUser.first_name} ${currentUser.last_name}  •  London, United Kingdom  •  ${new Date().toLocaleDateString()}`, W - 30, 32, { align: 'right' });

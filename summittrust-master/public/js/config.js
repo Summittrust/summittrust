@@ -1,4 +1,4 @@
-// Summit Trust Holdings Configuration
+// Summit Trust Holding Configuration
 const CONFIG = {
     SUPABASE_URL: 'https://jotfmjdmorjweoumdvuq.supabase.co',
     SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImpvdGZtamRtb3Jqd2VvdW1kdnVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3Mzk2OTksImV4cCI6MjA5MTMxNTY5OX0.bTkJKZtHEz_cBBHsYwWiWMotLpCpKU68_ROE-mKWm4s',
@@ -8,10 +8,10 @@ const CONFIG = {
     NITROSEND_WP_KEY: 'wpkey_live_e05d0cdc72236cbdbb6a2116b9d5ca09',
     NITROSEND_API_URL: 'https://api.nitrosend.com/v1/my/messages',
     NITROSEND_FROM_EMAIL: 'help@reserved-citizen.nitrosend.net',
-    NITROSEND_FROM_NAME: 'Summit Trust Holdings',
+    NITROSEND_FROM_NAME: 'Summit Trust Holding',
     TAWK_TO_PROPERTY_ID: '69d7c8a78d80621c3581cfc7',
     TAWK_TO_WIDGET_ID: '1jlpefk1u',
-    APP_NAME: 'Summit Trust Holdings',
+    APP_NAME: 'Summit Trust Holding',
     SLOGAN: 'Banking, held in trust',
     CONTACT_EMAIL: 'summittrustbnk@proton.me',
     LOCATION: 'London, United Kingdom',

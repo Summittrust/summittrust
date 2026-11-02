@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Summit Trust Holdings — Home Page Stylesheet
+   Summit Trust Holding — Home Page Stylesheet
    Architecture: Editorial FinTech / Bento Grid / Titanium Card Cockpit
    Typography: Cormorant Garamond (Display) & Inter (Body)
    Tokens: theme.css (Ink, Brass, Paper, Paper Deep)
@@ -219,7 +219,7 @@
 .invest-plan-card.featured .btn-outline:hover {
     background: var(--hb-white) !important;
     border-color: var(--hb-white) !important;
-    color: #0F2A24 !important;
+    color: var(--text) !important;
 }
 
 /* Trust bullet list in hero */
@@ -2067,4 +2067,5 @@
         grid-template-columns: 1fr;
     }
 }
+
 

@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════
-   ABOUT PAGE — Summit Trust Holdings
+   ABOUT PAGE — Summit Trust Holding
    Font: Cormorant Garamond (display) + Inter (body)
 ═══════════════════════════════════════════ */
 
@@ -406,7 +406,7 @@ body {
 :root[data-theme="dark"] .about-cta .btn-primary:hover {
     background: #FFFFFF !important;
     border-color: #FFFFFF !important;
-    color: #0F2A24 !important;
+    color: var(--text) !important;
 }
 
 /* ══ RESPONSIVE ═══════════════════════════ */

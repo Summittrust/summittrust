@@ -1,5 +1,5 @@
 // ==========================================================================
-// Summit Trust Holdings — Social Proof / Testimonies Live Activity Ticker
+// Summit Trust Holding — Social Proof / Testimonies Live Activity Ticker
 // Real-time notifications for deposits, profits, signups & vault locks
 // ==========================================================================
 
@@ -146,7 +146,7 @@
         } else if (eventType < 0.90) {
             // Treasury Vault lock
             var vaultAmount = randomAmount();
-            msgHtml = 'locked <span class="highlight-amount">' + fmtMoney(vaultAmount) + '</span> into Summit Trust Holdings Vault';
+            msgHtml = 'locked <span class="highlight-amount">' + fmtMoney(vaultAmount) + '</span> into Summit Trust Holding Vault';
             iconHtml = '<span class="testimony-icon vault"><i class="fas fa-vault"></i></span>';
         } else {
             // Security verification

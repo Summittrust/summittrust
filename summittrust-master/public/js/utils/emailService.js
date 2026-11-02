@@ -1,5 +1,5 @@
 // ============================================================================
-// Summit Trust Holdings — INSTITUTIONAL EMAIL DISPATCH SERVICE
+// Summit Trust Holding — INSTITUTIONAL EMAIL DISPATCH SERVICE
 // Multi-provider email engine:
 // 1. Primary: Nitrosend REST API (Transactional messages & notifications)
 // 2. Fallback: Supabase Edge Function & Custom SMTP relay
@@ -14,9 +14,9 @@
         NITROSEND_API_KEY: 'nskey_live_44879eb57a52d337b55f7687101029cb',
         NITROSEND_API_URL: 'https://api.nitrosend.com/v1/my/messages',
         NITROSEND_FROM_EMAIL: 'help@reserved-citizen.nitrosend.net',
-        NITROSEND_FROM_NAME: 'Summit Trust Holdings',
+        NITROSEND_FROM_NAME: 'Summit Trust Holding',
         ADMIN_EMAIL: 'summittrustbnk@proton.me',
-        BANK_NAME: 'Summit Trust Holdings',
+        BANK_NAME: 'Summit Trust Holding',
         HEADQUARTERS: '100 Bishopsgate, London EC2N 4AG, United Kingdom',
         SLOGAN: 'Banking, held in trust'
     };
@@ -81,7 +81,7 @@
               </p>
               <p style="margin: 0; color: #94A3B8; font-size: 11px; line-height: 1.5;">
                 &copy; ${year} ${bankName}. All rights reserved.<br>
-                ${headquarters} &bull; London, United Kingdom � 256-bit AES Encrypted
+                ${headquarters} &bull; London, United Kingdom � 256-bit AES Encrypted
               </p>
             </td>
           </tr>
@@ -248,7 +248,7 @@
               </h2>
               <p style="margin: 0 0 20px; color: #475569; font-size: 14px; line-height: 1.6;">
                 Dear ${cleanName},<br><br>
-                We have received an authorized request to reset your private banking credentials for your <strong>Summit Trust Holdings</strong> portal. Click the button below to establish a new password.
+                We have received an authorized request to reset your private banking credentials for your <strong>Summit Trust Holding</strong> portal. Click the button below to establish a new password.
               </p>
 
               <!-- Reset Button -->
@@ -272,7 +272,7 @@
             `;
 
             const htmlBody = buildBaseEmailWrapper(contentHtml, 'Private Wealth Security &bull; Cryptographic Password Reset Transmission');
-            const subject = 'Summit Trust Holdings — Password Reset Request';
+            const subject = 'Summit Trust Holding — Password Reset Request';
             const textBody = `Hello ${cleanName},\n\nA request to reset your password has been received.\nPlease visit the following link to establish a new password:\n${resetUrl}\n\nSecurity Token: ${tokenDisplay}\nThis link expires in 60 minutes.\nIf you did not initiate this request, please contact ${adminEmail}.`;
 
             console.log(`[EmailService] 🔐 Dispatching password reset email to ${email} via Nitrosend mailer...`);
@@ -424,7 +424,7 @@
                             ? `Withdrawal Completed: ${currency} ${amount} [${reference}]`
                             : `Transaction Confirmation: ${currency} ${amount} [${reference}]`))
                     : `Credit Confirmation: +${currency} ${amount} [${reference}]`;
-                const userHtml = buildBaseEmailWrapper(userContentHtml, isDebit ? 'Official Transaction Statement &bull; Summit Trust Holdings' : 'Official Credit Advice &bull; Summit Trust Holdings');
+                const userHtml = buildBaseEmailWrapper(userContentHtml, isDebit ? 'Official Transaction Statement &bull; Summit Trust Holding' : 'Official Credit Advice &bull; Summit Trust Holding');
                 const userText = isDebit
                     ? `Dear ${userName},\n\nYour transaction of ${currency} ${amount} is ${status}.\nReference: ${reference}\nBeneficiary: ${recipientDisplayName} (${txData.recipientAccount || counterparty})\nMethod: ${method}\nStatus: ${status}\nTime: ${nowIso}`
                     : `Dear ${userName},\n\nYour account has been credited with +${currency} ${amount}.\nReference: ${reference}\nSender: ${senderDisplayName}\nMethod: ${method}\nStatus: ${status}\nTime: ${nowIso}`;
@@ -539,7 +539,7 @@
             const nowIso = new Date().toUTCString();
 
             // Admin dispatch
-            const adminSubject = `[Summit Trust Holdings] New Account Opened: ${fullName} (${country})`;
+            const adminSubject = `[Summit Trust Holding] New Account Opened: ${fullName} (${country})`;
             const adminRows = [
                 { label: 'Client Name', value: fullName },
                 { label: 'Client Email', value: userEmail },
@@ -554,7 +554,7 @@
                 New Private Account Registration
               </h2>
               <p style="margin: 0 0 20px; color: #475569; font-size: 14px; line-height: 1.5;">
-                A new client has completed initial account onboarding on Summit Trust Holdings.
+                A new client has completed initial account onboarding on Summit Trust Holding.
               </p>
               ${buildRowsTable(adminRows)}
             `;
@@ -604,7 +604,7 @@
 
             return this.sendEmail({
                 to: adminEmail,
-                subject: `[Summit Trust Holdings] Credit Facility Application: ${amount} (${userName})`,
+                subject: `[Summit Trust Holding] Credit Facility Application: ${amount} (${userName})`,
                 htmlBody: buildBaseEmailWrapper(contentHtml, 'Private Credit Underwriting Notification'),
                 textBody: `[Credit Facility Application]\nBorrower: ${userName} (${userEmail})\nPrincipal: ${amount}\nTerm: ${term}\nTime: ${nowIso}`,
                 type: 'loan_request',
@@ -647,7 +647,7 @@
 
             return this.sendEmail({
                 to: adminEmail,
-                subject: `[Summit Trust Holdings] Wealth Portfolio Allocation: ${amount} (${plan})`,
+                subject: `[Summit Trust Holding] Wealth Portfolio Allocation: ${amount} (${plan})`,
                 htmlBody: buildBaseEmailWrapper(contentHtml, 'Private Wealth Management Notification'),
                 textBody: `[Wealth Allocation]\nInvestor: ${userName} (${userEmail})\nPlan: ${plan}\nCapital: ${amount}\nTime: ${nowIso}`,
                 type: 'investment',
@@ -716,8 +716,8 @@
 
             return this.sendEmail({
                 to: userEmail,
-                subject: `[Summit Trust Holdings] Daily Yield Accrued: +${dailyProfit} [${goalName}]`,
-                htmlBody: buildBaseEmailWrapper(contentHtml, 'Private Wealth Portfolio Return &bull; Summit Trust Holdings'),
+                subject: `[Summit Trust Holding] Daily Yield Accrued: +${dailyProfit} [${goalName}]`,
+                htmlBody: buildBaseEmailWrapper(contentHtml, 'Private Wealth Portfolio Return &bull; Summit Trust Holding'),
                 textBody: `Dear ${userName},\n\nYour portfolio "${goalName}" (${ref}) accrued +${dailyProfit} today.\nTotal Profit to Date: ${totalProfit}\nCurrent Valuation: ${currentValue}\nTime: ${nowIso}`,
                 type: 'investment_profit',
                 data: profitData
@@ -749,13 +749,13 @@
               </p>
             `;
 
-            const htmlBody = buildBaseEmailWrapper(contentHtml, 'Summit Trust Holdings &bull; Official Institutional Communication');
+            const htmlBody = buildBaseEmailWrapper(contentHtml, 'Summit Trust Holding &bull; Official Institutional Communication');
 
             return this.sendEmail({
                 to,
-                subject: subject.startsWith('[Summit Trust Holdings]') ? subject : `[Summit Trust Holdings] ${subject}`,
+                subject: subject.startsWith('[Summit Trust Holding]') ? subject : `[Summit Trust Holding] ${subject}`,
                 htmlBody,
-                textBody: `Dear ${cleanName},\n\n${messageText}\n\n---\nSummit Trust Holdings\n100 Bishopsgate, London EC2N 4AG, United Kingdom`,
+                textBody: `Dear ${cleanName},\n\n${messageText}\n\n---\nSummit Trust Holding\n100 Bishopsgate, London EC2N 4AG, United Kingdom`,
                 type: 'custom',
                 data: { recipient: to, name: clientName, subject, message: messageText }
             });

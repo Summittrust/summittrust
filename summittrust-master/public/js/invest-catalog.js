@@ -91,7 +91,7 @@ window.INVEST_CATALOG = [
 
     // ── TIER 3 · ELITE ─────────────────────────────────────────────────────
     { id: 'asml',  name: 'ASML Holding',           sym: 'ASML',       cat: 'stocks',      tier: 3, icon: investLogo('asml.com') },
-    { id: 'arm',   name: 'Arm Holdings',           sym: 'ARM',        cat: 'stocks',      tier: 3, icon: investLogo('arm.com') },
+    { id: 'arm',   name: 'Arm Holding',           sym: 'ARM',        cat: 'stocks',      tier: 3, icon: investLogo('arm.com') },
     { id: 'crwd',  name: 'CrowdStrike',            sym: 'CRWD',       cat: 'stocks',      tier: 3, icon: investLogo('crowdstrike.com') },
     { id: 'anet',  name: 'Arista Networks',        sym: 'ANET',       cat: 'stocks',      tier: 3, icon: investLogo('arista.com') },
     { id: 'vrt',   name: 'Vertiv',                 sym: 'VRT',        cat: 'stocks',      tier: 3, icon: investLogo('vertiv.com') },

@@ -15,7 +15,7 @@ const US_BANKS = [
   "SouthState Bank", "UMB Bank", "Valley National Bank", "Associated Bank",
   "Prosperity Bank", "Texas Capital Bank", "Wintrust Bank", "United Bank",
   "Glacier Bank", "Atlantic Union Bank", "First Interstate Bank",
-  "Pinnacle Financial Partners", "Summit Trust Holdings"
+  "Pinnacle Financial Partners", "Summit Trust Holding"
 ];
 
 const EUROPEAN_BANKS = [
@@ -1550,7 +1550,7 @@ async function loadReceiveUSD() {
 
             + '<div class="swiss-specs-card">'
             + receiveRow('Account Beneficiary', fullName, true)
-            + receiveRow('Bank Name', 'Summit Trust Holdings', true)
+            + receiveRow('Bank Name', 'Summit Trust Holding', true)
             + receiveRow('Account Number', (acct.account_number || 'N/A'), true)
             + receiveRow('Account Currency', (acct.currency || 'USD'), true)
             + receiveRow('Ledger Balance', '<strong style="color:var(--success);">' + formatCurrency(parseFloat(acct.balance) || 0, acct.currency || 'USD') + '</strong>', false)
@@ -1743,7 +1743,7 @@ function downloadSingleCryptoSlip(coin, address, acct) {
         var cur = (acct && acct.currency) || 'USD';
 
         var slip = '================================================================================\n'
-            + 'Summit Trust Holdings — OFFICIAL CRYPTO INWARD DEPOSIT SLIP\n'
+            + 'Summit Trust Holding — OFFICIAL CRYPTO INWARD DEPOSIT SLIP\n'
             + 'Digital Asset Custody & Private Wealth Management\n'
             + '================================================================================\n\n'
             + 'CLIENT & ACCOUNT IDENTIFICATION:\n'
@@ -1812,10 +1812,10 @@ function copyAccountDetails() {
     var num  = (document.getElementById('receiveAccountNumber') || {}).textContent || '';
     var name = (((currentUser && currentUser.first_name) || '') + ' ' + ((currentUser && currentUser.last_name) || '')).trim() || 'Valued Client';
     var cur  = window.currentAccountCurrency || 'USD';
-    var text = 'Summit Trust Holdings — DOMESTIC BANK TRANSFER DETAILS\n================================\n'
+    var text = 'Summit Trust Holding — DOMESTIC BANK TRANSFER DETAILS\n================================\n'
         + 'Date:             ' + new Date().toLocaleDateString() + '\n\n'
         + 'Account Holder:   ' + name + '\n'
-        + 'Bank Name:        Summit Trust Holdings\n'
+        + 'Bank Name:        Summit Trust Holding\n'
         + 'Account Number:   ' + num.trim() + '\n'
         + 'Currency:         ' + cur + '\n\n'
         + 'Note: For domestic bank transfers only. International inward transfers are cleared via cryptocurrency (BTC/LTC).';
@@ -1829,12 +1829,12 @@ function downloadAccountDetails() {
     var name = (((currentUser && currentUser.first_name) || '') + ' ' + ((currentUser && currentUser.last_name) || '')).trim() || 'Valued Client';
     var cur  = window.currentAccountCurrency || 'USD';
     var text = '================================================================================\n'
-        + 'Summit Trust Holdings — DOMESTIC BANK TRANSFER SPECIFICATION\n'
+        + 'Summit Trust Holding — DOMESTIC BANK TRANSFER SPECIFICATION\n'
         + 'Private Wealth Management & Direct Clearing\n'
         + '================================================================================\n\n'
         + 'BENEFICIARY DETAILS:\n'
         + '  Account Beneficiary:  ' + name + '\n'
-        + '  Bank Name:            Summit Trust Holdings\n'
+        + '  Bank Name:            Summit Trust Holding\n'
         + '  Account Number:       ' + num.trim() + '\n'
         + '  Account Currency:     ' + cur + '\n'
         + '  Date Issued:          ' + new Date().toUTCString() + '\n\n'
@@ -1845,7 +1845,7 @@ function downloadAccountDetails() {
         + '     all international and cross-border inbound transfers are processed exclusively\n'
         + '     via cryptocurrency deposit (Bitcoin SegWit / Litecoin).\n\n'
         + '================================================================================\n'
-        + 'Confidential Client Instrument | Summit Trust Holdings\n'
+        + 'Confidential Client Instrument | Summit Trust Holding\n'
         + '================================================================================\n';
     var blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
     var url  = URL.createObjectURL(blob);

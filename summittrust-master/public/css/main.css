@@ -1,4 +1,4 @@
-/* Summit Trust Holdings - Main CSS */
+/* Summit Trust Holding - Main CSS */
 *, *::before, *::after {
     margin: 0;
     padding: 0;
@@ -672,7 +672,7 @@ a {
 .animate-slideInRight { animation: slideInRight 0.3s ease; }
 
 /* ==========================================================================
-   Summit Trust Holdings — Global Institutional Footer
+   Summit Trust Holding — Global Institutional Footer
    ========================================================================== */
 .footer {
     background-color: var(--surface);

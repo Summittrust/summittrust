@@ -1,5 +1,5 @@
 // ============================================
-// Summit Trust Holdings ADMIN PANEL
+// Summit Trust Holding ADMIN PANEL
 // ============================================
 
 var SUPABASE_URL     = (window.CONFIG && window.CONFIG.SUPABASE_URL) || 'https://jotfmjdmorjweoumdvuq.supabase.co';
@@ -509,18 +509,18 @@ async function executeAdminSendEmail() {
             var contentHtml = '<!DOCTYPE html><html><body style="margin:0;padding:0;background-color:#F5F2EB;font-family:-apple-system,BlinkMacSystemFont,\'Segoe UI\',Roboto,sans-serif;color:#1E293B;">'
                 + '<table width="100%" cellspacing="0" cellpadding="0" style="background-color:#F5F2EB;padding:32px 12px;"><tr><td align="center">'
                 + '<table width="100%" style="max-width:580px;background-color:#FFFFFF;border-radius:12px;overflow:hidden;box-shadow:0 10px 25px rgba(15,42,36,0.06);border:1px solid #E5E0D8;">'
-                + '<tr><td style="background-color:#0F2A24;padding:30px 32px;text-align:left;border-bottom:2px solid #C5A059;">'
-                + '<div style="font-size:21px;font-weight:700;color:#FAF8F5;letter-spacing:0.5px;font-family:Georgia,serif;">Summit Trust Holdings</div>'
-                + '<div style="color:#C5A059;font-size:11px;margin-top:4px;letter-spacing:1px;text-transform:uppercase;font-weight:600;">Banking, held in trust • London, United Kingdom</div>'
+                + '<tr><td style="background-color:#1B0F4A;padding:30px 32px;text-align:left;border-bottom:2px solid #6C3FF0;">'
+                + '<div style="font-size:21px;font-weight:700;color:#FAF8F5;letter-spacing:0.5px;font-family:Georgia,serif;">Summit Trust Holding</div>'
+                + '<div style="color:#6C3FF0;font-size:11px;margin-top:4px;letter-spacing:1px;text-transform:uppercase;font-weight:600;">Banking, held in trust • London, United Kingdom</div>'
                 + '</td></tr>'
                 + '<tr><td style="padding:32px 32px 24px;">'
-                + '<h2 style="margin:0 0 12px;color:#0F2A24;font-size:20px;font-weight:700;font-family:Georgia,serif;">' + subject + '</h2>'
+                + '<h2 style="margin:0 0 12px;color:#1B0F4A;font-size:20px;font-weight:700;font-family:Georgia,serif;">' + subject + '</h2>'
                 + '<p style="margin:0 0 18px;color:#475569;font-size:14px;font-weight:500;">Dear ' + name + ',</p>'
-                + '<div style="background-color:#FAF8F5;border:1px solid #EBE4D8;border-left:4px solid #C5A059;border-radius:8px;padding:20px 24px;margin-bottom:24px;">' + paragraphs + '</div>'
+                + '<div style="background-color:#FAF8F5;border:1px solid #EBE4D8;border-left:4px solid #6C3FF0;border-radius:8px;padding:20px 24px;margin-bottom:24px;">' + paragraphs + '</div>'
                 + '<p style="margin:0;color:#64748B;font-size:13px;line-height:1.6;">Should you require any further assistance, our client service desk remains at your disposal.</p>'
                 + '</td></tr>'
                 + '<tr><td style="background-color:#FAF8F5;padding:20px 32px;border-top:1px solid #E5E0D8;text-align:center;">'
-                + '<p style="margin:0;color:#64748B;font-size:12px;line-height:1.5;">© ' + new Date().getFullYear() + ' Summit Trust Holdings. All rights reserved.<br>Hochschulstrasse 6, 3012 London, United Kingdom • 256-bit AES encrypted transmission</p>'
+                + '<p style="margin:0;color:#64748B;font-size:12px;line-height:1.5;">© ' + new Date().getFullYear() + ' Summit Trust Holding. All rights reserved.<br>Hochschulstrasse 6, 3012 London, United Kingdom • 256-bit AES encrypted transmission</p>'
                 + '</td></tr></table></td></tr></table></body></html>';
 
             var response = await fetch(SUPABASE_URL + '/functions/v1/send-email', {
@@ -533,9 +533,9 @@ async function executeAdminSendEmail() {
                 body: JSON.stringify({
                     type: 'custom',
                     to: email,
-                    subject: '[Summit Trust Holdings] ' + subject,
+                    subject: '[Summit Trust Holding] ' + subject,
                     html: contentHtml,
-                    text: 'Dear ' + name + ',\n\n' + message + '\n\n---\nSummit Trust Holdings'
+                    text: 'Dear ' + name + ',\n\n' + message + '\n\n---\nSummit Trust Holding'
                 }),
                 keepalive: true
             });
@@ -2314,5 +2314,6 @@ async function saveLoanSettings() {
         toast('Failed to save loan settings: ' + err.message, 'error');
     }
 }
+
 
 

@@ -438,7 +438,7 @@ window.Auth = {
 
             return {
                 success: true,
-                message: 'A password reset link has been dispatched to your email address by Summit Trust Holdings security. Please check your inbox and spam folder.',
+                message: 'A password reset link has been dispatched to your email address by Summit Trust Holding security. Please check your inbox and spam folder.',
                 resetToken
             };
         } catch (err) {

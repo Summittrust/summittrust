@@ -707,7 +707,7 @@ async function copyCardDetails(id) {
     var card = await _getCardById(id);
     if (!card || !card.card_number) { showToast('Card details not available', 'error'); return; }
     var n    = card.card_number;
-    var text = 'Summit Trust Holdings — CARD DETAILS\n'
+    var text = 'Summit Trust Holding — CARD DETAILS\n'
              + '==============================\n'
              + 'Card Number: ' + n.slice(0,4) + ' ' + n.slice(4,8) + ' ' + n.slice(8,12) + ' ' + n.slice(12,16) + '\n'
              + 'Expiry:      ' + (card.card_expiry  || 'N/A') + '\n'
@@ -724,7 +724,7 @@ async function downloadCardDetails(id) {
     var card = await _getCardById(id);
     if (!card || !card.card_number) { showToast('Card details not available', 'error'); return; }
     var n    = card.card_number;
-    var text = 'Summit Trust Holdings — CARD DETAILS\n'
+    var text = 'Summit Trust Holding — CARD DETAILS\n'
              + '==============================\n'
              + 'Date:        ' + new Date().toLocaleDateString() + '\n'
              + 'Card Number: ' + n.slice(0,4) + ' ' + n.slice(4,8) + ' ' + n.slice(8,12) + ' ' + n.slice(12,16) + '\n'
