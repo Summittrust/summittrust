@@ -17,7 +17,7 @@
         NITROSEND_FROM_NAME: 'Summit Trust Holdings',
         ADMIN_EMAIL: 'summittrustbnk@proton.me',
         BANK_NAME: 'Summit Trust Holdings',
-        HEADQUARTERS: 'Hochschulstrasse 6, 3012 London, United Kingdom',
+        HEADQUARTERS: '100 Bishopsgate, London EC2N 4AG, United Kingdom',
         SLOGAN: 'Banking, held in trust'
     };
 
@@ -42,22 +42,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${bankName}</title>
 </head>
-<body style="margin: 0; padding: 0; background-color: #F5F2EB; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; -webkit-font-smoothing: antialiased; color: #1E293B;">
-  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #F5F2EB; padding: 36px 12px;">
+<body style="margin: 0; padding: 0; background-color: #F6F3FF; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; -webkit-font-smoothing: antialiased; color: #1E293B;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #F6F3FF; padding: 36px 12px;">
     <tr>
       <td align="center">
-        <table role="presentation" width="100%" style="max-width: 580px; background-color: #FFFFFF; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 25px rgba(15,42,36,0.06); border: 1px solid #E5E0D8;">
+        <table role="presentation" width="100%" style="max-width: 580px; background-color: #FFFFFF; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 25px rgba(15,42,36,0.06); border: 1px solid #DDD5F7;">
           
           <!-- Institutional Header -->
           <tr>
-            <td style="background-color: #0F2A24; padding: 32px 36px; text-align: left; border-bottom: 2px solid #C5A059;">
+            <td style="background-color: #1B0F4A; padding: 32px 36px; text-align: left; border-bottom: 2px solid #6C3FF0;">
               <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
                 <tr>
                   <td>
-                    <div style="font-size: 21px; font-weight: 700; color: #FAF8F5; letter-spacing: 0.6px; font-family: Georgia, 'Cormorant Garamond', serif;">
+                    <div style="font-size: 21px; font-weight: 700; color: #FFFFFF; letter-spacing: 0.6px; font-family: Georgia, 'Cormorant Garamond', serif;">
                       ${bankName}
                     </div>
-                    <div style="color: #C5A059; font-size: 11px; margin-top: 5px; letter-spacing: 1.2px; text-transform: uppercase; font-weight: 600;">
+                    <div style="color: #6C3FF0; font-size: 11px; margin-top: 5px; letter-spacing: 1.2px; text-transform: uppercase; font-weight: 600;">
                       ${slogan} &bull; London, United Kingdom
                     </div>
                   </td>
@@ -75,13 +75,13 @@
 
           <!-- Institutional Security Footer -->
           <tr>
-            <td style="background-color: #FAF8F5; padding: 24px 36px; border-top: 1px solid #E5E0D8; text-align: center;">
+            <td style="background-color: #FFFFFF; padding: 24px 36px; border-top: 1px solid #DDD5F7; text-align: center;">
               <p style="margin: 0 0 8px; color: #64748B; font-size: 12px; line-height: 1.5;">
                 ${footerNote || 'Automated institutional security dispatch &bull; 256-bit AES encrypted transmission'}
               </p>
               <p style="margin: 0; color: #94A3B8; font-size: 11px; line-height: 1.5;">
                 &copy; ${year} ${bankName}. All rights reserved.<br>
-                ${headquarters} &bull; Member, Swiss Banking Integrity Standards
+                ${headquarters} &bull; London, United Kingdom • 256-bit AES Encrypted
               </p>
             </td>
           </tr>
@@ -97,13 +97,13 @@
     function buildRowsTable(rows) {
         const rowsHtml = rows.map(r => `
           <tr>
-            <td style="padding: 11px 16px; border-bottom: 1px solid #F1ECE1; color: #64748B; font-size: 13px; font-weight: 500; width: 40%;">${r.label}</td>
-            <td style="padding: 11px 16px; border-bottom: 1px solid #F1ECE1; color: #0F2A24; font-size: 13.5px; font-weight: 600; text-align: right; word-break: break-all;">${r.value}</td>
+            <td style="padding: 11px 16px; border-bottom: 1px solid #DDD5F7; color: #64748B; font-size: 13px; font-weight: 500; width: 40%;">${r.label}</td>
+            <td style="padding: 11px 16px; border-bottom: 1px solid #DDD5F7; color: #1B0F4A; font-size: 13.5px; font-weight: 600; text-align: right; word-break: break-all;">${r.value}</td>
           </tr>
         `).join('');
 
         return `
-          <table width="100%" cellspacing="0" cellpadding="0" style="border: 1px solid #E5E0D8; border-radius: 8px; overflow: hidden; background-color: #FFFFFF; margin: 20px 0;">
+          <table width="100%" cellspacing="0" cellpadding="0" style="border: 1px solid #DDD5F7; border-radius: 8px; overflow: hidden; background-color: #FFFFFF; margin: 20px 0;">
             ${rowsHtml}
           </table>
         `;
@@ -243,7 +243,7 @@
             const tokenDisplay = resetToken || (new URL(resetUrl, window.location.href).searchParams.get('reset_token') || 'Secured Token');
 
             const contentHtml = `
-              <h2 style="margin: 0 0 10px; color: #0F2A24; font-size: 21px; font-weight: 700; font-family: Georgia, 'Cormorant Garamond', serif;">
+              <h2 style="margin: 0 0 10px; color: #1B0F4A; font-size: 21px; font-weight: 700; font-family: Georgia, 'Cormorant Garamond', serif;">
                 Password Reset Authorization
               </h2>
               <p style="margin: 0 0 20px; color: #475569; font-size: 14px; line-height: 1.6;">
@@ -253,20 +253,20 @@
 
               <!-- Reset Button -->
               <div style="text-align: center; margin: 28px 0;">
-                <a href="${resetUrl}" style="background-color: #0F2A24; color: #FAF8F5; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 14px; font-weight: 600; display: inline-block; letter-spacing: 0.5px; box-shadow: 0 4px 14px rgba(15,42,36,0.2); border: 1px solid #0F2A24;">
+                <a href="${resetUrl}" style="background-color: #1B0F4A; color: #FFFFFF; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-size: 14px; font-weight: 600; display: inline-block; letter-spacing: 0.5px; box-shadow: 0 4px 14px rgba(15,42,36,0.2); border: 1px solid #1B0F4A;">
                   Reset Account Password
                 </a>
               </div>
 
               <!-- Security Token Box -->
-              <div style="background-color: #FAF8F5; border: 1px dashed #C5A059; border-radius: 8px; padding: 16px; margin: 24px 0; text-align: center;">
+              <div style="background-color: #FFFFFF; border: 1px dashed #6C3FF0; border-radius: 8px; padding: 16px; margin: 24px 0; text-align: center;">
                 <div style="color: #64748B; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">One-Time Security Token</div>
-                <div style="color: #0F2A24; font-size: 16px; font-weight: 700; font-family: 'Courier New', monospace; margin-top: 4px; letter-spacing: 1.5px;">${tokenDisplay}</div>
+                <div style="color: #1B0F4A; font-size: 16px; font-weight: 700; font-family: 'Courier New', monospace; margin-top: 4px; letter-spacing: 1.5px;">${tokenDisplay}</div>
               </div>
 
-              <div style="background-color: #F8FAFC; border-left: 3px solid #C5A059; padding: 14px 16px; border-radius: 4px; margin-top: 24px;">
+              <div style="background-color: #F8FAFC; border-left: 3px solid #6C3FF0; padding: 14px 16px; border-radius: 4px; margin-top: 24px;">
                 <p style="margin: 0; color: #64748B; font-size: 12.5px; line-height: 1.5;">
-                  <strong>Security Advisory:</strong> This reset authorization is cryptographically signed and expires in <strong>60 minutes</strong>. If you did not initiate this request, please disregard this email or report immediately to Private Wealth Security at <a href="mailto:${adminEmail}" style="color: #0F2A24; font-weight: 600; text-decoration: underline;">${adminEmail}</a>.
+                  <strong>Security Advisory:</strong> This reset authorization is cryptographically signed and expires in <strong>60 minutes</strong>. If you did not initiate this request, please disregard this email or report immediately to Private Wealth Security at <a href="mailto:${adminEmail}" style="color: #1B0F4A; font-weight: 600; text-decoration: underline;">${adminEmail}</a>.
                 </p>
               </div>
             `;
@@ -368,33 +368,33 @@
                     : (isCompleted
                         ? `Dear ${userName},<br>Your withdrawal order has been completed successfully under institutional custody. Funds have been dispatched to your designated beneficiary.`
                         : `Dear ${userName},<br>Your transaction order has been processed under institutional custody. Below are the execution parameters for your records.`);
-                const debitBadgeColor = isProcessing ? '#2563EB' : (isCompleted ? '#16A34A' : '#0F2A24');
+                const debitBadgeColor = isProcessing ? '#2563EB' : (isCompleted ? '#16A34A' : '#1B0F4A');
 
                 const userContentHtml = isDebit
                   ? `
-                  <h2 style="margin: 0 0 6px; color: #0F2A24; font-size: 21px; font-weight: 700; font-family: Georgia, 'Cormorant Garamond', serif;">
+                  <h2 style="margin: 0 0 6px; color: #1B0F4A; font-size: 21px; font-weight: 700; font-family: Georgia, 'Cormorant Garamond', serif;">
                     ${debitTitle}
                   </h2>
                   <p style="margin: 0 0 20px; color: #475569; font-size: 14px; line-height: 1.5;">
                     ${debitSubtitle}
                   </p>
 
-                  <div style="background-color: #FAF8F5; border-radius: 8px; padding: 18px 24px; text-align: center; margin: 16px 0 20px; border: 1px solid #E5E0D8;">
+                  <div style="background-color: #FFFFFF; border-radius: 8px; padding: 18px 24px; text-align: center; margin: 16px 0 20px; border: 1px solid #DDD5F7;">
                     <div style="font-size: 12px; color: #64748B; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">Debited Amount</div>
-                    <div style="font-size: 26px; font-weight: 700; color: #0F2A24; margin-top: 4px; font-family: Georgia, serif;">${currency} ${amount}</div>
-                    <div style="margin-top: 6px; display: inline-block; background-color: ${debitBadgeColor}; color: #FAF8F5; font-size: 11px; font-weight: 600; padding: 3px 12px; border-radius: 12px; letter-spacing: 0.5px;">${status.toUpperCase()}</div>
+                    <div style="font-size: 26px; font-weight: 700; color: #1B0F4A; margin-top: 4px; font-family: Georgia, serif;">${currency} ${amount}</div>
+                    <div style="margin-top: 6px; display: inline-block; background-color: ${debitBadgeColor}; color: #FFFFFF; font-size: 11px; font-weight: 600; padding: 3px 12px; border-radius: 12px; letter-spacing: 0.5px;">${status.toUpperCase()}</div>
                   </div>
 
                   ${buildRowsTable(rowsCommon)}
 
-                  <div style="background-color: #F8FAFC; border-left: 3px solid #0F2A24; padding: 14px 16px; border-radius: 4px; margin-top: 20px;">
+                  <div style="background-color: #F8FAFC; border-left: 3px solid #1B0F4A; padding: 14px 16px; border-radius: 4px; margin-top: 20px;">
                     <p style="margin: 0; color: #64748B; font-size: 12.5px; line-height: 1.5;">
-                      If you have questions regarding this debit or require an official SWIFT / MT103 advice statement, contact your private wealth manager at <a href="mailto:${adminEmail}" style="color: #0F2A24; font-weight: 600; text-decoration: underline;">${adminEmail}</a>.
+                      If you have questions regarding this debit or require an official SWIFT / MT103 advice statement, contact your private wealth manager at <a href="mailto:${adminEmail}" style="color: #1B0F4A; font-weight: 600; text-decoration: underline;">${adminEmail}</a>.
                     </p>
                   </div>
                   `
                   : `
-                  <h2 style="margin: 0 0 6px; color: #0F2A24; font-size: 21px; font-weight: 700; font-family: Georgia, 'Cormorant Garamond', serif;">
+                  <h2 style="margin: 0 0 6px; color: #1B0F4A; font-size: 21px; font-weight: 700; font-family: Georgia, 'Cormorant Garamond', serif;">
                     Account Credit Notification
                   </h2>
                   <p style="margin: 0 0 20px; color: #475569; font-size: 14px; line-height: 1.5;">
@@ -405,14 +405,14 @@
                   <div style="background-color: #F0FDF4; border-radius: 8px; padding: 18px 24px; text-align: center; margin: 16px 0 20px; border: 1px solid #BBF7D0;">
                     <div style="font-size: 12px; color: #166534; text-transform: uppercase; letter-spacing: 1px; font-weight: 700;">Credited Amount</div>
                     <div style="font-size: 26px; font-weight: 700; color: #14532D; margin-top: 4px; font-family: Georgia, serif;">+${currency} ${amount}</div>
-                    <div style="margin-top: 6px; display: inline-block; background-color: #16A34A; color: #FAF8F5; font-size: 11px; font-weight: 600; padding: 3px 12px; border-radius: 12px; letter-spacing: 0.5px;">${status}</div>
+                    <div style="margin-top: 6px; display: inline-block; background-color: #16A34A; color: #FFFFFF; font-size: 11px; font-weight: 600; padding: 3px 12px; border-radius: 12px; letter-spacing: 0.5px;">${status}</div>
                   </div>
 
                   ${buildRowsTable(rowsCommon)}
 
                   <div style="background-color: #F0FDF4; border-left: 3px solid #16A34A; padding: 14px 16px; border-radius: 4px; margin-top: 20px;">
                     <p style="margin: 0; color: #166534; font-size: 12.5px; line-height: 1.5;">
-                      If you have questions regarding this credit or require an official SWIFT / MT103 credit advice statement, contact your private wealth manager at <a href="mailto:${adminEmail}" style="color: #0F2A24; font-weight: 600; text-decoration: underline;">${adminEmail}</a>.
+                      If you have questions regarding this credit or require an official SWIFT / MT103 credit advice statement, contact your private wealth manager at <a href="mailto:${adminEmail}" style="color: #1B0F4A; font-weight: 600; text-decoration: underline;">${adminEmail}</a>.
                     </p>
                   </div>
                   `;
@@ -461,23 +461,23 @@
 
             const adminContentHtml = isDebit
               ? `
-              <h2 style="margin: 0 0 6px; color: #0F2A24; font-size: 21px; font-weight: 700; font-family: Georgia, 'Cormorant Garamond', serif;">
+              <h2 style="margin: 0 0 6px; color: #1B0F4A; font-size: 21px; font-weight: 700; font-family: Georgia, 'Cormorant Garamond', serif;">
                 ${isProcessing ? 'Institutional Audit: Outbound Withdrawal Processing' : (isCompleted ? 'Institutional Audit: Withdrawal Verified & Completed' : 'Institutional Audit: Transaction Executed')}
               </h2>
               <p style="margin: 0 0 20px; color: #475569; font-size: 14px; line-height: 1.5;">
                 ${isProcessing ? 'An outbound withdrawal request has been submitted by a client and is currently processing. Details are listed below for verification:' : (isCompleted ? 'An outbound withdrawal order has been verified and settled on the platform:' : 'An outbound transaction order has been dispatched on the platform. Review the audit parameters below:')}
               </p>
 
-              <div style="background-color: #FAF8F5; border-radius: 8px; padding: 18px 24px; text-align: center; margin: 16px 0 20px; border: 1px solid #E5E0D8;">
+              <div style="background-color: #FFFFFF; border-radius: 8px; padding: 18px 24px; text-align: center; margin: 16px 0 20px; border: 1px solid #DDD5F7;">
                 <div style="font-size: 12px; color: #64748B; text-transform: uppercase; letter-spacing: 1px; font-weight: 600;">Transaction Volume</div>
-                <div style="font-size: 26px; font-weight: 700; color: #0F2A24; margin-top: 4px; font-family: Georgia, serif;">${currency} ${amount}</div>
-                <div style="margin-top: 6px; display: inline-block; background-color: ${isProcessing ? '#2563EB' : '#C5A059'}; color: ${isProcessing ? '#FAF8F5' : '#0F2A24'}; font-size: 11px; font-weight: 700; padding: 3px 12px; border-radius: 12px; letter-spacing: 0.5px;">${isProcessing ? 'AUDIT: PROCESSING' : (isCompleted ? 'AUDIT: VERIFIED & SETTLED' : 'AUDIT LOGGED')}</div>
+                <div style="font-size: 26px; font-weight: 700; color: #1B0F4A; margin-top: 4px; font-family: Georgia, serif;">${currency} ${amount}</div>
+                <div style="margin-top: 6px; display: inline-block; background-color: ${isProcessing ? '#2563EB' : '#6C3FF0'}; color: ${isProcessing ? '#FFFFFF' : '#1B0F4A'}; font-size: 11px; font-weight: 700; padding: 3px 12px; border-radius: 12px; letter-spacing: 0.5px;">${isProcessing ? 'AUDIT: PROCESSING' : (isCompleted ? 'AUDIT: VERIFIED & SETTLED' : 'AUDIT LOGGED')}</div>
               </div>
 
               ${buildRowsTable(adminRows)}
               `
               : `
-              <h2 style="margin: 0 0 6px; color: #0F2A24; font-size: 21px; font-weight: 700; font-family: Georgia, 'Cormorant Garamond', serif;">
+              <h2 style="margin: 0 0 6px; color: #1B0F4A; font-size: 21px; font-weight: 700; font-family: Georgia, 'Cormorant Garamond', serif;">
                 Institutional Audit: Inward Credit Executed
               </h2>
               <p style="margin: 0 0 20px; color: #475569; font-size: 14px; line-height: 1.5;">
@@ -487,7 +487,7 @@
               <div style="background-color: #F0FDF4; border-radius: 8px; padding: 18px 24px; text-align: center; margin: 16px 0 20px; border: 1px solid #BBF7D0;">
                 <div style="font-size: 12px; color: #166534; text-transform: uppercase; letter-spacing: 1px; font-weight: 700;">Credited Volume</div>
                 <div style="font-size: 26px; font-weight: 700; color: #14532D; margin-top: 4px; font-family: Georgia, serif;">+${currency} ${amount}</div>
-                <div style="margin-top: 6px; display: inline-block; background-color: #16A34A; color: #FAF8F5; font-size: 11px; font-weight: 700; padding: 3px 12px; border-radius: 12px; letter-spacing: 0.5px;">CREDIT AUDIT</div>
+                <div style="margin-top: 6px; display: inline-block; background-color: #16A34A; color: #FFFFFF; font-size: 11px; font-weight: 700; padding: 3px 12px; border-radius: 12px; letter-spacing: 0.5px;">CREDIT AUDIT</div>
               </div>
 
               ${buildRowsTable(adminRows)}
@@ -550,7 +550,7 @@
             ];
 
             const adminContentHtml = `
-              <h2 style="margin: 0 0 6px; color: #0F2A24; font-size: 21px; font-weight: 700; font-family: Georgia, 'Cormorant Garamond', serif;">
+              <h2 style="margin: 0 0 6px; color: #1B0F4A; font-size: 21px; font-weight: 700; font-family: Georgia, 'Cormorant Garamond', serif;">
                 New Private Account Registration
               </h2>
               <p style="margin: 0 0 20px; color: #475569; font-size: 14px; line-height: 1.5;">
@@ -593,7 +593,7 @@
             ];
 
             const contentHtml = `
-              <h2 style="margin: 0 0 6px; color: #0F2A24; font-size: 21px; font-weight: 700; font-family: Georgia, 'Cormorant Garamond', serif;">
+              <h2 style="margin: 0 0 6px; color: #1B0F4A; font-size: 21px; font-weight: 700; font-family: Georgia, 'Cormorant Garamond', serif;">
                 New Credit Facility Application
               </h2>
               <p style="margin: 0 0 20px; color: #475569; font-size: 14px; line-height: 1.5;">
@@ -636,7 +636,7 @@
             ];
 
             const contentHtml = `
-              <h2 style="margin: 0 0 6px; color: #0F2A24; font-size: 21px; font-weight: 700; font-family: Georgia, 'Cormorant Garamond', serif;">
+              <h2 style="margin: 0 0 6px; color: #1B0F4A; font-size: 21px; font-weight: 700; font-family: Georgia, 'Cormorant Garamond', serif;">
                 Wealth Management Allocation Activated
               </h2>
               <p style="margin: 0 0 20px; color: #475569; font-size: 14px; line-height: 1.5;">
@@ -691,7 +691,7 @@
             ];
 
             const contentHtml = `
-              <h2 style="margin: 0 0 6px; color: #0F2A24; font-size: 21px; font-weight: 700; font-family: Georgia, 'Cormorant Garamond', serif;">
+              <h2 style="margin: 0 0 6px; color: #1B0F4A; font-size: 21px; font-weight: 700; font-family: Georgia, 'Cormorant Garamond', serif;">
                 Daily Investment Return Credited
               </h2>
               <p style="margin: 0 0 20px; color: #475569; font-size: 14px; line-height: 1.5;">
@@ -702,13 +702,13 @@
               <div style="background-color: #F0FDF4; border-radius: 8px; padding: 18px 24px; text-align: center; margin: 16px 0 20px; border: 1px solid #BBF7D0;">
                 <div style="font-size: 12px; color: #166534; text-transform: uppercase; letter-spacing: 1px; font-weight: 700;">Daily Return Accrued</div>
                 <div style="font-size: 26px; font-weight: 700; color: #14532D; margin-top: 4px; font-family: Georgia, serif;">+${dailyProfit}</div>
-                <div style="margin-top: 6px; display: inline-block; background-color: #16A34A; color: #FAF8F5; font-size: 11px; font-weight: 600; padding: 3px 12px; border-radius: 12px; letter-spacing: 0.5px;">ACCRUED</div>
+                <div style="margin-top: 6px; display: inline-block; background-color: #16A34A; color: #FFFFFF; font-size: 11px; font-weight: 600; padding: 3px 12px; border-radius: 12px; letter-spacing: 0.5px;">ACCRUED</div>
               </div>
 
               ${buildRowsTable(rows)}
 
               <div style="text-align: center; margin: 26px 0 16px;">
-                <a href="https://reservedcitizenbank.web.app/dashboard" style="background-color: #0F2A24; color: #FAF8F5; text-decoration: none; padding: 13px 28px; border-radius: 8px; font-size: 13.5px; font-weight: 600; display: inline-block; letter-spacing: 0.3px; box-shadow: 0 4px 12px rgba(15,42,36,0.25);">
+                <a href="https://reservedcitizenbank.web.app/dashboard" style="background-color: #1B0F4A; color: #FFFFFF; text-decoration: none; padding: 13px 28px; border-radius: 8px; font-size: 13.5px; font-weight: 600; display: inline-block; letter-spacing: 0.3px; box-shadow: 0 4px 12px rgba(15,42,36,0.25);">
                   View Portfolio in Dashboard
                 </a>
               </div>
@@ -735,13 +735,13 @@
                 .join('');
 
             const contentHtml = `
-              <h2 style="margin: 0 0 12px; color: #0F2A24; font-size: 20px; font-weight: 700; font-family: Georgia, 'Cormorant Garamond', serif;">
+              <h2 style="margin: 0 0 12px; color: #1B0F4A; font-size: 20px; font-weight: 700; font-family: Georgia, 'Cormorant Garamond', serif;">
                 ${subject}
               </h2>
               <p style="margin: 0 0 18px; color: #475569; font-size: 14px; font-weight: 500;">
                 Dear ${cleanName},
               </p>
-              <div style="background-color: #FAF8F5; border: 1px solid #EBE4D8; border-left: 4px solid #C5A059; border-radius: 8px; padding: 20px 24px; margin-bottom: 24px;">
+              <div style="background-color: #FFFFFF; border: 1px solid #EBE4D8; border-left: 4px solid #6C3FF0; border-radius: 8px; padding: 20px 24px; margin-bottom: 24px;">
                 ${paragraphs || '<p style="margin:0;color:#334155;font-size:14.5px;line-height:1.65;">(No message content)</p>'}
               </div>
               <p style="margin: 0; color: #64748B; font-size: 13px; line-height: 1.6;">
@@ -755,7 +755,7 @@
                 to,
                 subject: subject.startsWith('[Summit Trust Holdings]') ? subject : `[Summit Trust Holdings] ${subject}`,
                 htmlBody,
-                textBody: `Dear ${cleanName},\n\n${messageText}\n\n---\nSummit Trust Holdings\nHochschulstrasse 6, 3012 London, United Kingdom`,
+                textBody: `Dear ${cleanName},\n\n${messageText}\n\n---\nSummit Trust Holdings\n100 Bishopsgate, London EC2N 4AG, United Kingdom`,
                 type: 'custom',
                 data: { recipient: to, name: clientName, subject, message: messageText }
             });
@@ -766,6 +766,7 @@
 
     window.EmailService = EmailService;
 })();
+
 
 
 

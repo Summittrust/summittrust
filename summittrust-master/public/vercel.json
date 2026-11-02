@@ -1,4 +1,10 @@
 {
-  "outputDirectory": "public",
-  "cleanUrls": true
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/auth", "destination": "/auth.html" },
+    { "source": "/about", "destination": "/about.html" },
+    { "source": "/dashboard", "destination": "/dashboard.html" },
+    { "source": "/admin", "destination": "/admin.html" }
+  ]
 }
